@@ -62,15 +62,15 @@ export default function StorePreviewPage() {
               alt="Kitchen banner"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-            {/* Gradient overlay — fades into hero-dark below */}
+            {/* Subtle gradient overlay */}
             <div
               style={{
                 position: "absolute",
                 bottom: 0,
                 left: 0,
                 right: 0,
-                height: 100,
-                background: "linear-gradient(to top, rgba(51,31,46,0.85), transparent)",
+                height: 80,
+                background: "linear-gradient(to top, rgba(51,31,46,0.25), transparent)",
               }}
             />
           </div>
@@ -120,24 +120,24 @@ export default function StorePreviewPage() {
           </div>
         </div>
 
-        {/* Kitchen info — hero-dark premium section */}
-        <div className="hero-dark" style={{ padding: "40px 24px 32px", borderRadius: "0 0 16px 16px", marginTop: -1 }}>
+        {/* Kitchen info — light section */}
+        <div style={{ padding: "40px 24px 24px", background: "var(--color-cream)" }}>
           {/* Kitchen name + tagline */}
-          <h1 className="heading-lg" style={{ fontSize: 24, color: "var(--color-cream)" }}>
+          <h1 className="heading-lg" style={{ fontSize: 24, color: "var(--color-brown)" }}>
             Yalla Kitchen by Amira
           </h1>
-          <p className="body-sm" style={{ marginTop: 4, color: "rgba(250,249,246,0.7)" }}>
+          <p className="body-sm" style={{ marginTop: 4, color: "var(--color-brown-soft)" }}>
             Authentic Palestinian home cooking
           </p>
 
           {/* Status + rating row */}
           <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: 12 }}>
-            <span className="flex items-center gap-1.5 body" style={{ color: "var(--color-cream)" }}>
+            <span className="flex items-center gap-1.5 body" style={{ color: "var(--color-brown)" }}>
               <span className="dot dot-sage" />
               <span style={{ fontWeight: 600 }}>Open</span>
               <span style={{ opacity: 0.6, fontSize: 12 }}>&middot; Closes at 6:00 PM</span>
             </span>
-            <span className="flex items-center gap-1 body" style={{ fontWeight: 600, color: "var(--color-cream)" }}>
+            <span className="flex items-center gap-1 body" style={{ fontWeight: 600, color: "var(--color-brown)" }}>
               4.0
               <Star size={14} fill="var(--color-sage)" color="var(--color-sage)" />
               <span style={{ fontWeight: 400, opacity: 0.6, fontSize: 12 }}>(4 reviews)</span>
@@ -146,13 +146,13 @@ export default function StorePreviewPage() {
 
           {/* Quick info pills */}
           <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 12 }}>
-            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
+            <span className="pill" style={{ gap: 4, background: "var(--color-cream-deep)", color: "var(--color-brown)", border: "1px solid rgba(51,31,46,0.08)" }}>
               <Truck size={12} strokeWidth={2} /> Delivery
             </span>
-            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
+            <span className="pill" style={{ gap: 4, background: "var(--color-cream-deep)", color: "var(--color-brown)", border: "1px solid rgba(51,31,46,0.08)" }}>
               <MapPin size={12} strokeWidth={2} /> Pickup
             </span>
-            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
+            <span className="pill" style={{ gap: 4, background: "var(--color-cream-deep)", color: "var(--color-brown)", border: "1px solid rgba(51,31,46,0.08)" }}>
               <Clock size={12} strokeWidth={2} /> 24h notice
             </span>
           </div>

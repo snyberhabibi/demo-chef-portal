@@ -32,19 +32,17 @@ export default function PaymentsPage() {
   return (
     <div className="content-narrow section-stack">
       {/* State toggle */}
-      <div style={{ background: "var(--color-cream-sunken)", padding: "8px 12px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 8 }}>
-        <span className="caption" style={{ fontWeight: 600 }}>Demo:</span>
-        <div className="flex gap-2">
-          {(["A", "B", "C"] as StripeState[]).map((s) => (
-            <button
-              key={s}
-              className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
-              onClick={() => setState(s)}
-            >
-              State {s}
-            </button>
-          ))}
-        </div>
+      <div style={{ display: "inline-flex", gap: 4 }}>
+        {(["A", "B", "C"] as StripeState[]).map((s) => (
+          <button
+            key={s}
+            className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
+            style={{ fontSize: 12 }}
+            onClick={() => setState(s)}
+          >
+            {s === "A" ? "Not connected" : s === "B" ? "Needs info" : "Connected"}
+          </button>
+        ))}
       </div>
 
       {/* State A: Not connected */}

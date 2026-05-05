@@ -7,23 +7,14 @@ import Link from "next/link";
 import {
   Check,
   ChevronRight,
-  Star,
   ArrowUpRight,
-  Clock,
   Upload,
-  Plus,
-  Eye,
-  AlertCircle,
-  MessageSquare,
-  Radio,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
 /*  Seed data                                                         */
 /* ------------------------------------------------------------------ */
-const CHEF_AVATAR =
-  "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop";
 
 /* Unified onboarding — 3 phases, 9 steps */
 type Phase = { label: string; eyebrow: string; color: string; steps: Step[] };
@@ -125,61 +116,30 @@ const onboardingPhases: Phase[] = [
   },
 ];
 
-const urgentCards = [
-  {
-    urgencyClass: "urgency-red",
-    icon: AlertCircle,
-    text: "2 orders need confirmation",
-    pillClass: "pill-red",
-    pillText: "Urgent",
-    href: "/orders",
-  },
-  {
-    urgencyClass: "urgency-amber",
-    icon: MessageSquare,
-    text: "New review from Sarah K.",
-    pillClass: "pill-orange",
-    pillText: "New",
-    href: "/reviews",
-  },
-  {
-    urgencyClass: "urgency-sage",
-    icon: Radio,
-    text: "Store is live \u2014 47 views today",
-    pillClass: "pill-sage",
-    pillText: "Live",
-    href: "/store-preview",
-  },
-];
-
 const stats = [
   {
     label: "Orders This Month",
     value: "47",
     delta: "\u219112% vs last month",
     positive: true,
-    sparkline: "0,28 15,24 30,26 45,18 60,20 75,10 90,6 120,4",
   },
   {
     label: "Revenue This Month",
     value: "$2,184",
     delta: "\u21918% vs last month",
     positive: true,
-    sparkline: "0,26 15,22 30,24 45,16 60,14 75,8 90,6 120,5",
   },
   {
     label: "Active Dishes",
     value: "12",
     delta: "3 drafts",
     positive: null,
-    sparkline: "0,20 15,20 30,18 45,16 60,16 75,14 90,13 120,12",
   },
   {
     label: "Avg Rating",
     value: "4.8",
-    delta: "stars",
+    delta: "from 4 reviews",
     positive: null,
-    sparkline: "0,12 15,10 30,10 45,8 60,6 75,6 90,5 120,4",
   },
 ];
 
@@ -191,6 +151,7 @@ const recentOrders = [
     status: "Paid",
     statusColor: "var(--color-sage)",
     price: "$49.00",
+    date: "Today, 2:14 PM",
   },
   {
     hashId: "#1041",
@@ -199,6 +160,7 @@ const recentOrders = [
     status: "Preparing",
     statusColor: "var(--color-orange)",
     price: "$26.50",
+    date: "Today, 1:30 PM",
   },
   {
     hashId: "#1040",
@@ -207,84 +169,9 @@ const recentOrders = [
     status: "Ready",
     statusColor: "var(--color-sage)",
     price: "$18.00",
+    date: "Yesterday",
   },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  SVG Progress Ring — 96px, stroke 6, sage, fraunces pct             */
-/* ------------------------------------------------------------------ */
-function ProgressRing({ pct }: { pct: number }) {
-  const r = 40;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (pct / 100) * circ;
-  return (
-    <svg width={96} height={96} viewBox="0 0 96 96" style={{ flexShrink: 0 }}>
-      <circle
-        cx={48}
-        cy={48}
-        r={r}
-        fill="none"
-        stroke="var(--color-cream-sunken)"
-        strokeWidth={6}
-      />
-      <circle
-        cx={48}
-        cy={48}
-        r={r}
-        fill="none"
-        stroke="var(--color-sage)"
-        strokeWidth={6}
-        strokeLinecap="round"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        style={{
-          transform: "rotate(-90deg)",
-          transformOrigin: "center",
-          transition: "stroke-dashoffset 0.6s ease",
-        }}
-      />
-      <text
-        x={48}
-        y={48}
-        textAnchor="middle"
-        dominantBaseline="central"
-        style={{
-          fontSize: 22,
-          fontWeight: 800,
-          fill: "var(--color-brown)",
-          fontFamily: "var(--font-display)",
-          letterSpacing: "-0.03em",
-        }}
-      >
-        {Math.round(pct)}%
-      </text>
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Mini Sparkline — 120x32, sage, 1.5px stroke                       */
-/* ------------------------------------------------------------------ */
-function Sparkline({ points }: { points: string }) {
-  return (
-    <svg
-      className="sparkline-svg"
-      width={120}
-      height={32}
-      viewBox="0 0 120 32"
-      style={{ display: "block", marginTop: 8, maxWidth: "100%" }}
-    >
-      <polyline
-        points={points}
-        fill="none"
-        stroke="var(--color-sage)"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /*  Time-appropriate greeting                                          */
@@ -304,44 +191,46 @@ export default function DashboardPage() {
 
   return (
     <div className="section-stack">
-      {/* Mode toggle — Linear-style tab buttons with active underline */}
+      {/* Mode toggle — subtle segmented control */}
       <div
-        className="flex items-center gap-0 mode-toggle-wrap"
         style={{
-          borderBottom: "1px solid rgba(51,31,46,0.08)",
-          marginBottom: 4,
+          display: "inline-flex",
+          background: "var(--color-cream-sunken)",
+          borderRadius: 8,
+          padding: 3,
+          gap: 2,
         }}
       >
         <button
           onClick={() => setMode("A")}
           style={{
-            padding: "10px 20px",
-            fontSize: 14,
+            padding: "6px 16px",
+            fontSize: 13,
             fontWeight: 600,
-            background: "none",
+            borderRadius: 6,
             border: "none",
-            borderBottom: mode === "A" ? "2px solid var(--color-red)" : "2px solid transparent",
+            background: mode === "A" ? "#fff" : "transparent",
             color: mode === "A" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-            transition: "color var(--t-fast), border-color var(--t-fast)",
             cursor: "pointer",
-            marginBottom: -1,
+            boxShadow: mode === "A" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+            transition: "all var(--t-fast) var(--ease-spring)",
           }}
         >
-          Onboarding
+          Setup
         </button>
         <button
           onClick={() => setMode("B")}
           style={{
-            padding: "10px 20px",
-            fontSize: 14,
+            padding: "6px 16px",
+            fontSize: 13,
             fontWeight: 600,
-            background: "none",
+            borderRadius: 6,
             border: "none",
-            borderBottom: mode === "B" ? "2px solid var(--color-red)" : "2px solid transparent",
+            background: mode === "B" ? "#fff" : "transparent",
             color: mode === "B" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-            transition: "color var(--t-fast), border-color var(--t-fast)",
             cursor: "pointer",
-            marginBottom: -1,
+            boxShadow: mode === "B" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+            transition: "all var(--t-fast) var(--ease-spring)",
           }}
         >
           Dashboard
@@ -379,18 +268,28 @@ function ModeA() {
 
   return (
     <div className="section-stack line-reveal">
-      {/* Header */}
-      <div className="flex items-center gap-5">
-        <ProgressRing pct={pct} />
-        <div>
-          <h1 className="heading-lg" style={{ marginBottom: 4 }}>
-            Welcome back, Amira
-          </h1>
-          <p className="body-sm">
-            {remaining} {remaining === 1 ? "step" : "steps"} remaining to go
-            live &mdash; you&apos;re almost there.
-          </p>
+      {/* Header with progress bar */}
+      <div>
+        <h1 className="heading-lg" style={{ marginBottom: 6 }}>
+          Welcome back, Amira
+        </h1>
+        <p className="body-sm" style={{ marginBottom: 12 }}>
+          {remaining} {remaining === 1 ? "step" : "steps"} remaining to go
+          live &mdash; you&apos;re almost there.
+        </p>
+        {/* Thin progress bar */}
+        <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
+          <div
+            style={{
+              height: "100%",
+              borderRadius: 2,
+              background: "var(--color-sage)",
+              width: `${pct}%`,
+              transition: "width 0.6s ease",
+            }}
+          />
         </div>
+        <div className="caption tnum" style={{ marginTop: 4 }}>{Math.round(pct)}% complete</div>
       </div>
 
       {/* Phased checklist — each phase in its own card */}
@@ -412,29 +311,28 @@ function ModeA() {
             style={{
               padding: 0,
               overflow: "hidden",
-              borderLeft: `4px solid ${borderColor}`,
+              borderLeft: `3px solid ${borderColor}`,
             }}
           >
             {/* Phase header inside card */}
             <div
               style={{
-                padding: "16px 20px",
+                padding: "12px 16px",
                 borderBottom: "1px solid rgba(51,31,46,0.06)",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="eyebrow">{phase.eyebrow}</span>
-                <span className="heading-sm">{phase.label}</span>
+                <span className="heading-sm" style={{ fontSize: 14 }}>{phase.label}</span>
                 {phaseAllDone && (
                   <span
                     className="pill pill-sage"
-                    style={{ marginLeft: "auto" }}
+                    style={{ marginLeft: "auto", fontSize: 11 }}
                   >
-                    <Check size={12} strokeWidth={3} /> Complete
+                    <Check size={11} strokeWidth={3} /> Complete
                   </span>
                 )}
               </div>
-              <span className="accent-line-sm" />
             </div>
 
             {/* Step rows */}
@@ -448,10 +346,8 @@ function ModeA() {
 
               return (
                 <div key={step.id}>
-                  {/* Divider between steps */}
-                  {si > 0 && <div className="divider" style={{ marginLeft: 20, marginRight: 20 }} />}
+                  {si > 0 && <div className="divider" style={{ marginLeft: 16, marginRight: 16 }} />}
 
-                  {/* Step row — 48px height */}
                   {isStep5 && !isDone ? (
                     <button
                       type="button"
@@ -461,20 +357,19 @@ function ModeA() {
                       }}
                       className="flex items-center gap-3 w-full text-left"
                       style={{
-                        padding: "0 20px",
-                        height: 48,
+                        padding: "0 16px",
+                        height: 44,
                         background: "transparent",
                         border: "none",
                         cursor: "pointer",
                       }}
                     >
-                      {/* Indicator */}
                       {isCurrent && !isExpanded ? (
                         <span
                           className="pulse-soft"
                           style={{
-                            width: 8,
-                            height: 8,
+                            width: 7,
+                            height: 7,
                             borderRadius: "50%",
                             background: "var(--color-red)",
                             flexShrink: 0,
@@ -491,39 +386,24 @@ function ModeA() {
                             flexShrink: 0,
                           }}
                         >
-                          {isDone ? (
-                            <Check size={16} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
-                          ) : (
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-brown-soft-2)",
-                              }}
-                            >
-                              {step.id}
-                            </span>
-                          )}
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft-2)" }}>
+                            {step.id}
+                          </span>
                         </span>
                       )}
-
                       <span
                         className="flex-1 min-w-0"
                         style={{
-                          fontSize: 14,
-                          fontWeight: isCurrent ? 700 : 500,
-                          color: isDone
-                            ? "var(--color-brown-soft-2)"
-                            : "var(--color-brown)",
-                          textDecoration: isDone ? "line-through" : undefined,
+                          fontSize: 13,
+                          fontWeight: isCurrent ? 600 : 500,
+                          color: "var(--color-brown)",
                         }}
                       >
                         {step.label}
                       </span>
-
                       {isCurrent && !isExpanded && (
-                        <span className="btn btn-gradient btn-sm shrink-0">
-                          Continue <ChevronRight size={14} />
+                        <span className="btn btn-gradient btn-sm shrink-0" style={{ fontSize: 12 }}>
+                          Continue <ChevronRight size={12} />
                         </span>
                       )}
                     </button>
@@ -532,20 +412,19 @@ function ModeA() {
                       href={step.href}
                       className="flex items-center gap-3"
                       style={{
-                        padding: "0 20px",
-                        height: 48,
+                        padding: "0 16px",
+                        height: 44,
                         textDecoration: "none",
                         color: "inherit",
                         display: "flex",
                       }}
                     >
-                      {/* Indicator */}
                       {isCurrent ? (
                         <span
                           className="pulse-soft"
                           style={{
-                            width: 8,
-                            height: 8,
+                            width: 7,
+                            height: 7,
                             borderRadius: "50%",
                             background: "var(--color-red)",
                             flexShrink: 0,
@@ -563,38 +442,28 @@ function ModeA() {
                           }}
                         >
                           {isDone ? (
-                            <Check size={16} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
+                            <Check size={14} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
                           ) : (
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-brown-soft-2)",
-                              }}
-                            >
+                            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft-2)" }}>
                               {step.id}
                             </span>
                           )}
                         </span>
                       )}
-
                       <span
                         className="flex-1 min-w-0"
                         style={{
-                          fontSize: 14,
-                          fontWeight: isCurrent ? 700 : 500,
-                          color: isDone
-                            ? "var(--color-brown-soft-2)"
-                            : "var(--color-brown)",
+                          fontSize: 13,
+                          fontWeight: isCurrent ? 600 : 500,
+                          color: isDone ? "var(--color-brown-soft-2)" : "var(--color-brown)",
                           textDecoration: isDone ? "line-through" : undefined,
                         }}
                       >
                         {step.label}
                       </span>
-
                       {isCurrent && (
-                        <span className="btn btn-gradient btn-sm shrink-0">
-                          Continue <ChevronRight size={14} />
+                        <span className="btn btn-gradient btn-sm shrink-0" style={{ fontSize: 12 }}>
+                          Continue <ChevronRight size={12} />
                         </span>
                       )}
                     </Link>
@@ -602,19 +471,15 @@ function ModeA() {
 
                   {/* Inline quick-add form for step 5 */}
                   {isExpanded && (
-                    <div
-                      style={{
-                        padding: "0 20px 20px",
-                      }}
-                    >
+                    <div style={{ padding: "0 16px 16px" }}>
                       <div
                         style={{
                           background: "var(--color-cream)",
-                          borderRadius: 12,
-                          padding: 16,
+                          borderRadius: 10,
+                          padding: 14,
                         }}
                       >
-                        <div style={{ marginBottom: 12 }}>
+                        <div style={{ marginBottom: 10 }}>
                           <label className="field-label">Dish name</label>
                           <input
                             type="text"
@@ -626,62 +491,46 @@ function ModeA() {
                           />
                         </div>
 
-                        <div style={{ marginBottom: 12 }}>
+                        <div style={{ marginBottom: 10 }}>
                           <label className="field-label">Photo</label>
                           <button
                             type="button"
                             className="flex flex-col items-center justify-center w-full rounded-xl"
                             style={{
-                              height: 88,
+                              height: 72,
                               border: "2px dashed rgba(51,31,46,0.12)",
                               background: "var(--color-cream-deep)",
                               cursor: "pointer",
                             }}
                           >
-                            <Upload
-                              size={18}
-                              strokeWidth={1.8}
-                              style={{ color: "var(--color-brown-soft-2)" }}
-                            />
-                            <span className="caption" style={{ marginTop: 4 }}>
-                              Tap to upload
-                            </span>
+                            <Upload size={16} strokeWidth={1.8} style={{ color: "var(--color-brown-soft-2)" }} />
+                            <span className="caption" style={{ marginTop: 4, fontSize: 11 }}>Tap to upload</span>
                           </button>
                         </div>
 
-                        <div style={{ marginBottom: 16 }}>
-                          <label className="field-label">
-                            Size &amp; Price
-                          </label>
-                          <div className="flex items-center gap-3">
+                        <div style={{ marginBottom: 14 }}>
+                          <label className="field-label">Price</label>
+                          <div className="relative" style={{ maxWidth: 120 }}>
                             <span
-                              className="pill pill-mute"
-                              style={{ minHeight: 40, fontSize: 13, fontWeight: 600 }}
+                              className="absolute"
+                              style={{
+                                left: 12,
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                fontSize: 14,
+                                color: "var(--color-brown-soft-2)",
+                              }}
                             >
-                              Individual
+                              $
                             </span>
-                            <div className="relative" style={{ flex: 1 }}>
-                              <span
-                                className="absolute"
-                                style={{
-                                  left: 12,
-                                  top: "50%",
-                                  transform: "translateY(-50%)",
-                                  fontSize: 14,
-                                  color: "var(--color-brown-soft-2)",
-                                }}
-                              >
-                                $
-                              </span>
-                              <input
-                                type="text"
-                                className="input tnum"
-                                placeholder="0.00"
-                                value={quickDishPrice}
-                                onChange={(e) => setQuickDishPrice(e.target.value)}
-                                style={{ paddingLeft: 24 }}
-                              />
-                            </div>
+                            <input
+                              type="text"
+                              className="input tnum"
+                              placeholder="0.00"
+                              value={quickDishPrice}
+                              onChange={(e) => setQuickDishPrice(e.target.value)}
+                              style={{ paddingLeft: 24 }}
+                            />
                           </div>
                         </div>
 
@@ -698,11 +547,11 @@ function ModeA() {
                           Publish Dish
                         </button>
 
-                        <div style={{ textAlign: "center", marginTop: 10 }}>
+                        <div style={{ textAlign: "center", marginTop: 8 }}>
                           <Link
                             href="/menu/new"
                             className="caption"
-                            style={{ fontWeight: 600, color: "var(--color-red)" }}
+                            style={{ fontWeight: 600, color: "var(--color-red)", fontSize: 11 }}
                           >
                             Or use the full editor &rarr;
                           </Link>
@@ -717,38 +566,13 @@ function ModeA() {
         );
       })}
 
-      {/* Motivational sticker */}
-      <div
-        className="card-sticker"
-        style={{ transform: "rotate(-1deg)", maxWidth: 340 }}
-      >
-        <div className="eyebrow" style={{ marginBottom: 8 }}>
-          A LITTLE WIND IN YOUR SAILS
-        </div>
-        <div
-          className="fraunces"
-          style={{ fontSize: 64, lineHeight: 1 }}
-        >
-          12
-        </div>
-        <p className="body-sm" style={{ marginTop: 6, lineHeight: 1.4 }}>
-          chefs went live this week in Dallas.{" "}
-          <strong style={{ color: "var(--color-brown)" }}>
-            Yours is next.
-          </strong>
-        </p>
-      </div>
-
-      {/* Need help? — simple text link */}
+      {/* Need help? — simple caption link */}
       <Link
         href="/tutorials"
-        className="body-sm"
+        className="caption"
         style={{
-          color: "var(--color-red)",
-          fontWeight: 600,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 4,
+          color: "var(--color-brown-soft-2)",
+          fontWeight: 500,
         }}
       >
         Need help? Talk to a real human &rarr;
@@ -762,15 +586,11 @@ function ModeA() {
 /* ------------------------------------------------------------------ */
 function ModeB() {
   const greeting = useMemo(() => getGreeting(), []);
-  const [statsPeriod, setStatsPeriod] = useState<"7d" | "30d" | "90d">("30d");
 
   return (
     <div className="content-wide section-stack line-reveal">
       <style>{`
         @media (max-width: 640px) {
-          .sparkline-svg { width: 80px; }
-          .quick-action-link { height: 56px !important; }
-          .urgent-card-link { min-width: 240px !important; padding: 12px !important; }
           .mode-toggle-wrap { width: 100%; }
           .mode-toggle-wrap button { flex: 1; }
           .order-row { gap: 10px !important; padding: 12px 14px !important; }
@@ -779,230 +599,43 @@ function ModeB() {
         }
       `}</style>
 
-      {/* Greeting + Today summary — Airbnb "Today" tab pattern: put the most important info above the fold */}
-      <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-3">
-        <h1 className="heading-lg" style={{ margin: 0 }}>
-          {greeting}, Amira{" "}
-          <span
-            role="img"
-            aria-label="wave"
-            className="animate-wave"
-            style={{ display: "inline-block" }}
-          >
-            👋
-          </span>
-        </h1>
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "var(--color-cream-deep)",
-            borderRadius: 10,
-            padding: "8px 14px",
-          }}
+      {/* Greeting */}
+      <h1 className="heading-lg" style={{ margin: "0 0 8px 0" }}>
+        {greeting}, Amira{" "}
+        <span
+          role="img"
+          aria-label="wave"
+          className="animate-wave"
+          style={{ display: "inline-block" }}
         >
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: "var(--color-sage)",
-              flexShrink: 0,
-            }}
-          />
-          <span className="body-sm" style={{ fontWeight: 600, color: "var(--color-brown)", whiteSpace: "nowrap" }}>
-            Today: 4 orders &middot; $186 &middot; 2 pending
-          </span>
-        </div>
-      </div>
+          👋
+        </span>
+      </h1>
 
-      {/* Urgent strip — horizontal scroll */}
-      <div
-        className="flex gap-2 sm:gap-3 overflow-x-auto pb-1"
-        style={{ margin: "0 -16px", padding: "0 16px" }}
-      >
-        {urgentCards.map((card, i) => {
-          const Icon = card.icon;
-          return (
-            <Link
-              key={i}
-              href={card.href}
-              className={`shrink-0 card card-hover ${card.urgencyClass} urgent-card-link`}
-              style={{
-                padding: "12px 16px",
-                minWidth: 240,
-                textDecoration: "none",
-                color: "inherit",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-              }}
-            >
-              <span
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  background: "var(--color-cream-sunken)",
-                  display: "grid",
-                  placeItems: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Icon size={16} strokeWidth={2} style={{ color: "var(--color-brown-soft)" }} />
-              </span>
-              <div className="flex-1 min-w-0">
-                <span
-                  className={`pill ${card.pillClass}`}
-                  style={{ marginBottom: 4, display: "inline-flex" }}
-                >
-                  {card.pillText}
-                </span>
-                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>
-                  {card.text}
-                </p>
-              </div>
-              <ArrowUpRight
-                size={14}
-                style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }}
-              />
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Stat cards — Stripe-style period selector + 4 cards */}
-      <div>
-        <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-          <span className="eyebrow">PERFORMANCE</span>
-          <div style={{ display: "inline-flex", gap: 2, background: "var(--color-cream-sunken)", borderRadius: 8, padding: 2 }}>
-            {([
-              { key: "7d" as const, label: "7D" },
-              { key: "30d" as const, label: "30D" },
-              { key: "90d" as const, label: "90D" },
-            ]).map((p) => (
-              <button
-                key={p.key}
-                onClick={() => setStatsPeriod(p.key)}
-                style={{
-                  padding: "4px 10px",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  borderRadius: 6,
-                  border: "none",
-                  background: statsPeriod === p.key ? "#fff" : "transparent",
-                  color: statsPeriod === p.key ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-                  cursor: "pointer",
-                  boxShadow: statsPeriod === p.key ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
-                  transition: "all var(--t-fast) var(--ease-spring)",
-                }}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-          {stats.map((stat, i) => (
-            <div key={i} className="stat-card-premium">
-              <div className="stat-accent" />
-              <div className="stat-body">
-                <div className="eyebrow" style={{ marginBottom: 8 }}>
-                  {stat.label}
-                </div>
-                <div
-                  className="fraunces tnum"
-                  style={{ fontSize: "clamp(24px, 6vw, 36px)", lineHeight: 1 }}
-                >
-                  {stat.value}
-                </div>
-                <Sparkline points={stat.sparkline} />
-                {stat.delta === "stars" ? (
-                  <div className="flex items-center gap-0.5 mt-2">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star
-                        key={s}
-                        size={13}
-                        fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
-                        color="var(--color-sage)"
-                        strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1.5 mt-2">
-                    {stat.positive !== null && (
-                      <span
-                        style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          background: stat.positive
-                            ? "var(--color-sage)"
-                            : "var(--color-red)",
-                          flexShrink: 0,
-                        }}
-                      />
-                    )}
-                    <span className="caption">{stat.delta}</span>
-                  </div>
-                )}
-              </div>
+      {/* Stat cards — clean 2x2 / 4-across grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {stats.map((stat, i) => (
+          <div key={i} className="card" style={{ padding: "20px" }}>
+            <div className="eyebrow" style={{ marginBottom: 8 }}>
+              {stat.label}
             </div>
-          ))}
-        </div>
+            <div
+              className="fraunces tnum"
+              style={{ fontSize: "clamp(24px, 5vw, 32px)", lineHeight: 1 }}
+            >
+              {stat.value}
+            </div>
+            <div className="caption" style={{ marginTop: 8, color: stat.positive ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)" }}>
+              {stat.delta}
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Quick actions — 3 cards in a row, 72px height */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Link
-          href="/menu/new"
-          className="btn btn-gradient card-hover flex items-center gap-3 quick-action-link"
-          style={{
-            height: 72,
-            textDecoration: "none",
-            padding: "0 20px",
-          }}
-        >
-          <Plus size={20} strokeWidth={2.5} />
-          <span style={{ fontSize: 14, fontWeight: 700 }}>Create Dish</span>
-        </Link>
-        <Link
-          href="/store-preview"
-          className="card card-hover flex items-center gap-3 quick-action-link"
-          style={{
-            height: 72,
-            textDecoration: "none",
-            color: "var(--color-brown)",
-            padding: "0 20px",
-          }}
-        >
-          <Eye size={20} strokeWidth={1.8} />
-          <span style={{ fontSize: 14, fontWeight: 600 }}>View My Store</span>
-        </Link>
-        <Link
-          href="/operations"
-          className="card card-hover flex items-center gap-3 quick-action-link"
-          style={{
-            height: 72,
-            textDecoration: "none",
-            color: "var(--color-brown)",
-            padding: "0 20px",
-          }}
-        >
-          <Clock size={20} strokeWidth={1.8} />
-          <span style={{ fontSize: 14, fontWeight: 600 }}>Manage Hours</span>
-        </Link>
-      </div>
-
-      {/* Recent orders — Stripe transactions style with improved mobile layout */}
+      {/* Recent orders */}
       <div>
         <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-          <div>
-            <span className="eyebrow">RECENT ORDERS</span>
-          </div>
+          <span className="eyebrow">RECENT ORDERS</span>
           <Link
             href="/orders"
             className="caption"
@@ -1044,20 +677,6 @@ function ModeB() {
                 (e.currentTarget.style.background = "transparent")
               }
             >
-              {/* Hash — hidden on mobile */}
-              <span
-                className="mono hidden sm:inline"
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "var(--color-brown-soft-2)",
-                  width: 52,
-                  flexShrink: 0,
-                }}
-              >
-                {order.hashId}
-              </span>
-
               {/* Customer */}
               <span
                 className="order-customer-col"
@@ -1072,7 +691,7 @@ function ModeB() {
                 {order.customer}
               </span>
 
-              {/* Items — hidden on mobile for cleaner layout */}
+              {/* Items */}
               <span
                 className="flex-1 min-w-0 order-items-col"
                 style={{
@@ -1084,6 +703,11 @@ function ModeB() {
                 }}
               >
                 {order.items}
+              </span>
+
+              {/* Date */}
+              <span className="caption hidden sm:inline" style={{ flexShrink: 0 }}>
+                {order.date}
               </span>
 
               {/* Status pill */}
@@ -1123,6 +747,8 @@ function ModeB() {
               >
                 {order.price}
               </span>
+
+              <ChevronRight size={14} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
             </Link>
           ))}
         </div>
