@@ -1,0 +1,94 @@
+"use client";
+
+import Link from "next/link";
+import { Home, Receipt, UtensilsCrossed, User, MoreHorizontal } from "lucide-react";
+
+interface BottomTabBarProps {
+  activePath: string;
+}
+
+const tabs = [
+  { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/orders", label: "Orders", icon: Receipt, badge: 2 },
+  { href: "/menu", label: "Menu", icon: UtensilsCrossed },
+  { href: "/profile", label: "Profile", icon: User, dot: true },
+  { href: "/settings", label: "More", icon: MoreHorizontal },
+];
+
+export function BottomTabBar({ activePath }: BottomTabBarProps) {
+  return (
+    <nav
+      className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around"
+      style={{
+        height: 64,
+        background: "rgba(250,249,246,0.92)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderTop: "1px solid rgba(51,31,46,0.08)",
+      }}
+    >
+      {tabs.map((tab) => {
+        const isActive = activePath === tab.href;
+        const Icon = tab.icon;
+        return (
+          <Link
+            key={tab.href}
+            href={tab.href}
+            className="flex flex-col items-center justify-center gap-0.5 relative"
+            style={{
+              flex: 1,
+              minHeight: 44,
+              color: isActive
+                ? "var(--color-brown)"
+                : "var(--color-brown-soft-2)",
+            }}
+          >
+            <span className="relative">
+              <Icon size={22} strokeWidth={isActive ? 2 : 1.6} />
+              {"badge" in tab && tab.badge && (
+                <span
+                  className="absolute flex items-center justify-center"
+                  style={{
+                    top: -4,
+                    right: -10,
+                    background: "var(--color-red)",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    minWidth: 16,
+                    height: 16,
+                    borderRadius: 9999,
+                    padding: "0 4px",
+                  }}
+                >
+                  {tab.badge}
+                </span>
+              )}
+              {"dot" in tab && tab.dot && (
+                <span
+                  className="absolute"
+                  style={{
+                    top: -2,
+                    right: -4,
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "var(--color-orange)",
+                  }}
+                />
+              )}
+            </span>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+              }}
+            >
+              {tab.label}
+            </span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
