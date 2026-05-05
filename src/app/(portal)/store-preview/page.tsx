@@ -166,7 +166,7 @@ export default function StorePreviewPage() {
         <div style={{ padding: "32px 24px 40px" }}>
 
           {/* About */}
-          <div className="card" style={{ padding: "20px 24px" }}>
+          <div className="card" style={{ padding: "16px 20px" }}>
             <p className="body-sm" style={{ margin: 0, lineHeight: 1.6 }}>
               Authentic Palestinian home cooking passed down through generations. Every dish is made fresh to order with love.
               {bioExpanded && (

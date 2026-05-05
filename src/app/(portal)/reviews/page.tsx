@@ -362,7 +362,7 @@ export default function ReviewsPage() {
             {sortedReviews.map((review, idx) => (
               <div key={review.id}>
                 {idx > 0 && <div className="divider" />}
-                <div className="p-3.5 sm:p-6">
+                <div className="p-4 sm:p-5">
                   {/* Header row */}
                   <div className="flex items-start gap-3">
                     <div
@@ -477,7 +477,7 @@ export default function ReviewsPage() {
               <button
                 className="flex items-center gap-3 w-full text-left"
                 style={{
-                  padding: "16px 24px",
+                  padding: "14px 20px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -508,7 +508,7 @@ export default function ReviewsPage() {
                   {dish.reviews.map((r, ri) => (
                     <div key={ri}>
                       <div className="divider" />
-                      <div style={{ padding: "14px 24px 14px 44px" }}>
+                      <div style={{ padding: "14px 20px 14px 44px" }}>
                         <div className="flex items-center gap-3">
                           <div
                             className="flex items-center justify-center rounded-full"
@@ -552,7 +552,7 @@ export default function ReviewsPage() {
               <button
                 className="flex items-center gap-3 w-full text-left"
                 style={{
-                  padding: "16px 24px",
+                  padding: "14px 20px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -583,7 +583,7 @@ export default function ReviewsPage() {
                   {bundle.reviews.map((r, ri) => (
                     <div key={ri}>
                       <div className="divider" />
-                      <div style={{ padding: "14px 24px 14px 44px" }}>
+                      <div style={{ padding: "14px 20px 14px 44px" }}>
                         <div className="flex items-center gap-3">
                           <div
                             className="flex items-center justify-center rounded-full"

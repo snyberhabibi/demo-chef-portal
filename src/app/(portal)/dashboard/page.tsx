@@ -10,6 +10,8 @@ import {
   ArrowUpRight,
   Upload,
   Search,
+  Truck,
+  ShoppingBag,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
@@ -148,29 +150,35 @@ const recentOrders = [
   {
     hashId: "#1042",
     customer: "Sarah K.",
-    items: "Kibbeh x2, Fattoush",
+    itemCount: 3,
+    method: "delivery" as const,
     status: "Paid",
-    statusColor: "var(--color-sage)",
+    statusColor: "var(--color-orange)",
     price: "$49.00",
     date: "Today, 2:14 PM",
+    readyBy: "6:30 PM",
   },
   {
     hashId: "#1041",
     customer: "Marcus T.",
-    items: "Shawarma Plate",
+    itemCount: 1,
+    method: "delivery" as const,
     status: "Preparing",
-    statusColor: "var(--color-orange)",
+    statusColor: "#e8a832",
     price: "$26.50",
     date: "Today, 1:30 PM",
+    readyBy: "7:00 PM",
   },
   {
     hashId: "#1040",
     customer: "Priya R.",
-    items: "Hummus Bowl",
+    itemCount: 1,
+    method: "pickup" as const,
     status: "Ready",
     statusColor: "var(--color-sage)",
     price: "$18.00",
     date: "Yesterday",
+    readyBy: null,
   },
 ];
 
@@ -614,7 +622,6 @@ function ModeB() {
     return recentOrders.filter(
       (order) =>
         order.customer.toLowerCase().includes(q) ||
-        order.items.toLowerCase().includes(q) ||
         order.hashId.toLowerCase().includes(q)
     );
   }, [dashSearch]);
@@ -625,9 +632,6 @@ function ModeB() {
         @media (max-width: 640px) {
           .mode-toggle-wrap { width: 100%; }
           .mode-toggle-wrap button { flex: 1; }
-          .order-row { gap: 10px !important; padding: 12px 14px !important; }
-          .order-items-col { display: none !important; }
-          .order-customer-col { flex: 1 !important; width: auto !important; }
         }
       `}</style>
 
@@ -668,7 +672,7 @@ function ModeB() {
             height: 44,
             paddingLeft: 40,
             paddingRight: 14,
-            borderRadius: 12,
+            borderRadius: 10,
             border: "1px solid rgba(51,31,46,0.1)",
             background: "#fff",
             fontSize: 14,
@@ -716,104 +720,46 @@ function ModeB() {
           </Link>
         </div>
 
-        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-          {filteredOrders.map((order, i) => (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {filteredOrders.map((order) => (
             <Link
               key={order.hashId}
               href={`/orders/${order.hashId.replace("#", "")}`}
-              className="order-row"
+              className="card card-hover"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                padding: "14px 20px",
+                display: "block",
                 textDecoration: "none",
-                color: "inherit",
-                borderBottom:
-                  i < filteredOrders.length - 1
-                    ? "1px solid rgba(51,31,46,0.06)"
-                    : undefined,
-                transition: "background var(--t-fast)",
+                padding: "14px 16px",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "var(--color-cream)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "transparent")
-              }
             >
-              {/* Customer */}
-              <span
-                className="order-customer-col"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--color-brown)",
-                  width: 90,
-                  flexShrink: 0,
-                }}
-              >
-                {order.customer}
-              </span>
+              {/* Row 1: dot + name + ready-by/date + price + chevron */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: order.statusColor, flexShrink: 0 }} />
+                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {order.customer}
+                </span>
+                <span className="caption tnum" style={{ flexShrink: 0 }}>
+                  {order.readyBy ? `Ready ${order.readyBy}` : order.date}
+                </span>
+                <span className="tnum" style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flexShrink: 0 }}>
+                  {order.price}
+                </span>
+                <ChevronRight size={14} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
+              </div>
 
-              {/* Items */}
-              <span
-                className="flex-1 min-w-0 order-items-col"
-                style={{
-                  fontSize: 13,
-                  color: "var(--color-brown-soft-2)",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {order.items}
-              </span>
-
-              {/* Date */}
-              <span className="caption hidden sm:inline" style={{ flexShrink: 0 }}>
-                {order.date}
-              </span>
-
-              {/* Status pill */}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  color: order.statusColor,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  flexShrink: 0,
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: order.statusColor,
-                  }}
-                />
-                {order.status}
-              </span>
-
-              {/* Price */}
-              <span
-                className="tnum"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--color-brown)",
-                  width: 64,
-                  textAlign: "right",
-                  flexShrink: 0,
-                }}
-              >
-                {order.price}
-              </span>
-
-              <ChevronRight size={14} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
+              {/* Row 2: method + items */}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                <span className="caption" style={{ display: "inline-flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                  {order.method === "delivery" ? <Truck size={14} /> : <ShoppingBag size={14} />}
+                  {order.method === "delivery" ? "Delivery" : "Pickup"}
+                </span>
+                <span className="caption" style={{ flexShrink: 0 }}>&middot;</span>
+                <span className="caption" style={{ flexShrink: 0 }}>
+                  {order.itemCount} {order.itemCount === 1 ? "item" : "items"}
+                </span>
+                <span className="caption" style={{ flexShrink: 0 }}>&middot;</span>
+                <span className="caption" style={{ flexShrink: 0 }}>{order.date}</span>
+              </div>
             </Link>
           ))}
         </div>

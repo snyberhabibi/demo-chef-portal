@@ -119,7 +119,7 @@ export default function PaymentsPage() {
 
           {/* FAQ accordion */}
           <div className="card" style={{ padding: 0 }}>
-            <div style={{ padding: "16px 24px 12px" }}>
+            <div style={{ padding: "16px 20px 12px" }}>
               <span className="heading-sm">Frequently Asked Questions</span>
             </div>
             {FAQ_ITEMS.map((item, i) => (
@@ -128,7 +128,7 @@ export default function PaymentsPage() {
                 <button
                   className="flex items-center justify-between w-full text-left"
                   style={{
-                    padding: "14px 24px",
+                    padding: "14px 20px",
                     background: "none",
                     border: "none",
                     fontSize: 14,
@@ -158,7 +158,7 @@ export default function PaymentsPage() {
                     opacity: faqOpen === i ? 1 : 0,
                   }}
                 >
-                  <div className="body-sm" style={{ padding: "0 24px 14px", lineHeight: 1.6 }}>
+                  <div className="body-sm" style={{ padding: "0 20px 14px", lineHeight: 1.6 }}>
                     {item.a}
                   </div>
                 </div>
@@ -249,13 +249,13 @@ export default function PaymentsPage() {
 
           {/* Transaction history */}
           <div className="card" style={{ padding: 0 }}>
-            <div style={{ padding: "16px 24px" }}>
+            <div style={{ padding: "16px 20px" }}>
               <span className="heading-sm">Recent Transactions</span>
             </div>
             {TRANSACTIONS.map((tx, i) => (
               <div key={i}>
                 <div className="divider" />
-                <div className="flex items-center gap-3 text-[12px] sm:text-[13px]" style={{ padding: "12px 24px" }}>
+                <div className="flex items-center gap-3 text-[12px] sm:text-[13px]" style={{ padding: "12px 20px" }}>
                   <span className="tnum caption" style={{ minWidth: 90, whiteSpace: "nowrap" }}>{tx.date}</span>
                   <div className="flex-1 flex items-center gap-2 min-w-0">
                     <span className="body-sm truncate" style={{ color: "var(--color-brown)" }}>{tx.desc}</span>

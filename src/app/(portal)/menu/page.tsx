@@ -375,7 +375,7 @@ export default function MenuPage() {
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 12,
+                    borderRadius: 10,
                     background: "var(--color-cream-deep)",
                     display: "flex",
                     alignItems: "center",
@@ -412,7 +412,7 @@ export default function MenuPage() {
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 12,
+                    borderRadius: 10,
                     background: "var(--color-cream-deep)",
                     display: "flex",
                     alignItems: "center",
@@ -584,7 +584,7 @@ export default function MenuPage() {
                 height: 44,
                 paddingLeft: 40,
                 paddingRight: 14,
-                borderRadius: 12,
+                borderRadius: 10,
                 border: "1px solid rgba(51,31,46,0.1)",
                 background: "#fff",
                 fontSize: 14,
@@ -623,7 +623,7 @@ export default function MenuPage() {
                 return (
                   <div
                     key={dish.id}
-                    className="card-photo group overflow-hidden rounded-[20px] relative"
+                    className="card-photo group overflow-hidden rounded-[16px] relative"
                     style={{
                       padding: 0,
                       opacity: dish.status === "archived" ? 0.6 : 1,
@@ -639,7 +639,7 @@ export default function MenuPage() {
                           src={dish.image}
                           alt={dish.name}
                           className="w-full h-full object-cover group-hover:scale-[1.03]"
-                          style={{ borderRadius: "20px 20px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
+                          style={{ borderRadius: "16px 16px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
                         />
                         <div
                           className="absolute"
@@ -674,7 +674,7 @@ export default function MenuPage() {
                           style={{
                             background: "rgba(51,31,46,0.05)",
                             transition: "opacity var(--t-fast)",
-                            borderRadius: "12px 12px 0 0",
+                            borderRadius: "16px 16px 0 0",
                             pointerEvents: "none",
                           }}
                         />
@@ -874,7 +874,7 @@ export default function MenuPage() {
                 height: 44,
                 paddingLeft: 40,
                 paddingRight: 14,
-                borderRadius: 12,
+                borderRadius: 10,
                 border: "1px solid rgba(51,31,46,0.1)",
                 background: "#fff",
                 fontSize: 14,
@@ -905,7 +905,7 @@ export default function MenuPage() {
                       src={bundle.image}
                       alt={bundle.name}
                       className="w-full h-full object-cover"
-                      style={{ borderRadius: "12px 12px 0 0" }}
+                      style={{ borderRadius: "16px 16px 0 0" }}
                     />
                     <div
                       className="absolute"
@@ -936,7 +936,7 @@ export default function MenuPage() {
                       className="absolute inset-0 opacity-0 group-hover:opacity-100"
                       style={{
                         background: "rgba(51,31,46,0.05)", transition: "opacity var(--t-fast)",
-                        borderRadius: "12px 12px 0 0", pointerEvents: "none",
+                        borderRadius: "16px 16px 0 0", pointerEvents: "none",
                       }}
                     />
                   </div>

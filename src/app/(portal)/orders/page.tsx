@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Search, Truck, ShoppingBag, Clock, Package, ChevronRight } from "lucide-react";
+import { Search, Truck, ShoppingBag, Package, ChevronRight } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
@@ -210,23 +210,6 @@ const filterTabs: { label: string; match: (o: Order) => boolean }[] = [
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
-function statusLabel(s: OrderStatus): string {
-  const map: Record<OrderStatus, string> = {
-    paid: "Paid",
-    confirmed: "Confirmed",
-    preparing: "Preparing",
-    ready: "Ready",
-    readyForPickup: "Pickup Ready",
-    outForDelivery: "Out for Delivery",
-    delivered: "Delivered",
-    pickedUp: "Picked Up",
-    rescheduling: "Rescheduling",
-    cancelled: "Cancelled",
-    rejected: "Rejected",
-  };
-  return map[s];
-}
-
 function statusDotColor(s: OrderStatus): string {
   switch (s) {
     case "paid":
@@ -256,30 +239,14 @@ function actionLabel(s: OrderStatus): string | null {
     case "paid":
       return "Confirm";
     case "confirmed":
-      return "Prep";
+      return "Start Prep";
     case "preparing":
-      return "Ready";
+      return "Mark Ready";
     case "ready":
     case "readyForPickup":
       return "Hand Off";
     default:
       return null;
-  }
-}
-
-function actionBtnClass(s: OrderStatus): string {
-  switch (s) {
-    case "paid":
-      return "btn-red";
-    case "confirmed":
-      return "btn-amber";
-    case "preparing":
-      return "btn-sage";
-    case "ready":
-    case "readyForPickup":
-      return "btn-terracotta";
-    default:
-      return "";
   }
 }
 
@@ -303,10 +270,14 @@ function linkId(hash: string): string {
   return hash.replace("#", "").slice(0, 7);
 }
 
-function urgencyBorderColor(u: Urgency): string {
-  if (u === "overdue") return "var(--color-red)";
-  if (u === "due-soon") return "var(--color-orange)";
-  return "transparent";
+function urgencyBackground(u: Urgency): string | undefined {
+  if (u === "overdue") return "rgba(229,65,65,0.04)";
+  if (u === "due-soon") return "rgba(252,157,53,0.04)";
+  return undefined;
+}
+
+function itemCount(items: { qty: number; name: string }[]): number {
+  return items.reduce((sum, i) => sum + i.qty, 0);
 }
 
 /* ------------------------------------------------------------------ */
@@ -492,7 +463,7 @@ export default function OrdersPage() {
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             style={{
               width: "100%",
-              height: 40,
+              height: 44,
               paddingLeft: 36,
               paddingRight: 14,
               borderRadius: 10,
@@ -531,7 +502,7 @@ export default function OrdersPage() {
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           style={{
             width: "100%",
-            height: 40,
+            height: 44,
             paddingLeft: 36,
             paddingRight: 14,
             borderRadius: 10,
@@ -554,94 +525,77 @@ export default function OrdersPage() {
           <Link href="/dashboard" className="btn btn-ghost" style={{ display: "inline-flex" }}>Back to Dashboard</Link>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {paginated.map((order) => {
             const effectiveStatus = getEffectiveStatus(order);
             const label = actionLabel(effectiveStatus);
-            const itemSummary = order.items.map((i) => (i.qty > 1 ? `${i.qty}x ${i.name}` : i.name)).join(", ");
-            const isStruck = effectiveStatus === "cancelled" || effectiveStatus === "rejected";
-            const dateTime = order.time ? `${order.date} · ${order.time}` : order.date;
+            const isTerminal = effectiveStatus === "cancelled" || effectiveStatus === "rejected";
+            const count = itemCount(order.items);
+            const dateTime = order.time ? `${order.date} ${order.time}` : order.date;
+            const bg = urgencyBackground(order.urgency ?? null);
 
             return (
               <Link
                 key={order.hash}
                 href={`/orders/${linkId(order.hash)}`}
-                className={`card card-hover ${order.urgency === "overdue" ? "urgency-red" : order.urgency === "due-soon" ? "urgency-amber" : ""}`}
+                className="card card-hover"
                 style={{
                   display: "block",
                   textDecoration: "none",
-                  padding: 0,
-                  opacity: isStruck ? 0.6 : 1,
-                  overflow: "hidden",
+                  padding: "14px 16px",
+                  opacity: isTerminal ? 0.5 : 1,
+                  background: bg || "#fff",
                 }}
               >
-                <div style={{ padding: "16px 20px" }}>
-                  {/* Row 1: Name + Status + Chevron */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    {/* Status dot */}
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
-                    {/* Customer name */}
-                    <span style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
-                      {order.customer}
-                    </span>
-                    {/* Status pill */}
-                    <span className={`pill ${effectiveStatus === "paid" || effectiveStatus === "confirmed" || effectiveStatus === "rescheduling" ? "pill-orange" : effectiveStatus === "cancelled" || effectiveStatus === "rejected" ? "pill-red" : "pill-sage"}`}>
-                      {statusLabel(effectiveStatus)}
-                    </span>
-                    {/* Chevron arrow */}
-                    <ChevronRight size={16} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
-                  </div>
+                {/* Row 1: dot + name + ready-by/date + price + chevron */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {order.customer}
+                  </span>
+                  <span className="caption tnum" style={{ flexShrink: 0 }}>
+                    {order.readyBy ? `Ready ${order.readyBy}` : order.date}
+                  </span>
+                  <span className="tnum" style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flexShrink: 0 }}>
+                    {order.price}
+                  </span>
+                  <ChevronRight size={14} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
+                </div>
 
-                  {/* Row 2: Date/time + Method */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, marginLeft: 16 }}>
-                    <span className="caption tnum" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                      <Clock size={12} /> {dateTime}
-                    </span>
-                    <span className="caption" style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                      {order.method === "delivery" ? <Truck size={12} /> : <ShoppingBag size={12} />}
-                      {order.method === "delivery" ? "Delivery" : "Pickup"}
-                    </span>
-                    {order.urgency === "overdue" && (
-                      <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase" as const, padding: "1px 6px", borderRadius: 9999, background: "rgba(229,65,65,0.1)", color: "var(--color-red-deep)" }}>
+                {/* Row 2: method + items + overdue + action btn */}
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                  <span className="caption" style={{ display: "inline-flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                    {order.method === "delivery" ? <Truck size={14} /> : <ShoppingBag size={14} />}
+                    {order.method === "delivery" ? "Delivery" : "Pickup"}
+                  </span>
+                  <span className="caption" style={{ flexShrink: 0 }}>&middot;</span>
+                  <span className="caption" style={{ flexShrink: 0 }}>
+                    {count} {count === 1 ? "item" : "items"}
+                  </span>
+                  {order.urgency === "overdue" && (
+                    <>
+                      <span className="caption" style={{ flexShrink: 0 }}>&middot;</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const, color: "var(--color-red-deep)", flexShrink: 0 }}>
                         OVERDUE
                       </span>
-                    )}
-                  </div>
-
-                  {/* Row 3: Items */}
-                  <div style={{ marginLeft: 16, marginBottom: 10 }}>
-                    <span style={{ fontSize: 13, color: "var(--color-brown-soft)", display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {itemSummary}
-                    </span>
-                  </div>
-
-                  {/* Row 4: Price + Action button */}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginLeft: 16 }}>
-                    <div>
-                      <span className="fraunces tnum" style={{ fontSize: 18, color: "var(--color-brown)" }}>
-                        {order.price}
-                      </span>
-                      {order.payout && !isStruck && (
-                        <span className="caption tnum" style={{ marginLeft: 8 }}>
-                          {order.payout} payout
-                        </span>
-                      )}
-                    </div>
-                    {label && (
-                      <button
-                        className={`btn btn-sm ${actionBtnClass(effectiveStatus)}`}
-                        style={{ minWidth: 80, transition: "all 0.2s ease" }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toast(actionToastMsg(order.hash, effectiveStatus));
-                          advanceStatus(order.hash, effectiveStatus);
-                        }}
-                      >
-                        {label}
-                      </button>
-                    )}
-                  </div>
+                    </>
+                  )}
+                  <span className="caption" style={{ display: "none" }}>{dateTime}</span>
+                  <span style={{ flex: 1 }} />
+                  {label && (
+                    <button
+                      className="btn btn-sm btn-dark"
+                      style={{ minWidth: 80, transition: "all 0.2s ease" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toast(actionToastMsg(order.hash, effectiveStatus));
+                        advanceStatus(order.hash, effectiveStatus);
+                      }}
+                    >
+                      {label} &rarr;
+                    </button>
+                  )}
                 </div>
               </Link>
             );

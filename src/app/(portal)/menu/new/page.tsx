@@ -490,7 +490,7 @@ export default function CreateDishPage() {
                     placeholder="e.g., Traditional Shawarma Plate"
                     value={dishName}
                     onChange={(e) => setDishName(e.target.value)}
-                    style={{ borderRadius: 12 }}
+                    style={{ borderRadius: 10 }}
                   />
                 </div>
 
@@ -503,7 +503,7 @@ export default function CreateDishPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
-                    style={{ borderRadius: 12 }}
+                    style={{ borderRadius: 10 }}
                   />
                 </div>
 
@@ -515,7 +515,7 @@ export default function CreateDishPage() {
                       className="select"
                       value={cuisine}
                       onChange={(e) => setCuisine(e.target.value)}
-                      style={{ appearance: "none", paddingRight: 36, borderRadius: 12 }}
+                      style={{ appearance: "none", paddingRight: 36, borderRadius: 10 }}
                     >
                       <option value="">Select cuisine</option>
                       {cuisineOptions.map((c) => (
@@ -557,7 +557,7 @@ export default function CreateDishPage() {
                             flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "center",
-                            borderRadius: 12,
+                            borderRadius: 10,
                             border: `1.5px solid ${isSelected ? "var(--color-orange)" : "rgba(51,31,46,0.1)"}`,
                             background: isSelected ? "rgba(252,157,53,0.05)" : "#fff",
                             cursor: "pointer",
@@ -583,7 +583,7 @@ export default function CreateDishPage() {
                       className="select"
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                      style={{ appearance: "none", paddingRight: 36, borderRadius: 12 }}
+                      style={{ appearance: "none", paddingRight: 36, borderRadius: 10 }}
                     >
                       <option value="draft">Draft</option>
                       <option value="published">Published</option>
@@ -612,14 +612,14 @@ export default function CreateDishPage() {
                       placeholder="e.g., 2.5"
                       value={leadTime}
                       onChange={(e) => setLeadTime(e.target.value)}
-                      style={{ flex: "1 1 120px", borderRadius: 12 }}
+                      style={{ flex: "1 1 120px", borderRadius: 10 }}
                     />
                     <div className="relative" style={{ flex: "0 0 120px" }}>
                       <select
                         className="select"
                         value={leadTimeUnit}
                         onChange={(e) => setLeadTimeUnit(e.target.value)}
-                        style={{ appearance: "none", paddingRight: 36, borderRadius: 12 }}
+                        style={{ appearance: "none", paddingRight: 36, borderRadius: 10 }}
                       >
                         <option value="hours">Hours</option>
                         <option value="days">Days</option>
@@ -686,7 +686,7 @@ export default function CreateDishPage() {
                     style={{
                       aspectRatio: "1/1",
                       border: "2px dashed rgba(51,31,46,0.1)",
-                      borderRadius: 12,
+                      borderRadius: 10,
                       background: "var(--color-cream-deep)",
                       cursor: "pointer",
                       position: "relative",
@@ -779,7 +779,7 @@ export default function CreateDishPage() {
                       className="flex items-center gap-2"
                       style={{
                         padding: "8px 12px",
-                        borderRadius: 12,
+                        borderRadius: 10,
                         border: "1px solid rgba(51,31,46,0.08)",
                         background: "#fff",
                       }}
@@ -878,31 +878,31 @@ export default function CreateDishPage() {
                   className="input"
                   placeholder="Select ingredients..."
                   readOnly
-                  style={{ borderRadius: 12 }}
+                  style={{ borderRadius: 10 }}
                 />
               </div>
 
               {/* Allergens */}
-              <div style={{ marginTop: 16 }}>
+              <div style={{ marginTop: 20 }}>
                 <label className="field-label">Allergens</label>
                 <input
                   type="text"
                   className="input"
                   placeholder="Select allergens..."
                   readOnly
-                  style={{ borderRadius: 12 }}
+                  style={{ borderRadius: 10 }}
                 />
               </div>
 
               {/* Dietary Labels */}
-              <div style={{ marginTop: 16 }}>
+              <div style={{ marginTop: 20 }}>
                 <label className="field-label">Dietary Labels</label>
                 <input
                   type="text"
                   className="input"
                   placeholder="Select dietary labels..."
                   readOnly
-                  style={{ borderRadius: 12 }}
+                  style={{ borderRadius: 10 }}
                 />
               </div>
             </div>
@@ -924,7 +924,7 @@ export default function CreateDishPage() {
                   placeholder="Leave empty for unlimited"
                   value={maxQty}
                   onChange={(e) => setMaxQty(e.target.value)}
-                  style={{ borderRadius: 12 }}
+                  style={{ borderRadius: 10 }}
                 />
                 <div className="field-help">Set a daily limit or leave blank for unlimited</div>
               </div>
@@ -1091,7 +1091,7 @@ export default function CreateDishPage() {
                             display: "inline-flex",
                             alignItems: "center",
                             padding: "0 16px",
-                            height: 34,
+                            height: 36,
                             borderRadius: 9999,
                             fontSize: 13,
                             fontWeight: 600,
