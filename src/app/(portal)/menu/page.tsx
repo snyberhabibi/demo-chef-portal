@@ -21,6 +21,7 @@ interface Dish {
   status: DishStatus;
   image: string;
   category: string;
+  cuisine: string;
 }
 
 const dishes: Dish[] = [
@@ -31,6 +32,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     category: "Main Dishes",
+    cuisine: "Jordanian",
   },
   {
     id: "knafeh",
@@ -39,6 +41,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop",
     category: "Desserts",
+    cuisine: "Palestinian",
   },
   {
     id: "baklava",
@@ -47,6 +50,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop",
     category: "Desserts",
+    cuisine: "Turkish",
   },
   {
     id: "shawarma",
@@ -55,6 +59,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop",
     category: "Main Dishes",
+    cuisine: "Lebanese",
   },
   {
     id: "hummus",
@@ -63,6 +68,7 @@ const dishes: Dish[] = [
     status: "draft",
     image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
     category: "Appetizers",
+    cuisine: "Middle Eastern",
   },
   {
     id: "falafel",
@@ -71,6 +77,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop",
     category: "Appetizers",
+    cuisine: "Egyptian",
   },
   {
     id: "tabouleh",
@@ -79,6 +86,7 @@ const dishes: Dish[] = [
     status: "draft",
     image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop",
     category: "Salads",
+    cuisine: "Lebanese",
   },
   {
     id: "mandi",
@@ -87,6 +95,7 @@ const dishes: Dish[] = [
     status: "archived",
     image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop",
     category: "Main Dishes",
+    cuisine: "Yemeni",
   },
   {
     id: "fattoush",
@@ -95,6 +104,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop",
     category: "Salads",
+    cuisine: "Lebanese",
   },
   {
     id: "kibbeh",
@@ -103,6 +113,7 @@ const dishes: Dish[] = [
     status: "published",
     image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     category: "Appetizers",
+    cuisine: "Syrian",
   },
   {
     id: "manaqish",
@@ -111,6 +122,7 @@ const dishes: Dish[] = [
     status: "draft",
     image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop",
     category: "Bakery",
+    cuisine: "Lebanese",
   },
 ];
 
@@ -224,9 +236,12 @@ export default function MenuPage() {
       (activeStatus === "Archived" && dish.status === "archived");
     const passesCategory =
       activeCategory === "All" || dish.category === activeCategory;
+    const q = search.trim().toLowerCase();
     const passesSearch =
-      search.trim() === "" ||
-      dish.name.toLowerCase().includes(search.toLowerCase());
+      q === "" ||
+      dish.name.toLowerCase().includes(q) ||
+      dish.category.toLowerCase().includes(q) ||
+      dish.cuisine.toLowerCase().includes(q);
     return passesStatus && passesCategory && passesSearch;
   });
 
@@ -440,11 +455,11 @@ export default function MenuPage() {
             <button
               onClick={() => setShowCreateModal(true)}
               className="btn btn-dark"
-              style={{ transition: "box-shadow var(--t-fast)" }}
+              style={{ gap: 6, transition: "box-shadow var(--t-fast)" }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 0 20px rgba(51,31,46,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
-              <Plus size={16} strokeWidth={2.2} />
+              <Plus size={18} strokeWidth={2.5} />
               Create Dish
             </button>
           </div>
@@ -526,38 +541,16 @@ export default function MenuPage() {
               })}
             </div>
 
-            <div className="relative hidden sm:block" style={{ width: 280, flexShrink: 0 }}>
-              <Search
-                size={15}
-                strokeWidth={2}
-                className="absolute"
-                style={{
-                  left: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "var(--color-brown-soft-2)",
-                  pointerEvents: "none",
-                }}
-              />
-              <input
-                type="text"
-                className="input"
-                placeholder="Search dishes..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
-              />
-            </div>
           </div>
 
-          {/* Mobile Search */}
-          <div className="relative sm:hidden" style={{ marginTop: -8 }}>
+          {/* Search bar */}
+          <div style={{ position: "relative", width: "100%" }}>
             <Search
-              size={15}
+              size={16}
               strokeWidth={2}
-              className="absolute"
               style={{
-                left: 12,
+                position: "absolute",
+                left: 14,
                 top: "50%",
                 transform: "translateY(-50%)",
                 color: "var(--color-brown-soft-2)",
@@ -566,11 +559,20 @@ export default function MenuPage() {
             />
             <input
               type="text"
-              className="input"
-              placeholder="Search dishes..."
+              placeholder="Search by name, category, or cuisine..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10, width: "100%" }}
+              style={{
+                width: "100%",
+                height: 44,
+                paddingLeft: 40,
+                paddingRight: 14,
+                borderRadius: 12,
+                border: "1px solid rgba(51,31,46,0.1)",
+                background: "#fff",
+                fontSize: 14,
+                color: "var(--color-brown)",
+              }}
             />
           </div>
 
@@ -584,8 +586,8 @@ export default function MenuPage() {
               <p className="body-sm" style={{ marginBottom: 24 }}>
                 Create your first dish to start receiving orders
               </p>
-              <Link href="/menu/new" className="btn btn-dark" style={{ display: "inline-flex" }}>
-                <Plus size={16} strokeWidth={2} />
+              <Link href="/menu/new" className="btn btn-dark" style={{ display: "inline-flex", gap: 6 }}>
+                <Plus size={18} strokeWidth={2.5} />
                 Create Dish
               </Link>
             </div>
@@ -790,8 +792,8 @@ export default function MenuPage() {
                 Create curated meal bundles to increase average order value
               </p>
             </div>
-            <Link href="/menu/new" className="btn btn-dark" style={{ textDecoration: "none" }}>
-              <Plus size={16} strokeWidth={2.2} />
+            <Link href="/menu/new" className="btn btn-dark" style={{ gap: 6, textDecoration: "none" }}>
+              <Plus size={18} strokeWidth={2.5} />
               Create Bundle
             </Link>
           </div>
@@ -829,39 +831,16 @@ export default function MenuPage() {
               })}
             </div>
 
-            <div style={{ flex: 1 }} />
-
-            <div className="relative hidden sm:block" style={{ width: 280, flexShrink: 0 }}>
-              <Search
-                size={15}
-                strokeWidth={2}
-                className="absolute"
-                style={{
-                  left: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "var(--color-brown-soft-2)",
-                  pointerEvents: "none",
-                }}
-              />
-              <input
-                type="text"
-                className="input"
-                placeholder="Search bundles..."
-                value={bundleSearch}
-                onChange={(e) => setBundleSearch(e.target.value)}
-                style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
-              />
-            </div>
           </div>
 
-          <div className="relative sm:hidden" style={{ marginTop: -8 }}>
+          {/* Search bar */}
+          <div style={{ position: "relative", width: "100%" }}>
             <Search
-              size={15}
+              size={16}
               strokeWidth={2}
-              className="absolute"
               style={{
-                left: 12,
+                position: "absolute",
+                left: 14,
                 top: "50%",
                 transform: "translateY(-50%)",
                 color: "var(--color-brown-soft-2)",
@@ -870,11 +849,20 @@ export default function MenuPage() {
             />
             <input
               type="text"
-              className="input"
               placeholder="Search bundles..."
               value={bundleSearch}
               onChange={(e) => setBundleSearch(e.target.value)}
-              style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10, width: "100%" }}
+              style={{
+                width: "100%",
+                height: 44,
+                paddingLeft: 40,
+                paddingRight: 14,
+                borderRadius: 12,
+                border: "1px solid rgba(51,31,46,0.1)",
+                background: "#fff",
+                fontSize: 14,
+                color: "var(--color-brown)",
+              }}
             />
           </div>
 
@@ -965,8 +953,8 @@ export default function MenuPage() {
                 Organize how sections appear on your store-front
               </p>
             </div>
-            <button className="btn btn-dark" onClick={handleCreateSection}>
-              <Plus size={16} strokeWidth={2.2} />
+            <button className="btn btn-dark" style={{ gap: 6 }} onClick={handleCreateSection}>
+              <Plus size={18} strokeWidth={2.5} />
               Create Section
             </button>
           </div>

@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ArrowUpRight,
   Upload,
+  Search,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
@@ -586,6 +587,18 @@ function ModeA() {
 /* ------------------------------------------------------------------ */
 function ModeB() {
   const greeting = useMemo(() => getGreeting(), []);
+  const [dashSearch, setDashSearch] = useState("");
+
+  const filteredOrders = useMemo(() => {
+    const q = dashSearch.trim().toLowerCase();
+    if (!q) return recentOrders;
+    return recentOrders.filter(
+      (order) =>
+        order.customer.toLowerCase().includes(q) ||
+        order.items.toLowerCase().includes(q) ||
+        order.hashId.toLowerCase().includes(q)
+    );
+  }, [dashSearch]);
 
   return (
     <div className="content-wide section-stack line-reveal">
@@ -611,6 +624,39 @@ function ModeB() {
           👋
         </span>
       </h1>
+
+      {/* Search bar */}
+      <div style={{ position: "relative", width: "100%" }}>
+        <Search
+          size={16}
+          strokeWidth={2}
+          style={{
+            position: "absolute",
+            left: 14,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--color-brown-soft-2)",
+            pointerEvents: "none",
+          }}
+        />
+        <input
+          type="text"
+          placeholder="Search orders, dishes, reviews..."
+          value={dashSearch}
+          onChange={(e) => setDashSearch(e.target.value)}
+          style={{
+            width: "100%",
+            height: 44,
+            paddingLeft: 40,
+            paddingRight: 14,
+            borderRadius: 12,
+            border: "1px solid rgba(51,31,46,0.1)",
+            background: "#fff",
+            fontSize: 14,
+            color: "var(--color-brown)",
+          }}
+        />
+      </div>
 
       {/* Stat cards — clean 2x2 / 4-across grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -652,7 +698,7 @@ function ModeB() {
         </div>
 
         <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-          {recentOrders.map((order, i) => (
+          {filteredOrders.map((order, i) => (
             <Link
               key={order.hashId}
               href={`/orders/${order.hashId.replace("#", "")}`}
@@ -665,7 +711,7 @@ function ModeB() {
                 textDecoration: "none",
                 color: "inherit",
                 borderBottom:
-                  i < recentOrders.length - 1
+                  i < filteredOrders.length - 1
                     ? "1px solid rgba(51,31,46,0.06)"
                     : undefined,
                 transition: "background var(--t-fast)",
