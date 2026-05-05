@@ -39,6 +39,13 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Create" },
     ],
   },
+  "flash-sales": {
+    title: "Flash Sales",
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Flash Sales" },
+    ],
+  },
   reviews: {
     title: "Reviews",
     breadcrumbs: [

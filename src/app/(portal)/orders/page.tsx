@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Search, Truck, ShoppingBag, Package, ChevronRight, ChevronDown, MessageSquare, ExternalLink } from "lucide-react";
+import { Search, Truck, ShoppingBag, Package, ChevronRight, ChevronDown, MessageSquare, ExternalLink, ClipboardList } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
@@ -288,6 +288,7 @@ export default function OrdersPage() {
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
 
   const [activeTab, setActiveTab] = useState("All");
+  const [showPrepList, setShowPrepList] = useState(false);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [page, setPage] = useState(1);
@@ -384,12 +385,12 @@ export default function OrdersPage() {
             `}</style>
             <div className="order-filter-tabs" style={{ display: "flex", gap: 4 }}>
               {filterTabs.map((tab) => {
-                const isActive = tab.label === activeTab;
+                const isActive = tab.label === activeTab && !showPrepList;
                 const count = tabCounts[tab.label];
                 return (
                   <button
                     key={tab.label}
-                    onClick={() => { setActiveTab(tab.label); setPage(1); }}
+                    onClick={() => { setActiveTab(tab.label); setShowPrepList(false); setPage(1); }}
                     className="h-7 sm:h-8 text-[11px] sm:text-[12px]"
                     style={{
                       display: "inline-flex",
@@ -436,6 +437,34 @@ export default function OrdersPage() {
                   </button>
                 );
               })}
+              {/* Prep List tab */}
+              <button
+                onClick={() => setShowPrepList(true)}
+                className="h-7 sm:h-8 text-[11px] sm:text-[12px]"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "0 10px",
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                  background: showPrepList ? "var(--color-brown)" : "transparent",
+                  color: showPrepList ? "var(--color-cream)" : "var(--color-brown-soft-2)",
+                }}
+                onMouseEnter={(e) => {
+                  if (!showPrepList) (e.currentTarget.style.background = "rgba(51,31,46,0.04)");
+                }}
+                onMouseLeave={(e) => {
+                  if (!showPrepList) (e.currentTarget.style.background = "transparent");
+                }}
+              >
+                <ClipboardList size={13} strokeWidth={2} />
+                Prep List
+              </button>
             </div>
           </div>
         </div>
@@ -517,8 +546,11 @@ export default function OrdersPage() {
         />
       </div>
 
+      {/* -------- Prep List View -------- */}
+      {showPrepList && <PrepListView orders={orders} />}
+
       {/* -------- Order cards — separated, scannable -------- */}
-      {paginated.length === 0 ? (
+      {!showPrepList && (paginated.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: "80px 20px" }}>
           <Package size={48} strokeWidth={1.2} style={{ color: "var(--color-brown-soft-2)", margin: "0 auto 16px" }} />
           <div className="heading-md" style={{ marginBottom: 6 }}>No orders found</div>
@@ -677,10 +709,10 @@ export default function OrdersPage() {
             );
           })}
         </div>
-      )}
+      ))}
 
       {/* -------- Pagination -------- */}
-      {filtered.length > 0 && (
+      {!showPrepList && filtered.length > 0 && (
         <div
           className="flex items-center justify-between flex-wrap gap-3 caption"
         >
@@ -741,6 +773,175 @@ export default function OrdersPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Prep List View                                                     */
+/* ------------------------------------------------------------------ */
+function PrepListView({ orders: allOrders }: { orders: Order[] }) {
+  /* Only include today's active orders (not cancelled/rejected/delivered) */
+  const todayOrders = useMemo(() => {
+    return allOrders.filter(
+      (o) =>
+        o.date === "Today" &&
+        o.status !== "cancelled" &&
+        o.status !== "rejected" &&
+        o.status !== "delivered" &&
+        o.status !== "pickedUp"
+    );
+  }, [allOrders]);
+
+  /* Group by item name, aggregate quantities and customer info */
+  const prepGroups = useMemo(() => {
+    const groups: Record<
+      string,
+      { totalQty: number; customers: { name: string; qty: number; method: string; readyBy?: string }[] }
+    > = {};
+
+    for (const order of todayOrders) {
+      for (const item of order.items) {
+        if (!groups[item.name]) {
+          groups[item.name] = { totalQty: 0, customers: [] };
+        }
+        groups[item.name].totalQty += item.qty;
+        groups[item.name].customers.push({
+          name: order.customer,
+          qty: item.qty,
+          method: order.method === "delivery" ? "Delivery" : "Pickup",
+          readyBy: order.readyBy,
+        });
+      }
+    }
+
+    /* Sort by total quantity descending */
+    return Object.entries(groups)
+      .sort((a, b) => b[1].totalQty - a[1].totalQty)
+      .map(([name, data]) => ({ name, ...data }));
+  }, [todayOrders]);
+
+  if (prepGroups.length === 0) {
+    return (
+      <div className="card" style={{ textAlign: "center", padding: "60px 20px" }}>
+        <ClipboardList
+          size={40}
+          strokeWidth={1.2}
+          style={{ color: "var(--color-brown-soft-2)", margin: "0 auto 12px" }}
+        />
+        <div className="heading-md" style={{ marginBottom: 6 }}>Nothing to prep</div>
+        <div className="body-sm">No active orders for today.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
+        <ClipboardList size={16} strokeWidth={2} style={{ color: "var(--color-brown-soft-2)" }} />
+        <span className="eyebrow">PREP LIST &mdash; Today&apos;s Orders</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {prepGroups.map((group) => (
+          <div
+            key={group.name}
+            className="card"
+            style={{ padding: "14px 16px" }}
+          >
+            {/* Item header */}
+            <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
+              <span
+                style={{
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "var(--color-brown)",
+                }}
+              >
+                {group.name}
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: 24,
+                  height: 22,
+                  padding: "0 7px",
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  fontVariantNumeric: "tabular-nums",
+                  background: "var(--color-cream-sunken)",
+                  color: "var(--color-brown-soft)",
+                }}
+              >
+                {group.totalQty} total
+              </span>
+            </div>
+
+            {/* Customer breakdown */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {group.customers.map((c, ci) => (
+                <div
+                  key={ci}
+                  className="flex items-center gap-2"
+                  style={{
+                    padding: "4px 8px",
+                    borderRadius: 8,
+                    background: "var(--color-cream)",
+                  }}
+                >
+                  <span
+                    className="tnum"
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "var(--color-brown)",
+                      minWidth: 24,
+                    }}
+                  >
+                    {c.qty}&times;
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "var(--color-brown)",
+                      flex: 1,
+                    }}
+                  >
+                    {c.name}
+                  </span>
+                  <span
+                    className="caption"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {c.method === "Delivery" ? (
+                      <Truck size={11} />
+                    ) : (
+                      <ShoppingBag size={11} />
+                    )}
+                    {c.method}
+                  </span>
+                  {c.readyBy && (
+                    <span
+                      className="caption tnum"
+                      style={{ flexShrink: 0, fontWeight: 600 }}
+                    >
+                      Ready {c.readyBy}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

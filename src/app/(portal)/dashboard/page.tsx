@@ -12,6 +12,7 @@ import {
   Search,
   Truck,
   ShoppingBag,
+  Zap,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
@@ -60,7 +61,7 @@ const onboardingPhases: Phase[] = [
     ],
   },
   {
-    label: "Set Up Your Kitchen",
+    label: "Build Your Kitchen",
     eyebrow: "PHASE 2",
     color: "var(--color-sage)",
     steps: [
@@ -81,7 +82,7 @@ const onboardingPhases: Phase[] = [
       },
       {
         id: 6,
-        label: "Set your hours",
+        label: "Set your availability",
         detail: "When can customers order from you?",
         done: false,
         href: "/operations",
@@ -96,12 +97,19 @@ const onboardingPhases: Phase[] = [
     ],
   },
   {
-    label: "Go Live",
+    label: "Launch",
     eyebrow: "PHASE 3",
     color: "var(--color-red)",
     steps: [
       {
         id: 8,
+        label: "Create your first flash sale",
+        detail: "Set up a drop — the fastest way to start selling",
+        done: false,
+        href: "/flash-sales",
+      },
+      {
+        id: 9,
         label: "Quick intro call",
         detail:
           "15 min — we review your store together and answer questions",
@@ -109,7 +117,7 @@ const onboardingPhases: Phase[] = [
         href: "/help",
       },
       {
-        id: 9,
+        id: 10,
         label: "Go live!",
         detail: "Flip the switch and start receiving orders",
         done: false,
@@ -699,6 +707,108 @@ function ModeB() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Flash Sales section */}
+      <div>
+        <style>{`
+          @keyframes dashPulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+          .dash-pulse-dot {
+            animation: dashPulseDot 2s ease-in-out infinite;
+          }
+        `}</style>
+        <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+          <span className="eyebrow">FLASH SALES</span>
+          <Link
+            href="/flash-sales"
+            className="caption"
+            style={{
+              color: "var(--color-red)",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            Create Flash Sale <ArrowUpRight size={12} />
+          </Link>
+        </div>
+        <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none", paddingBottom: 2 }}>
+          {/* Live sale card */}
+          <Link
+            href="/flash-sales"
+            className="card card-hover"
+            style={{
+              display: "block",
+              textDecoration: "none",
+              padding: "14px 16px",
+              minWidth: 280,
+              flex: "0 0 auto",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span
+                className="dash-pulse-dot"
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "var(--color-sage)",
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
+                Weekend Special
+              </span>
+              <Zap size={14} style={{ color: "var(--color-orange)", flexShrink: 0 }} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>23 orders</span>
+              <span className="caption">&middot;</span>
+              <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>$847</span>
+            </div>
+            <span className="caption tnum" style={{ color: "var(--color-red)", fontWeight: 600 }}>
+              Orders close in 6h 32m
+            </span>
+          </Link>
+
+          {/* Upcoming sale card */}
+          <Link
+            href="/flash-sales"
+            className="card card-hover"
+            style={{
+              display: "block",
+              textDecoration: "none",
+              padding: "14px 16px",
+              minWidth: 280,
+              flex: "0 0 auto",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "var(--color-orange)",
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
+                Meal Prep Monday
+              </span>
+            </div>
+            <div className="caption" style={{ marginBottom: 4 }}>
+              Opens Sun 6 PM &rarr; Closes Mon 11 PM
+            </div>
+            <span className="caption tnum" style={{ color: "var(--color-orange)", fontWeight: 600 }}>
+              Opens in 2d 4h
+            </span>
+          </Link>
+        </div>
       </div>
 
       {/* Recent orders */}
