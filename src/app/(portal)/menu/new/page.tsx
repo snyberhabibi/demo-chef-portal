@@ -260,8 +260,8 @@ export default function CreateDishPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "260px 1fr",
-          gap: 32,
+          gridTemplateColumns: "240px 1fr",
+          gap: 28,
           alignItems: "start",
         }}
         className="wizard-layout"
@@ -442,7 +442,7 @@ export default function CreateDishPage() {
         </div>
 
         {/* ── Main Content Area ── */}
-        <div style={{ paddingBottom: 100, maxWidth: 600 }}>
+        <div style={{ paddingBottom: 100, maxWidth: 800 }}>
           {/* Mobile step indicator */}
           <div
             className="lg:hidden flex items-center gap-2 justify-center"
