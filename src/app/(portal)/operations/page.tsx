@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar, Copy, Ban } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -112,8 +112,8 @@ export default function OperationsPage() {
   const [overrides, setOverrides] = useState<DateOverride[]>(INITIAL_OVERRIDES);
   const [activeSubTab, setActiveSubTab] = useState<"timeoff" | "overrides">("timeoff");
 
-  let nextId = 100;
-  const genId = () => `window-${nextId++}-${Date.now()}`;
+  const nextIdRef = useRef(100);
+  const genId = () => `window-${nextIdRef.current++}-${Date.now()}`;
 
   const stateButtons: { key: StoreState; label: string }[] = [
     { key: "pending", label: "Pending" },

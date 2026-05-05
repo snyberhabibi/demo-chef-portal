@@ -540,6 +540,7 @@ interface AddedItem {
 }
 
 function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
+  const { toast } = useToast();
   const [tab, setTab] = useState<CreateTab>("details");
 
   /* Details state */
@@ -568,6 +569,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
   const [notificationText, setNotificationText] = useState(
     "Yalla Kitchen is dropping a flash sale! Weekend Special — order now before it sells out"
   );
+  const [checkoutTimerEnabled, setCheckoutTimerEnabled] = useState(false);
   const [checkoutTimer, setCheckoutTimer] = useState("10");
   const [showInventory, setShowInventory] = useState(true);
 
@@ -1328,21 +1330,36 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
 
             {/* Checkout timer */}
             <div>
-              <label className="field-label">Checkout Timer</label>
-              <div className="caption" style={{ marginBottom: 4 }}>
-                How long customers have to complete checkout once they start
+              <div className="flex items-center justify-between" style={{ marginBottom: 8 }}>
+                <div>
+                  <label className="field-label" style={{ marginBottom: 0 }}>Checkout Timer</label>
+                  <div className="caption">
+                    Reserve items while customers complete checkout
+                  </div>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={checkoutTimerEnabled}
+                  aria-label="Enable checkout timer"
+                  className={`toggle ${checkoutTimerEnabled ? "toggle-on" : ""}`}
+                  onClick={() => setCheckoutTimerEnabled(!checkoutTimerEnabled)}
+                >
+                  <span className="toggle-thumb" />
+                </button>
               </div>
-              <select
-                className="input"
-                value={checkoutTimer}
-                onChange={(e) => setCheckoutTimer(e.target.value)}
-                style={{ width: 140, cursor: "pointer" }}
-              >
-                <option value="3">3 minutes</option>
-                <option value="5">5 minutes</option>
-                <option value="10">10 minutes</option>
-                <option value="15">15 minutes</option>
-              </select>
+              {checkoutTimerEnabled && (
+                <select
+                  className="input"
+                  value={checkoutTimer}
+                  onChange={(e) => setCheckoutTimer(e.target.value)}
+                  style={{ width: 140, cursor: "pointer" }}
+                >
+                  <option value="3">3 minutes</option>
+                  <option value="5">5 minutes</option>
+                  <option value="10">10 minutes</option>
+                  <option value="15">15 minutes</option>
+                </select>
+              )}
             </div>
 
             {/* Show inventory toggle */}
@@ -1516,7 +1533,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
               <div style={{ display: "flex", gap: 8 }}>
                 <button
                   className="btn btn-ghost btn-sm"
-                  onClick={onClose}
+                  onClick={() => { toast("Flash sale saved as draft"); onClose(); }}
                 >
                   Save as Draft
                 </button>
@@ -1530,7 +1547,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                     fontSize: 13,
                     fontWeight: 700,
                   }}
-                  onClick={onClose}
+                  onClick={() => { toast("Flash sale scheduled!"); onClose(); }}
                 >
                   Schedule Flash Sale
                 </button>

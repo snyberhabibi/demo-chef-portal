@@ -369,8 +369,43 @@ export default function OrderDetailPage() {
   const order = centralData.orderHash === "#a8f2c1" && orderId !== "1042" && orderId !== "a8f2c1"
     ? (_LEGACY_HASH_DATA[orderId] || centralData)
     : centralData;
-  const { orderHash, orderStatus, orderMethod, items, customer, timeline } = order;
+  const { orderHash, orderMethod, items, customer, timeline } = order;
+
+  /* Read effective status from localStorage overrides (same pattern as orders list) */
+  const [effectiveStatus, setEffectiveStatus] = useState<string>(order.orderStatus);
+
+  useState(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem("order-status-overrides");
+      if (saved) {
+        const overrides = JSON.parse(saved);
+        if (overrides[orderHash]) {
+          setEffectiveStatus(overrides[orderHash]);
+        }
+      }
+    } catch { /* ignore */ }
+  });
+
+  const advanceStatus = () => {
+    const nextMap: Record<string, string> = { paid: "confirmed", confirmed: "preparing", preparing: "ready", ready: "delivered", readyForPickup: "pickedUp" };
+    const next = nextMap[effectiveStatus];
+    if (next) {
+      try {
+        const saved = localStorage.getItem("order-status-overrides");
+        const overrides = saved ? JSON.parse(saved) : {};
+        overrides[orderHash] = next;
+        localStorage.setItem("order-status-overrides", JSON.stringify(overrides));
+      } catch { /* ignore */ }
+      setEffectiveStatus(next);
+      toast(`Order ${orderHash} updated to ${statusLabel(next)}`);
+    } else {
+      toast(`Order ${orderHash} updated`);
+    }
+  };
+
   const [cancelConfirm, setCancelConfirm] = useState(false);
+  const orderStatus = effectiveStatus;
   const curStep = currentStepIndex(orderStatus);
 
   return (
@@ -630,42 +665,44 @@ export default function OrderDetailPage() {
               </div>
             </div>
 
-            {/* -- Customer note -- */}
-            <div
-              style={{
-                background: "var(--color-cream-deep)",
-                borderRadius: 12,
-                padding: "14px 16px",
-                display: "flex",
-                gap: 10,
-                alignItems: "flex-start",
-              }}
-            >
-              <Quote
-                size={16}
-                strokeWidth={2}
+            {/* -- Customer note (only for order #a8f2c1) -- */}
+            {orderHash === "#a8f2c1" && (
+              <div
                 style={{
-                  color: "var(--color-brown-soft-2)",
-                  flexShrink: 0,
-                  marginTop: 2,
+                  background: "var(--color-cream-deep)",
+                  borderRadius: 12,
+                  padding: "14px 16px",
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "flex-start",
                 }}
-              />
-              <div>
-                <div className="eyebrow" style={{ marginBottom: 4 }}>
-                  Customer Note
-                </div>
-                <div
+              >
+                <Quote
+                  size={16}
+                  strokeWidth={2}
                   style={{
-                    fontSize: 14,
-                    color: "var(--color-brown)",
-                    fontStyle: "italic",
-                    lineHeight: 1.5,
+                    color: "var(--color-brown-soft-2)",
+                    flexShrink: 0,
+                    marginTop: 2,
                   }}
-                >
-                  &ldquo;Please make it extra spicy.&rdquo;
+                />
+                <div>
+                  <div className="eyebrow" style={{ marginBottom: 4 }}>
+                    Customer Note
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      color: "var(--color-brown)",
+                      fontStyle: "italic",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    &ldquo;Please make it extra spicy.&rdquo;
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* -- Customer -- */}
             <div>
@@ -1002,9 +1039,9 @@ export default function OrderDetailPage() {
         <button
           className={`btn btn-block ${actionBtnClass(orderStatus)}`}
           style={{ minHeight: 48, borderRadius: 12, fontSize: 15 }}
-          onClick={() => toast(`Order ${orderHash} updated`)}
+          onClick={advanceStatus}
         >
-          {actionButtonLabel(orderStatus)}
+          {actionButtonLabel(orderStatus)} &rarr;
         </button>
       </div>
     </div>

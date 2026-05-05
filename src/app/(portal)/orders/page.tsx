@@ -128,13 +128,16 @@ export default function OrdersPage() {
   }, [statusOverrides]);
 
   const filtered = useMemo(() => {
-    let list = orders.filter(activeFilter.match);
+    let list = orders.filter((o) => {
+      const effective = { ...o, status: statusOverrides[o.hash] || o.status };
+      return activeFilter.match(effective);
+    });
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((o) => o.hash.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.items.some((it) => it.name.toLowerCase().includes(q)));
     }
     return list;
-  }, [activeTab, search, activeFilter]);
+  }, [activeTab, search, activeFilter, statusOverrides]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
   const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);

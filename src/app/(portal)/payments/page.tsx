@@ -287,7 +287,7 @@ export default function PaymentsPage() {
             ))}
           </div>
 
-          <a href="#" className="card card-hover flex items-center justify-between" style={{ textDecoration: "none", color: "inherit" }}>
+          <a href="https://dashboard.stripe.com" target="_blank" rel="noopener noreferrer" className="card card-hover flex items-center justify-between" style={{ textDecoration: "none", color: "inherit" }}>
             <div>
               <div className="heading-sm" style={{ fontSize: 14 }}>Stripe Dashboard</div>
               <div className="body-sm">View full transaction history and settings</div>

@@ -48,6 +48,7 @@ export default function MenuPage() {
   const [activeTab, setActiveTab] = useState<MenuTab>("dishes");
 
   /* Dishes state */
+  const [localDishes, setLocalDishes] = useState<Dish[]>(dishes);
   const [activeStatus, setActiveStatus] = useState("All");
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
@@ -61,6 +62,8 @@ export default function MenuPage() {
   /* Sections state */
   const [sections, setSections] = useState<Section[]>(INITIAL_SECTIONS);
   const [openSectionMenuId, setOpenSectionMenuId] = useState<number | null>(null);
+  const [renamingSectionId, setRenamingSectionId] = useState<number | null>(null);
+  const [renameValue, setRenameValue] = useState("");
 
   const { toast } = useToast();
   const menuPageRef = useRef<HTMLDivElement>(null);
@@ -87,7 +90,7 @@ export default function MenuPage() {
   }, [openMenuId, openSectionMenuId]);
 
   /* ── Dishes filtering ── */
-  const filteredDishes = dishes.filter((dish) => {
+  const filteredDishes = localDishes.filter((dish) => {
     const passesStatus =
       activeStatus === "All" ||
       (activeStatus === "Published" && dish.status === "published") ||
@@ -105,10 +108,10 @@ export default function MenuPage() {
   });
 
   const statusFilters = [
-    { label: "All", count: dishes.length },
-    { label: "Published", count: dishes.filter((d) => d.status === "published").length },
-    { label: "Draft", count: dishes.filter((d) => d.status === "draft").length },
-    { label: "Archived", count: dishes.filter((d) => d.status === "archived").length },
+    { label: "All", count: localDishes.length },
+    { label: "Published", count: localDishes.filter((d) => d.status === "published").length },
+    { label: "Draft", count: localDishes.filter((d) => d.status === "draft").length },
+    { label: "Archived", count: localDishes.filter((d) => d.status === "archived").length },
   ];
 
   /* ── Bundles filtering ── */
@@ -250,8 +253,11 @@ export default function MenuPage() {
                 </div>
               </Link>
 
-              <Link
-                href="/menu/new"
+              <button
+                onClick={() => {
+                  toast("Template library \u2014 coming soon", "info");
+                  setShowCreateModal(false);
+                }}
                 className="card card-hover"
                 style={{
                   display: "flex",
@@ -262,6 +268,9 @@ export default function MenuPage() {
                   textDecoration: "none",
                   color: "inherit",
                   textAlign: "center",
+                  cursor: "pointer",
+                  border: "none",
+                  width: "100%",
                 }}
               >
                 <div
@@ -285,7 +294,7 @@ export default function MenuPage() {
                 <div className="body-sm">
                   Use a pre-made template
                 </div>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -613,7 +622,12 @@ export default function MenuPage() {
                             Edit
                           </Link>
                           <button
-                            onClick={(e) => { e.stopPropagation(); toast("Dish archived", "warning"); setOpenMenuId(null); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setLocalDishes((prev) => prev.map((d) => d.id === dish.id ? { ...d, status: "archived" as DishStatus } : d));
+                              toast("Dish archived", "warning");
+                              setOpenMenuId(null);
+                            }}
                             style={{
                               display: "block",
                               width: "100%",
@@ -631,7 +645,12 @@ export default function MenuPage() {
                             Archive
                           </button>
                           <button
-                            onClick={(e) => { e.stopPropagation(); toast("Dish deleted", "warning"); setOpenMenuId(null); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setLocalDishes((prev) => prev.filter((d) => d.id !== dish.id));
+                              toast("Dish deleted", "warning");
+                              setOpenMenuId(null);
+                            }}
                             style={{
                               display: "block",
                               width: "100%",
@@ -863,7 +882,40 @@ export default function MenuPage() {
                     {i + 1}
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="heading-sm" style={{ fontSize: 15 }}>{section.name}</div>
+                    {renamingSectionId === section.id ? (
+                      <input
+                        type="text"
+                        className="input"
+                        value={renameValue}
+                        autoFocus
+                        onChange={(e) => setRenameValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            const trimmed = renameValue.trim();
+                            if (trimmed) {
+                              setSections((prev) => prev.map((s) => s.id === section.id ? { ...s, name: trimmed } : s));
+                              toast(`Section renamed to "${trimmed}"`);
+                            }
+                            setRenamingSectionId(null);
+                          } else if (e.key === "Escape") {
+                            setRenamingSectionId(null);
+                          }
+                        }}
+                        onBlur={() => {
+                          const trimmed = renameValue.trim();
+                          if (trimmed && trimmed !== section.name) {
+                            setSections((prev) => prev.map((s) => s.id === section.id ? { ...s, name: trimmed } : s));
+                            toast(`Section renamed to "${trimmed}"`);
+                          }
+                          setRenamingSectionId(null);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ fontSize: 15, fontWeight: 600, padding: "4px 8px", borderRadius: 8, minHeight: 32 }}
+                      />
+                    ) : (
+                      <div className="heading-sm" style={{ fontSize: 15 }}>{section.name}</div>
+                    )}
                   </div>
                   <span className="caption tnum" style={{ flexShrink: 0 }}>{section.dishCount} dishes</span>
                   <span className={`pill ${section.active ? "pill-sage" : "pill-orange"}`} style={{ flexShrink: 0, fontSize: 11 }}>
@@ -895,7 +947,12 @@ export default function MenuPage() {
                         }}
                       >
                         <button
-                          onClick={(e) => { e.stopPropagation(); toast(`Renamed: ${section.name}`); setOpenSectionMenuId(null); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRenamingSectionId(section.id);
+                            setRenameValue(section.name);
+                            setOpenSectionMenuId(null);
+                          }}
                           style={{
                             display: "block", width: "100%", padding: "10px 14px", fontSize: 13, fontWeight: 500,
                             color: "var(--color-brown)", background: "none", border: "none",

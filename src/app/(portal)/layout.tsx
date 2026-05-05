@@ -95,6 +95,13 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Pickup Address" },
     ],
   },
+  help: {
+    title: "Help Center",
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Help Center" },
+    ],
+  },
 };
 
 export default function PortalLayout({

@@ -178,6 +178,10 @@ function CreateDishPageInner() {
   /* ── Dietary & Allergens ── */
   const [spiceLevel, setSpiceLevel] = useState("Medium");
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [ingredientInput, setIngredientInput] = useState("");
+  const [allergens, setAllergens] = useState<string[]>([]);
+  const [allergenInput, setAllergenInput] = useState("");
 
   /* ── Customizations ── */
   const [customGroups, setCustomGroups] = useState<CustomGroup[]>([
@@ -1278,10 +1282,58 @@ function CreateDishPageInner() {
                 <input
                   type="text"
                   className="input"
-                  placeholder="Select ingredients..."
-                  readOnly
+                  placeholder="Type and press Enter or comma to add..."
+                  value={ingredientInput}
+                  onChange={(e) => setIngredientInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      const val = ingredientInput.replace(/,/g, "").trim();
+                      if (val && !ingredients.includes(val)) {
+                        setIngredients((prev) => [...prev, val]);
+                      }
+                      setIngredientInput("");
+                    }
+                  }}
                   style={{ borderRadius: 10 }}
                 />
+                {ingredients.length > 0 && (
+                  <div className="flex gap-2 flex-wrap" style={{ marginTop: 8 }}>
+                    {ingredients.map((ing) => (
+                      <span
+                        key={ing}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "4px 10px",
+                          borderRadius: 9999,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          background: "var(--color-cream-deep)",
+                          color: "var(--color-brown)",
+                        }}
+                      >
+                        {ing}
+                        <button
+                          type="button"
+                          onClick={() => setIngredients((prev) => prev.filter((i) => i !== ing))}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            color: "var(--color-brown-soft-2)",
+                          }}
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Allergens */}
@@ -1290,10 +1342,58 @@ function CreateDishPageInner() {
                 <input
                   type="text"
                   className="input"
-                  placeholder="Select allergens..."
-                  readOnly
+                  placeholder="Type and press Enter or comma to add..."
+                  value={allergenInput}
+                  onChange={(e) => setAllergenInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      const val = allergenInput.replace(/,/g, "").trim();
+                      if (val && !allergens.includes(val)) {
+                        setAllergens((prev) => [...prev, val]);
+                      }
+                      setAllergenInput("");
+                    }
+                  }}
                   style={{ borderRadius: 10 }}
                 />
+                {allergens.length > 0 && (
+                  <div className="flex gap-2 flex-wrap" style={{ marginTop: 8 }}>
+                    {allergens.map((alg) => (
+                      <span
+                        key={alg}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "4px 10px",
+                          borderRadius: 9999,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          background: "rgba(229,65,65,0.08)",
+                          color: "var(--color-red-deep)",
+                        }}
+                      >
+                        {alg}
+                        <button
+                          type="button"
+                          onClick={() => setAllergens((prev) => prev.filter((a) => a !== alg))}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            color: "var(--color-red)",
+                          }}
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </SectionCard>
