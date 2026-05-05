@@ -46,14 +46,24 @@ export default function OperationsPage() {
   };
 
   return (
-    <div className="section-stack" style={{ maxWidth: 640 }}>
-      {/* State toggle for demo */}
-      <div className="flex flex-wrap gap-2 mb-2">
+    <div className="content-narrow section-stack">
+      {/* State toggle for demo — underline tabs */}
+      <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
         {stateButtons.map((s) => (
           <button
             key={s.key}
-            className={`btn btn-sm ${state === s.key ? "btn-red" : "btn-ghost"}`}
-            style={{ minHeight: 44, transition: "all 0.15s ease" }}
+            className="body-sm"
+            style={{
+              padding: "10px 16px",
+              background: "none",
+              border: "none",
+              fontWeight: state === s.key ? 600 : 400,
+              color: state === s.key ? "var(--color-red)" : "var(--color-brown-soft)",
+              borderBottom: state === s.key ? "2px solid var(--color-red)" : "2px solid transparent",
+              marginBottom: -1,
+              cursor: "pointer",
+              transition: `color var(--t-fast) var(--ease-spring)`,
+            }}
             onClick={() => {
               setState(s.key);
               setStoreToggle(s.key === "live");
@@ -64,52 +74,46 @@ export default function OperationsPage() {
         ))}
       </div>
 
-      {/* Status banner */}
+      {/* Status banners — thin left border + icon + text */}
       {state === "pending" && (
         <div
           className="flex items-start gap-3"
           style={{
-            background: "var(--color-orange-soft)",
-            borderRadius: 12,
-            padding: 16,
-            transition: "all 0.2s ease",
+            borderLeft: "3px solid var(--color-orange)",
+            borderRadius: 8,
+            padding: "14px 16px",
+            background: "transparent",
           }}
         >
-          <Clock size={20} style={{ color: "var(--color-orange-text)", marginTop: 2, flexShrink: 0 }} />
+          <Clock size={18} style={{ color: "var(--color-orange)", marginTop: 1, flexShrink: 0 }} />
           <div>
-            <div style={{ fontWeight: 600, color: "var(--color-orange-text)" }}>Under review</div>
-            <div style={{ fontSize: 14, color: "var(--color-orange-text)", opacity: 0.85, marginTop: 2 }}>
-              Your application is being reviewed by our team. This usually takes 1-2 business days.
+            <div className="heading-sm" style={{ fontSize: 14, color: "var(--color-orange-text)" }}>Under review</div>
+            <div className="body-sm" style={{ marginTop: 2 }}>
+              Your application is being reviewed. This usually takes 1-2 business days.
             </div>
           </div>
         </div>
       )}
 
       {state === "approved-off" && (
-        <div className="card flex items-center justify-between gap-4" style={{ transition: "box-shadow 0.2s ease" }}>
+        <div
+          className="flex items-center justify-between gap-4"
+          style={{
+            borderLeft: "3px solid var(--color-brown-soft-2)",
+            borderRadius: 8,
+            padding: "14px 16px",
+          }}
+        >
           <div className="flex items-center gap-3">
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                background: "var(--color-cream-sunken)",
-              }}
-            >
-              <Clock size={20} style={{ color: "var(--color-brown-soft-2)" }} />
-            </div>
+            <Clock size={18} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
             <div>
-              <div style={{ fontWeight: 600 }}>Store is OFF</div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                Toggle on to start accepting orders
-              </div>
+              <div className="heading-sm" style={{ fontSize: 14 }}>Store is OFF</div>
+              <div className="body-sm" style={{ marginTop: 2 }}>Toggle on to start accepting orders</div>
             </div>
           </div>
           <button
             className={`toggle toggle-lg ${storeToggle ? "is-on toggle-glow" : ""}`}
             onClick={() => setStoreToggle(!storeToggle)}
-            style={{ minWidth: 44, minHeight: 44 }}
           >
             <span className="toggle-thumb" />
           </button>
@@ -120,19 +124,16 @@ export default function OperationsPage() {
         <div
           className="flex items-center justify-between gap-4"
           style={{
-            background: "var(--color-sage-soft)",
-            borderRadius: 12,
-            padding: 16,
-            transition: "all 0.2s ease",
+            borderLeft: "3px solid var(--color-sage)",
+            borderRadius: 8,
+            padding: "14px 16px",
           }}
         >
           <div className="flex items-center gap-3">
-            <CheckCircle size={20} style={{ color: "var(--color-sage-deep)" }} />
+            <CheckCircle size={18} style={{ color: "var(--color-sage-deep)", flexShrink: 0 }} />
             <div>
-              <div style={{ fontWeight: 600, color: "var(--color-sage-deep)" }}>Your store is live</div>
-              <div style={{ fontSize: 13, color: "var(--color-sage-deep)", opacity: 0.85 }}>
-                Customers can see your menu and place orders
-              </div>
+              <div className="heading-sm" style={{ fontSize: 14, color: "var(--color-sage-deep)" }}>Your store is live</div>
+              <div className="body-sm" style={{ marginTop: 2 }}>Customers can see your menu and place orders</div>
             </div>
           </div>
           <button
@@ -141,7 +142,6 @@ export default function OperationsPage() {
               setStoreToggle(false);
               setState("approved-off");
             }}
-            style={{ minWidth: 44, minHeight: 44 }}
           >
             <span className="toggle-thumb" />
           </button>
@@ -151,19 +151,18 @@ export default function OperationsPage() {
       {state === "rejected" && (
         <div
           style={{
-            background: "var(--color-red-soft)",
-            borderRadius: 12,
-            padding: 16,
-            transition: "all 0.2s ease",
+            borderLeft: "3px solid var(--color-red)",
+            borderRadius: 8,
+            padding: "14px 16px",
           }}
         >
-          <div className="flex items-center gap-2 mb-3">
-            <XCircle size={20} style={{ color: "var(--color-red-deep)" }} />
-            <span style={{ fontWeight: 600, color: "var(--color-red-deep)" }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
+            <XCircle size={18} style={{ color: "var(--color-red-deep)" }} />
+            <span className="heading-sm" style={{ fontSize: 14, color: "var(--color-red-deep)" }}>
               Application needs changes
             </span>
           </div>
-          <div style={{ fontSize: 14, color: "var(--color-red-deep)", marginBottom: 12 }}>
+          <div className="body-sm" style={{ marginBottom: 12 }}>
             Please fix the following items before resubmitting:
           </div>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -172,75 +171,45 @@ export default function OperationsPage() {
               "Kitchen description is too short (min 50 characters)",
               "Food safety certification expired",
             ].map((item, i) => (
-              <li
-                key={i}
-                className="flex items-start justify-between gap-3"
-                style={{
-                  padding: "10px 0",
-                  borderTop: i > 0 ? "1px solid rgba(201,50,50,0.15)" : undefined,
-                }}
-              >
-                <div className="flex items-start gap-2">
-                  <AlertTriangle size={14} style={{ color: "var(--color-red-deep)", marginTop: 3, flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, color: "var(--color-red-deep)" }}>{item}</span>
+              <li key={i}>
+                {i > 0 && <div className="divider" style={{ margin: "8px 0" }} />}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle size={14} style={{ color: "var(--color-red-deep)", marginTop: 3, flexShrink: 0 }} />
+                    <span className="body-sm" style={{ color: "var(--color-red-deep)" }}>{item}</span>
+                  </div>
+                  <Link
+                    href="/profile"
+                    className="caption"
+                    style={{ color: "var(--color-red-deep)", fontWeight: 600, whiteSpace: "nowrap", textDecoration: "underline", textUnderlineOffset: 2 }}
+                  >
+                    Fix this &rarr;
+                  </Link>
                 </div>
-                <Link
-                  href="/profile"
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "var(--color-red-deep)",
-                    whiteSpace: "nowrap",
-                    textDecoration: "underline",
-                    textUnderlineOffset: 2,
-                    minHeight: 44,
-                    display: "inline-flex",
-                    alignItems: "center",
-                  }}
-                >
-                  Fix this &rarr;
-                </Link>
               </li>
             ))}
           </ul>
-          <button
-            className="btn btn-ghost btn-block"
-            style={{ marginTop: 16, opacity: 0.5, cursor: "not-allowed", minHeight: 44 }}
-            disabled
-          >
+          <button className="btn btn-ghost btn-block" style={{ marginTop: 16, opacity: 0.5, cursor: "not-allowed" }} disabled>
             Resubmit for Review
           </button>
         </div>
       )}
 
       {/* Auto-accept */}
-      <div className="card flex items-center justify-between gap-4" style={{ transition: "box-shadow 0.2s ease" }}>
+      <div className="flex items-center justify-between gap-4" style={{ padding: "4px 0" }}>
         <div>
-          <div style={{ fontWeight: 600 }}>Auto-accept orders</div>
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-            Incoming orders are automatically confirmed
-          </div>
+          <div className="heading-sm" style={{ fontSize: 14 }}>Auto-accept orders</div>
+          <div className="body-sm" style={{ marginTop: 2 }}>Incoming orders are automatically confirmed</div>
         </div>
-        <button
-          className={`toggle ${autoAccept ? "is-on" : ""}`}
-          onClick={() => setAutoAccept(!autoAccept)}
-          style={{ minWidth: 44, minHeight: 44 }}
-        >
+        <button className={`toggle ${autoAccept ? "is-on" : ""}`} onClick={() => setAutoAccept(!autoAccept)}>
           <span className="toggle-thumb" />
         </button>
       </div>
 
       {/* Timezone */}
-      <div className="card" style={{ transition: "box-shadow 0.2s ease" }}>
-        <label className="eyebrow" style={{ display: "block", marginBottom: 8 }}>
-          Timezone
-        </label>
-        <select
-          className="select"
-          value={timezone}
-          onChange={(e) => setTimezone(e.target.value)}
-          style={{ minHeight: 44 }}
-        >
+      <div>
+        <label className="field-label">Timezone</label>
+        <select className="select" value={timezone} onChange={(e) => setTimezone(e.target.value)}>
           <option value="America/Chicago">Central Time (CT)</option>
           <option value="America/New_York">Eastern Time (ET)</option>
           <option value="America/Denver">Mountain Time (MT)</option>
@@ -249,43 +218,27 @@ export default function OperationsPage() {
       </div>
 
       {/* Weekly schedule */}
-      <div className="card" style={{ padding: 0, transition: "box-shadow 0.2s ease" }}>
-        <div className="flex items-center justify-between" style={{ padding: "16px 20px 12px" }}>
+      <div className="card" style={{ padding: 0 }}>
+        <div className="flex items-center justify-between" style={{ padding: "16px 24px 12px" }}>
           <div>
-            <div style={{ fontWeight: 600, fontSize: 16 }}>Weekly Schedule</div>
-            <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 2 }}>
-              Set your available hours for each day
-            </div>
+            <div className="heading-sm">Weekly Schedule</div>
+            <div className="body-sm" style={{ marginTop: 2 }}>Set your available hours for each day</div>
           </div>
-          <button
-            className="btn btn-ghost btn-sm"
-            style={{ minHeight: 44, transition: "all 0.15s ease" }}
-            onClick={handleCopyToWeekdays}
-          >
+          <button className="btn btn-ghost btn-sm" onClick={handleCopyToWeekdays}>
             {copyFeedback ? (
-              <>
-                <Check size={14} style={{ color: "var(--color-sage)" }} />
-                Copied
-              </>
+              <><Check size={14} style={{ color: "var(--color-sage)" }} /> Copied</>
             ) : (
-              <>
-                <Copy size={14} />
-                Copy to all weekdays
-              </>
+              <><Copy size={14} /> Copy to all weekdays</>
             )}
           </button>
         </div>
+
         {schedule.map((row, i) => (
-          <div
-            key={row.day}
-            style={{
-              borderTop: "1px solid var(--color-cream-sunken)",
-              transition: "background 0.15s ease",
-            }}
-          >
+          <div key={row.day}>
+            <div className="divider" />
             <div
               className="flex items-center gap-3"
-              style={{ padding: "12px 20px", cursor: "pointer", minHeight: 52 }}
+              style={{ padding: "12px 24px", cursor: "pointer" }}
               onClick={() => setExpandedDay(expandedDay === i ? null : i)}
             >
               <button
@@ -296,11 +249,11 @@ export default function OperationsPage() {
                   next[i] = { ...next[i], enabled: !next[i].enabled };
                   setSchedule(next);
                 }}
-                style={{ minWidth: 44, minHeight: 28 }}
               >
                 <span className="toggle-thumb" />
               </button>
               <span
+                className="body"
                 style={{
                   flex: 1,
                   fontWeight: 500,
@@ -309,35 +262,25 @@ export default function OperationsPage() {
               >
                 {row.day}
               </span>
-              {row.enabled && (
-                <span className="tnum" style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                  {row.open} &ndash; {row.close}
-                </span>
-              )}
-              {!row.enabled && (
-                <span style={{ fontSize: 13, color: "var(--color-brown-soft-2)" }}>Closed</span>
+              {row.enabled ? (
+                <span className="tnum body-sm">{row.open} &ndash; {row.close}</span>
+              ) : (
+                <span className="body-sm" style={{ color: "var(--color-brown-soft-2)" }}>Closed</span>
               )}
               {expandedDay === i ? (
-                <ChevronUp size={16} style={{ color: "var(--color-brown-soft-2)", transition: "transform 0.2s ease" }} />
+                <ChevronUp size={16} style={{ color: "var(--color-brown-soft-2)", transition: `transform var(--t-fast) var(--ease-spring)` }} />
               ) : (
-                <ChevronDown size={16} style={{ color: "var(--color-brown-soft-2)", transition: "transform 0.2s ease" }} />
+                <ChevronDown size={16} style={{ color: "var(--color-brown-soft-2)", transition: `transform var(--t-fast) var(--ease-spring)` }} />
               )}
             </div>
 
             {expandedDay === i && row.enabled && (
-              <div
-                className="flex items-center gap-3"
-                style={{
-                  padding: "0 20px 16px 68px",
-                }}
-              >
+              <div className="flex items-center gap-3" style={{ padding: "0 24px 16px 68px" }}>
                 <div>
-                  <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>
-                    Open
-                  </label>
+                  <label className="field-label" style={{ fontSize: 12 }}>Open</label>
                   <select
                     className="select"
-                    style={{ width: 130, minHeight: 44 }}
+                    style={{ width: 130 }}
                     value={row.open}
                     onChange={(e) => {
                       const next = [...schedule];
@@ -352,12 +295,10 @@ export default function OperationsPage() {
                 </div>
                 <span style={{ marginTop: 20, color: "var(--color-brown-soft-2)" }}>&ndash;</span>
                 <div>
-                  <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>
-                    Close
-                  </label>
+                  <label className="field-label" style={{ fontSize: 12 }}>Close</label>
                   <select
                     className="select"
-                    style={{ width: 130, minHeight: 44 }}
+                    style={{ width: 130 }}
                     value={row.close}
                     onChange={(e) => {
                       const next = [...schedule];

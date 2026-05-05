@@ -21,20 +21,19 @@ export default function PickupAddressPage() {
   };
 
   return (
-    <div className="section-stack" style={{ maxWidth: 560 }}>
-      {/* Map placeholder */}
+    <div className="content-narrow section-stack">
+      {/* Map placeholder - rounded-xl, 200px, cream-deep bg with grid */}
       <div
         className="flex items-center justify-center"
         style={{
-          height: 220,
+          height: 200,
           borderRadius: 16,
           background: "var(--color-cream-deep)",
-          border: "1px solid var(--color-cream-sunken)",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Grid pattern to suggest a map */}
+        {/* Subtle grid pattern */}
         <div
           style={{
             position: "absolute",
@@ -49,14 +48,14 @@ export default function PickupAddressPage() {
           <div
             className="flex items-center justify-center"
             style={{
-              width: 44,
-              height: 44,
+              width: 40,
+              height: 40,
               borderRadius: "50%",
               background: "var(--color-red)",
               boxShadow: "0 4px 16px rgba(229,65,65,0.35)",
             }}
           >
-            <MapPin size={22} style={{ color: "#fff" }} />
+            <MapPin size={20} style={{ color: "#fff" }} />
           </div>
           <div
             style={{
@@ -74,7 +73,7 @@ export default function PickupAddressPage() {
       {/* Address card */}
       <div className="card">
         <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
-          <div className="eyebrow">Pickup Address</div>
+          <span className="heading-sm">Pickup Address</span>
           <span className="pill pill-sage" style={{ fontSize: 11 }}>Primary</span>
         </div>
         {editingAddress ? (
@@ -83,38 +82,22 @@ export default function PickupAddressPage() {
               className="input"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              style={{ minHeight: 44, marginBottom: 10 }}
+              style={{ marginBottom: 10 }}
             />
-            <button
-              className="btn btn-red btn-sm"
-              style={{ minHeight: 44 }}
-              onClick={() => setEditingAddress(false)}
-            >
-              <Check size={14} />
-              Save
+            <button className="btn btn-dark btn-sm" onClick={() => setEditingAddress(false)}>
+              <Check size={14} /> Save
             </button>
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.4 }}>
-              {address}
-            </div>
+            <div className="body" style={{ fontWeight: 600, lineHeight: 1.4 }}>{address}</div>
             <div className="flex gap-2" style={{ marginTop: 14 }}>
-              <button
-                className="btn btn-ghost btn-sm"
-                style={{ minHeight: 44 }}
-                onClick={handleCopy}
-              >
+              <button className="btn btn-ghost btn-sm" onClick={handleCopy}>
                 {copied ? <Check size={14} style={{ color: "var(--color-sage)" }} /> : <Copy size={14} />}
                 {copied ? "Copied" : "Copy"}
               </button>
-              <button
-                className="btn btn-ghost btn-sm"
-                style={{ minHeight: 44 }}
-                onClick={() => setEditingAddress(true)}
-              >
-                <Edit3 size={14} />
-                Edit Address
+              <button className="btn btn-ghost btn-sm" onClick={() => setEditingAddress(true)}>
+                <Edit3 size={14} /> Edit Address
               </button>
             </div>
           </>
@@ -123,7 +106,7 @@ export default function PickupAddressPage() {
 
       {/* Pickup instructions */}
       <div className="card">
-        <div className="eyebrow" style={{ marginBottom: 10 }}>Pickup Instructions</div>
+        <div className="heading-sm" style={{ marginBottom: 10 }}>Pickup Instructions</div>
         {editingInstructions ? (
           <div>
             <textarea
@@ -131,29 +114,17 @@ export default function PickupAddressPage() {
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
-              style={{ minHeight: 100, marginBottom: 10 }}
+              style={{ marginBottom: 10 }}
             />
-            <button
-              className="btn btn-red btn-sm"
-              style={{ minHeight: 44 }}
-              onClick={() => setEditingInstructions(false)}
-            >
-              <Check size={14} />
-              Save
+            <button className="btn btn-dark btn-sm" onClick={() => setEditingInstructions(false)}>
+              <Check size={14} /> Save
             </button>
           </div>
         ) : (
           <>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--color-brown-soft)", margin: 0 }}>
-              {instructions}
-            </p>
-            <button
-              className="btn btn-ghost btn-sm"
-              style={{ marginTop: 12, minHeight: 44 }}
-              onClick={() => setEditingInstructions(true)}
-            >
-              <Edit3 size={14} />
-              Edit instructions
+            <p className="body-sm" style={{ margin: 0 }}>{instructions}</p>
+            <button className="btn btn-ghost btn-sm" style={{ marginTop: 12 }} onClick={() => setEditingInstructions(true)}>
+              <Edit3 size={14} /> Edit instructions
             </button>
           </>
         )}
@@ -162,23 +133,14 @@ export default function PickupAddressPage() {
       {/* Pickup hours info */}
       <div
         className="flex items-start gap-3"
-        style={{
-          background: "var(--color-cream-deep)",
-          borderRadius: 12,
-          padding: 16,
-        }}
+        style={{ borderLeft: "3px solid var(--color-brown-soft-2)", borderRadius: 8, padding: "14px 16px" }}
       >
-        <Clock size={18} style={{ color: "var(--color-brown-soft)", marginTop: 2, flexShrink: 0 }} />
+        <Clock size={18} style={{ color: "var(--color-brown-soft)", marginTop: 1, flexShrink: 0 }} />
         <div>
-          <div style={{ fontWeight: 500, fontSize: 14 }}>
-            Pickup hours follow your store schedule
-          </div>
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 2 }}>
+          <div className="body" style={{ fontWeight: 500 }}>Pickup hours follow your store schedule</div>
+          <div className="body-sm" style={{ marginTop: 2 }}>
             Customers can only schedule pickups during your active operating hours.{" "}
-            <Link
-              href="/operations"
-              style={{ color: "var(--color-red)", fontWeight: 500, textDecoration: "none" }}
-            >
+            <Link href="/operations" style={{ color: "var(--color-red)", fontWeight: 500 }}>
               Manage hours &rarr;
             </Link>
           </div>

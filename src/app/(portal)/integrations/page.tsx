@@ -63,99 +63,79 @@ export default function IntegrationsPage() {
   };
 
   return (
-    <div className="section-stack" style={{ maxWidth: 640 }}>
-      {/* Status banner */}
-      <div
-        className="flex items-start gap-3"
-        style={{
-          background: "var(--color-orange-soft)",
-          borderRadius: 12,
-          padding: 16,
-          transition: "all 0.2s ease",
-        }}
-      >
-        <AlertCircle size={20} style={{ color: "var(--color-orange-text)", marginTop: 2, flexShrink: 0 }} />
+    <div className="content-default section-stack">
+      {/* Status banner - subtle card-cream */}
+      <div className="card-cream flex items-start gap-3">
+        <AlertCircle size={18} style={{ color: "var(--color-orange)", marginTop: 2, flexShrink: 0 }} />
         <div>
-          <div style={{ fontWeight: 600, color: "var(--color-orange-text)" }}>
+          <div className="heading-sm" style={{ fontSize: 14, color: "var(--color-orange-text)" }}>
             Orders go to your phone only
           </div>
-          <div style={{ fontSize: 13, color: "var(--color-orange-text)", opacity: 0.85, marginTop: 2 }}>
+          <div className="body-sm" style={{ marginTop: 2 }}>
             Consider connecting a POS or email for backup order notifications.
           </div>
         </div>
       </div>
 
-      {/* Square native card */}
-      <div className="card flex items-center gap-4" style={{ transition: "box-shadow 0.2s ease", minHeight: 56 }}>
+      {/* Square POS card */}
+      <div className="card flex items-center gap-4">
         <div
           className="flex items-center justify-center"
           style={{
-            width: 48,
-            height: 48,
+            width: 44,
+            height: 44,
             borderRadius: 12,
             background: squareConnected ? "var(--color-sage-soft)" : "#000",
             flexShrink: 0,
-            transition: "background 0.2s ease",
+            transition: `background var(--t-fast) var(--ease-spring)`,
           }}
         >
-          <Smartphone size={22} style={{ color: squareConnected ? "var(--color-sage-deep)" : "#fff", transition: "color 0.2s ease" }} />
+          <Smartphone size={20} style={{ color: squareConnected ? "var(--color-sage-deep)" : "#fff", transition: `color var(--t-fast)` }} />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span style={{ fontWeight: 600, fontSize: 15 }}>Square POS</span>
+            <span className="heading-sm" style={{ fontSize: 14 }}>Square POS</span>
             {squareConnected && <CheckCircle size={14} style={{ color: "var(--color-sage)" }} />}
           </div>
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+          <div className="body-sm" style={{ marginTop: 2 }}>
             {squareConnected ? "Connected and syncing orders" : "Sync orders directly to your Square terminal"}
           </div>
         </div>
         <button
-          className={`btn btn-sm ${squareConnected ? "btn-ghost" : "btn-red"}`}
-          style={{ minHeight: 44, transition: "all 0.15s ease" }}
+          className={`btn btn-sm ${squareConnected ? "btn-ghost" : "btn-dark"}`}
           onClick={handleSquareConnect}
         >
           {squareConnected ? "Disconnect" : "Connect"}
         </button>
       </div>
 
-      {/* Universal channels */}
+      {/* Notification channels */}
       <div>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>
-          Notification Channels
-        </div>
+        <div className="eyebrow" style={{ marginBottom: 12 }}>Notification Channels</div>
         <div className="section-stack" style={{ gap: 8 }}>
           {channels.map((ch) => {
             const Icon = ch.icon;
             const testState = channelTestStates[ch.id] || "idle";
             return (
-              <div
-                key={ch.id}
-                className="card flex items-center gap-4"
-                style={{ transition: "box-shadow 0.2s ease", minHeight: 56 }}
-              >
+              <div key={ch.id} className="card flex items-center gap-4">
                 <div
                   className="flex items-center justify-center"
                   style={{
-                    width: 42,
-                    height: 42,
+                    width: 40,
+                    height: 40,
                     borderRadius: 10,
                     background: ch.connected ? "var(--color-sage-soft)" : "var(--color-cream-sunken)",
                     flexShrink: 0,
                   }}
                 >
-                  <Icon
-                    size={20}
-                    style={{
-                      color: ch.connected ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)",
-                    }}
-                  />
+                  <Icon size={18} style={{ color: ch.connected ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)" }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span style={{ fontWeight: 600, fontSize: 14 }}>{ch.name}</span>
+                    <span className="heading-sm" style={{ fontSize: 14 }}>{ch.name}</span>
                     {ch.connected && <CheckCircle size={14} style={{ color: "var(--color-sage)" }} />}
                   </div>
-                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                  <div className="body-sm" style={{ marginTop: 2 }}>
                     {ch.connected ? ch.value : ch.desc}
                   </div>
                 </div>
@@ -163,7 +143,7 @@ export default function IntegrationsPage() {
                   {ch.connected && (
                     <button
                       className="btn btn-ghost btn-sm"
-                      style={{ minHeight: 44, transition: "all 0.15s ease", minWidth: 80 }}
+                      style={{ minWidth: 80 }}
                       onClick={() => handleChannelAction(ch.id)}
                     >
                       {testState === "sending" && <Loader2 size={14} className="animate-spin" />}
@@ -171,10 +151,7 @@ export default function IntegrationsPage() {
                       {testState === "idle" ? "Send test" : testState === "sending" ? "Sending" : "Sent"}
                     </button>
                   )}
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    style={{ minHeight: 44, transition: "all 0.15s ease" }}
-                  >
+                  <button className="btn btn-ghost btn-sm">
                     {ch.connected ? "Edit" : "Set up"}
                   </button>
                 </div>
@@ -184,35 +161,20 @@ export default function IntegrationsPage() {
         </div>
       </div>
 
-      {/* Send test order */}
-      <div className="card flex items-center justify-between" style={{ background: "var(--color-cream-deep)", transition: "box-shadow 0.2s ease", minHeight: 56 }}>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: 15 }}>Test your setup</div>
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-            Send a test order to verify all channels work
-          </div>
-        </div>
+      {/* Test button - centered at bottom */}
+      <div className="flex justify-center" style={{ paddingTop: 8 }}>
         <button
-          className="btn btn-red btn-sm"
-          style={{ minHeight: 44, transition: "all 0.15s ease", minWidth: 140 }}
+          className="btn btn-dark"
+          style={{ minWidth: 200 }}
           onClick={handleTestOrder}
           disabled={testSending}
         >
           {testSending ? (
-            <>
-              <Loader2 size={14} className="animate-spin" />
-              Sending...
-            </>
+            <><Loader2 size={14} className="animate-spin" /> Sending...</>
           ) : testSent ? (
-            <>
-              <Check size={14} />
-              Test sent
-            </>
+            <><Check size={14} /> Test sent</>
           ) : (
-            <>
-              <Send size={14} />
-              Send test order
-            </>
+            <><Send size={14} /> Send test order</>
           )}
         </button>
       </div>

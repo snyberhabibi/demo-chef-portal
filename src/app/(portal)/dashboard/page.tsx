@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -12,16 +13,17 @@ import {
   Upload,
   Plus,
   Eye,
+  AlertCircle,
+  MessageSquare,
+  Radio,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
 /*  Seed data                                                         */
 /* ------------------------------------------------------------------ */
-const customer1 =
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop";
-const customer2 =
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop";
+const CHEF_AVATAR =
+  "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop";
 
 /* Unified onboarding — 3 phases, 9 steps */
 type Phase = { label: string; eyebrow: string; color: string; steps: Step[] };
@@ -126,6 +128,7 @@ const onboardingPhases: Phase[] = [
 const urgentCards = [
   {
     border: "var(--color-red)",
+    icon: AlertCircle,
     text: "2 orders need confirmation",
     pillClass: "pill-red",
     pillText: "Urgent",
@@ -133,6 +136,7 @@ const urgentCards = [
   },
   {
     border: "var(--color-orange)",
+    icon: MessageSquare,
     text: "New review from Sarah K.",
     pillClass: "pill-orange",
     pillText: "New",
@@ -140,6 +144,7 @@ const urgentCards = [
   },
   {
     border: "var(--color-sage)",
+    icon: Radio,
     text: "Store is live \u2014 47 views today",
     pillClass: "pill-sage",
     pillText: "Live",
@@ -151,98 +156,80 @@ const stats = [
   {
     label: "Orders This Month",
     value: "47",
-    delta: "+12% vs last month",
+    delta: "\u219112% vs last month",
     positive: true,
-    sparkline: "0,28 15,24 30,26 45,18 60,20 75,10 100,4",
+    sparkline: "0,28 15,24 30,26 45,18 60,20 75,10 90,6 120,4",
   },
   {
     label: "Revenue This Month",
     value: "$2,184",
-    delta: "+8% vs last month",
+    delta: "\u21918% vs last month",
     positive: true,
-    sparkline: "0,26 15,22 30,24 45,16 60,14 75,8 100,5",
+    sparkline: "0,26 15,22 30,24 45,16 60,14 75,8 90,6 120,5",
   },
   {
     label: "Active Dishes",
     value: "12",
     delta: "3 drafts",
     positive: null,
-    sparkline: "0,20 15,20 30,18 45,16 60,16 75,14 100,12",
+    sparkline: "0,20 15,20 30,18 45,16 60,16 75,14 90,13 120,12",
   },
   {
     label: "Avg Rating",
     value: "4.8",
     delta: "stars",
     positive: null,
-    sparkline: "0,12 15,10 30,10 45,8 60,6 75,6 100,4",
+    sparkline: "0,12 15,10 30,10 45,8 60,6 75,6 90,5 120,4",
   },
 ];
 
 const recentOrders = [
   {
-    hashId: "#a8f2c1",
-    numericId: "1042",
+    hashId: "#1042",
     customer: "Sarah K.",
-    avatar: customer1,
-    type: "Delivery",
-    time: "Today 2:30 PM",
+    items: "Kibbeh x2, Fattoush",
     status: "Paid",
-    statusDot: "dot-sage",
+    statusColor: "var(--color-sage)",
     price: "$49.00",
-    payout: "$45.20 payout",
-    action: "Confirm",
-    actionClass: "btn-red",
   },
   {
-    hashId: "#b3d4e7",
-    numericId: "1042",
+    hashId: "#1041",
     customer: "Marcus T.",
-    avatar: customer2,
-    type: "Pickup",
-    time: "Today 3:15 PM",
+    items: "Shawarma Plate",
     status: "Preparing",
-    statusDot: "dot-sage",
+    statusColor: "var(--color-orange)",
     price: "$26.50",
-    payout: "$22.10 payout",
-    action: "Mark Ready",
-    actionClass: "btn-sage",
   },
   {
-    hashId: "#c9e1f3",
-    numericId: "1042",
+    hashId: "#1040",
     customer: "Priya R.",
-    avatar: customer1,
-    type: "Delivery",
-    time: "Today 1:55 PM",
+    items: "Hummus Bowl",
     status: "Ready",
-    statusDot: "dot-sage",
+    statusColor: "var(--color-sage)",
     price: "$18.00",
-    payout: "$16.50 payout",
-    action: "Hand Off",
-    actionClass: "btn-terracotta-fill",
   },
 ];
 
 /* ------------------------------------------------------------------ */
-/*  SVG Progress Ring                                                  */
+/*  SVG Progress Ring — 96px, stroke 6, sage, fraunces pct             */
 /* ------------------------------------------------------------------ */
 function ProgressRing({ pct }: { pct: number }) {
-  const r = 34;
+  const r = 40;
   const circ = 2 * Math.PI * r;
   const offset = circ - (pct / 100) * circ;
   return (
-    <svg width={80} height={80} viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
+    <svg width={96} height={96} viewBox="0 0 96 96" style={{ flexShrink: 0 }}>
       <circle
-        cx={40}
-        cy={40}
+        cx={48}
+        cy={48}
         r={r}
         fill="none"
         stroke="var(--color-cream-sunken)"
         strokeWidth={6}
       />
       <circle
-        cx={40}
-        cy={40}
+        cx={48}
+        cy={48}
         r={r}
         fill="none"
         stroke="var(--color-sage)"
@@ -257,15 +244,16 @@ function ProgressRing({ pct }: { pct: number }) {
         }}
       />
       <text
-        x={40}
-        y={40}
+        x={48}
+        y={48}
         textAnchor="middle"
         dominantBaseline="central"
         style={{
-          fontSize: 16,
-          fontWeight: 700,
+          fontSize: 22,
+          fontWeight: 800,
           fill: "var(--color-brown)",
-          fontVariantNumeric: "tabular-nums",
+          fontFamily: "var(--font-display)",
+          letterSpacing: "-0.03em",
         }}
       >
         {Math.round(pct)}%
@@ -275,26 +263,36 @@ function ProgressRing({ pct }: { pct: number }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mini Sparkline                                                     */
+/*  Mini Sparkline — 120x32, sage, 1.5px stroke                       */
 /* ------------------------------------------------------------------ */
 function Sparkline({ points }: { points: string }) {
   return (
     <svg
-      width={100}
-      height={30}
-      viewBox="0 0 100 30"
+      width={120}
+      height={32}
+      viewBox="0 0 120 32"
       style={{ display: "block", marginTop: 8 }}
     >
       <polyline
         points={points}
         fill="none"
         stroke="var(--color-sage)"
-        strokeWidth={2}
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Time-appropriate greeting                                          */
+/* ------------------------------------------------------------------ */
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 /* ------------------------------------------------------------------ */
@@ -305,45 +303,44 @@ export default function DashboardPage() {
 
   return (
     <div className="section-stack">
-      {/* Mode toggle */}
+      {/* Mode toggle — Linear-style tab buttons with active underline */}
       <div
-        className="flex items-center gap-1 p-1 rounded-full w-fit"
-        style={{ background: "var(--color-cream-sunken)" }}
+        className="flex items-center gap-0"
+        style={{
+          borderBottom: "1px solid rgba(51,31,46,0.08)",
+          marginBottom: 4,
+        }}
       >
         <button
           onClick={() => setMode("A")}
-          className="rounded-full transition-colors"
           style={{
-            padding: "6px 16px",
-            fontSize: 13,
+            padding: "10px 20px",
+            fontSize: 14,
             fontWeight: 600,
-            minHeight: 44,
-            background: mode === "A" ? "#fff" : "transparent",
-            color:
-              mode === "A"
-                ? "var(--color-brown)"
-                : "var(--color-brown-soft-2)",
-            boxShadow:
-              mode === "A" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+            background: "none",
+            border: "none",
+            borderBottom: mode === "A" ? "2px solid var(--color-red)" : "2px solid transparent",
+            color: mode === "A" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+            transition: "color var(--t-fast), border-color var(--t-fast)",
+            cursor: "pointer",
+            marginBottom: -1,
           }}
         >
           Onboarding
         </button>
         <button
           onClick={() => setMode("B")}
-          className="rounded-full transition-colors"
           style={{
-            padding: "6px 16px",
-            fontSize: 13,
+            padding: "10px 20px",
+            fontSize: 14,
             fontWeight: 600,
-            minHeight: 44,
-            background: mode === "B" ? "#fff" : "transparent",
-            color:
-              mode === "B"
-                ? "var(--color-brown)"
-                : "var(--color-brown-soft-2)",
-            boxShadow:
-              mode === "B" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+            background: "none",
+            border: "none",
+            borderBottom: mode === "B" ? "2px solid var(--color-red)" : "2px solid transparent",
+            color: mode === "B" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+            transition: "color var(--t-fast), border-color var(--t-fast)",
+            cursor: "pointer",
+            marginBottom: -1,
           }}
         >
           Dashboard
@@ -381,77 +378,52 @@ function ModeA() {
 
   return (
     <div className="section-stack line-reveal">
-      <span className="pill pill-orange">
-        <Clock size={12} /> Setup in progress
-      </span>
-
-      <div>
-        <h1 style={{ fontSize: 24, fontWeight: 700 }}>
-          Hi Amira{" "}
-          <span role="img" aria-label="wave">
-            👋
-          </span>
-        </h1>
-        <p
-          style={{
-            fontSize: 15,
-            color: "var(--color-brown-soft)",
-            marginTop: 4,
-          }}
-        >
-          {remaining} {remaining === 1 ? "step" : "steps"} away from your first
-          order. Let&apos;s keep going.
-        </p>
-      </div>
-
-      {/* Master progress with animated SVG ring */}
-      <div className="card flex items-center gap-5">
+      {/* Header */}
+      <div className="flex items-center gap-5">
         <ProgressRing pct={pct} />
         <div>
-          <span
-            className="tnum"
-            style={{ fontSize: 14, fontWeight: 600, display: "block" }}
-          >
-            {doneCount} of {totalSteps} complete
-          </span>
-          <span
-            style={{
-              fontSize: 13,
-              color: "var(--color-brown-soft-2)",
-              marginTop: 2,
-              display: "block",
-            }}
-          >
-            Almost there — keep it up!
-          </span>
+          <h1 className="heading-lg" style={{ marginBottom: 4 }}>
+            Welcome back, Amira
+          </h1>
+          <p className="body-sm">
+            {remaining} {remaining === 1 ? "step" : "steps"} remaining to go
+            live &mdash; you&apos;re almost there.
+          </p>
         </div>
       </div>
 
-      {/* Phased checklist */}
+      {/* Phased checklist — each phase in its own card */}
       {onboardingPhases.map((phase) => {
         const phaseAllDone = phase.steps.every((s) =>
           s.id === 5 ? step5Done || s.done : s.done
         );
+        const borderColor =
+          phase.eyebrow === "PHASE 1"
+            ? "var(--color-orange)"
+            : phase.eyebrow === "PHASE 2"
+            ? "var(--color-sage)"
+            : "var(--color-red)";
+
         return (
-          <div key={phase.label}>
+          <div
+            key={phase.label}
+            className="card"
+            style={{
+              padding: 0,
+              overflow: "hidden",
+              borderLeft: `4px solid ${borderColor}`,
+            }}
+          >
+            {/* Phase header inside card */}
             <div
               className="flex items-center gap-3"
               style={{
-                marginBottom: 10,
-                paddingLeft: 12,
-                borderLeft: `3px solid ${phase.color}`,
+                padding: "16px 20px",
+                borderBottom: "1px solid rgba(51,31,46,0.06)",
               }}
             >
               <span className="eyebrow">{phase.eyebrow}</span>
-              <span
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  color: "var(--color-brown)",
-                }}
-              >
-                {phase.label}
-              </span>
+              <span className="heading-sm">{phase.label}</span>
               {phaseAllDone && (
                 <span
                   className="pill pill-sage"
@@ -462,399 +434,282 @@ function ModeA() {
               )}
             </div>
 
-            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-              {phase.steps.map((step, si) => {
-                const isStep5 = step.id === 5;
-                const isDone = isStep5 ? step5Done : step.done;
-                const isCurrent = isStep5
-                  ? !step5Done && step.current
-                  : step.current;
-                const isExpanded = isStep5 && step5Expanded && !step5Done;
+            {/* Step rows */}
+            {phase.steps.map((step, si) => {
+              const isStep5 = step.id === 5;
+              const isDone = isStep5 ? step5Done : step.done;
+              const isCurrent = isStep5
+                ? !step5Done && step.current
+                : step.current;
+              const isExpanded = isStep5 && step5Expanded && !step5Done;
 
-                return (
-                  <div
-                    key={step.id}
-                    style={{
-                      borderBottom:
-                        si < phase.steps.length - 1
-                          ? "1px solid var(--color-cream-sunken)"
-                          : undefined,
-                    }}
-                  >
-                    {/* Step row */}
-                    {isStep5 && !isDone ? (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (!step5Done)
-                            setStep5Expanded(!step5Expanded);
-                        }}
-                        className="flex items-center gap-3 w-full text-left"
-                        style={{
-                          padding: "0 16px",
-                          height: 56,
-                          background: isCurrent
-                            ? "var(--color-cream)"
-                            : undefined,
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
+              return (
+                <div key={step.id}>
+                  {/* Divider between steps */}
+                  {si > 0 && <div className="divider" style={{ marginLeft: 20, marginRight: 20 }} />}
+
+                  {/* Step row — 48px height */}
+                  {isStep5 && !isDone ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (!step5Done) setStep5Expanded(!step5Expanded);
+                      }}
+                      className="flex items-center gap-3 w-full text-left"
+                      style={{
+                        padding: "0 20px",
+                        height: 48,
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {/* Indicator */}
+                      {isCurrent && !isExpanded ? (
                         <span
-                          className={`flex items-center justify-center rounded-full shrink-0 ${
-                            isCurrent && !isExpanded ? "pulse-soft" : ""
-                          }`}
+                          className="pulse-soft"
                           style={{
-                            width: 30,
-                            height: 30,
-                            background: isDone
-                              ? "var(--color-sage)"
-                              : isCurrent
-                              ? "var(--color-red)"
-                              : "var(--color-cream-sunken)",
-                            color:
-                              isDone || isCurrent
-                                ? "#fff"
-                                : "var(--color-brown-soft-2)",
-                            fontSize: 13,
-                            fontWeight: 700,
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "var(--color-red)",
+                            flexShrink: 0,
+                          }}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            width: 16,
+                            height: 16,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
                           }}
                         >
                           {isDone ? (
-                            <Check size={14} strokeWidth={3} />
+                            <Check size={16} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
                           ) : (
-                            step.id
-                          )}
-                        </span>
-
-                        <div className="flex-1 min-w-0">
-                          <span
-                            style={{
-                              fontSize: 14,
-                              fontWeight: isCurrent ? 600 : 500,
-                              display: "block",
-                              color: isDone
-                                ? "var(--color-brown-soft-2)"
-                                : "var(--color-brown)",
-                              textDecoration: isDone
-                                ? "line-through"
-                                : undefined,
-                            }}
-                          >
-                            {step.label}
-                          </span>
-                          {!isDone && !isExpanded && (
                             <span
                               style={{
                                 fontSize: 13,
+                                fontWeight: 600,
                                 color: "var(--color-brown-soft-2)",
-                                marginTop: 1,
-                                display: "block",
                               }}
                             >
-                              {step.detail}
+                              {step.id}
                             </span>
                           )}
-                        </div>
+                        </span>
+                      )}
 
-                        {isCurrent && !isExpanded && (
-                          <span className="btn btn-red btn-sm shrink-0">
-                            Continue <ChevronRight size={14} />
-                          </span>
-                        )}
-                        {isDone && (
-                          <Check
-                            size={18}
-                            style={{
-                              color: "var(--color-sage)",
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                      </button>
-                    ) : (
-                      <Link
-                        href={step.href}
-                        className="flex items-center gap-3"
+                      <span
+                        className="flex-1 min-w-0"
                         style={{
-                          padding: "0 16px",
-                          height: 56,
-                          background: isCurrent
-                            ? "var(--color-cream)"
-                            : undefined,
-                          textDecoration: "none",
-                          color: "inherit",
-                          display: "flex",
+                          fontSize: 14,
+                          fontWeight: isCurrent ? 700 : 500,
+                          color: isDone
+                            ? "var(--color-brown-soft-2)"
+                            : "var(--color-brown)",
+                          textDecoration: isDone ? "line-through" : undefined,
                         }}
                       >
+                        {step.label}
+                      </span>
+
+                      {isCurrent && !isExpanded && (
+                        <span className="btn btn-red btn-sm shrink-0">
+                          Continue <ChevronRight size={14} />
+                        </span>
+                      )}
+                    </button>
+                  ) : (
+                    <Link
+                      href={step.href}
+                      className="flex items-center gap-3"
+                      style={{
+                        padding: "0 20px",
+                        height: 48,
+                        textDecoration: "none",
+                        color: "inherit",
+                        display: "flex",
+                      }}
+                    >
+                      {/* Indicator */}
+                      {isCurrent ? (
                         <span
-                          className={`flex items-center justify-center rounded-full shrink-0 ${
-                            isCurrent ? "pulse-soft" : ""
-                          }`}
+                          className="pulse-soft"
                           style={{
-                            width: 30,
-                            height: 30,
-                            background: isDone
-                              ? "var(--color-sage)"
-                              : isCurrent
-                              ? "var(--color-red)"
-                              : "var(--color-cream-sunken)",
-                            color:
-                              isDone || isCurrent
-                                ? "#fff"
-                                : "var(--color-brown-soft-2)",
-                            fontSize: 13,
-                            fontWeight: 700,
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: "var(--color-red)",
+                            flexShrink: 0,
+                          }}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            width: 16,
+                            height: 16,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
                           }}
                         >
                           {isDone ? (
-                            <Check size={14} strokeWidth={3} />
+                            <Check size={16} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
                           ) : (
-                            step.id
+                            <span
+                              style={{
+                                fontSize: 13,
+                                fontWeight: 600,
+                                color: "var(--color-brown-soft-2)",
+                              }}
+                            >
+                              {step.id}
+                            </span>
                           )}
                         </span>
+                      )}
 
-                        <div className="flex-1 min-w-0">
-                          <span
-                            style={{
-                              fontSize: 14,
-                              fontWeight: isCurrent ? 600 : 500,
-                              display: "block",
-                              color: isDone
-                                ? "var(--color-brown-soft-2)"
-                                : "var(--color-brown)",
-                              textDecoration: isDone
-                                ? "line-through"
-                                : undefined,
-                            }}
-                          >
-                            {step.label}
-                          </span>
-                          {isCurrent && (
-                            <span
-                              style={{
-                                fontSize: 13,
-                                color: "var(--color-brown-soft-2)",
-                                marginTop: 1,
-                                display: "block",
-                              }}
-                            >
-                              {step.detail}
-                            </span>
-                          )}
-                          {!isDone && !isCurrent && (
-                            <span
-                              style={{
-                                fontSize: 13,
-                                color: "var(--color-brown-soft-2)",
-                                marginTop: 1,
-                                display: "block",
-                              }}
-                            >
-                              {step.detail}
-                            </span>
-                          )}
-                        </div>
+                      <span
+                        className="flex-1 min-w-0"
+                        style={{
+                          fontSize: 14,
+                          fontWeight: isCurrent ? 700 : 500,
+                          color: isDone
+                            ? "var(--color-brown-soft-2)"
+                            : "var(--color-brown)",
+                          textDecoration: isDone ? "line-through" : undefined,
+                        }}
+                      >
+                        {step.label}
+                      </span>
 
-                        {isCurrent && (
-                          <span className="btn btn-red btn-sm shrink-0">
-                            Continue <ChevronRight size={14} />
-                          </span>
-                        )}
-                        {isDone && (
-                          <Check
-                            size={18}
-                            style={{
-                              color: "var(--color-sage)",
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                      </Link>
-                    )}
+                      {isCurrent && (
+                        <span className="btn btn-red btn-sm shrink-0">
+                          Continue <ChevronRight size={14} />
+                        </span>
+                      )}
+                    </Link>
+                  )}
 
-                    {/* Inline quick-add form for step 5 */}
-                    {isExpanded && (
+                  {/* Inline quick-add form for step 5 */}
+                  {isExpanded && (
+                    <div
+                      style={{
+                        padding: "0 20px 20px",
+                      }}
+                    >
                       <div
                         style={{
-                          padding: "0 16px 16px",
                           background: "var(--color-cream)",
+                          borderRadius: 12,
+                          padding: 16,
                         }}
                       >
-                        <div
-                          style={{
-                            background: "#fff",
-                            borderRadius: 12,
-                            padding: 16,
-                            boxShadow: "0 2px 8px rgba(51,31,46,0.06)",
-                          }}
-                        >
-                          {/* Dish name */}
-                          <div style={{ marginBottom: 12 }}>
-                            <label
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-brown)",
-                                display: "block",
-                                marginBottom: 6,
-                              }}
-                            >
-                              Dish name
-                            </label>
-                            <input
-                              type="text"
-                              className="input"
-                              placeholder="e.g. Grandma's Kibbeh"
-                              value={quickDishName}
-                              onChange={(e) =>
-                                setQuickDishName(e.target.value)
-                              }
-                              autoFocus
-                            />
-                          </div>
+                        <div style={{ marginBottom: 12 }}>
+                          <label className="field-label">Dish name</label>
+                          <input
+                            type="text"
+                            className="input"
+                            placeholder="e.g. Grandma's Kibbeh"
+                            value={quickDishName}
+                            onChange={(e) => setQuickDishName(e.target.value)}
+                            autoFocus
+                          />
+                        </div>
 
-                          {/* Photo upload placeholder */}
-                          <div style={{ marginBottom: 12 }}>
-                            <label
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-brown)",
-                                display: "block",
-                                marginBottom: 6,
-                              }}
-                            >
-                              Photo
-                            </label>
-                            <button
-                              type="button"
-                              className="flex flex-col items-center justify-center w-full rounded-xl"
-                              style={{
-                                height: 100,
-                                border:
-                                  "2px dashed rgba(51,31,46,0.15)",
-                                background: "var(--color-cream-deep)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <Upload
-                                size={20}
-                                strokeWidth={1.8}
-                                style={{
-                                  color: "var(--color-brown-soft-2)",
-                                }}
-                              />
-                              <span
-                                style={{
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  color: "var(--color-brown-soft-2)",
-                                  marginTop: 6,
-                                }}
-                              >
-                                Tap to upload a photo
-                              </span>
-                            </button>
-                          </div>
-
-                          {/* Size + Price */}
-                          <div style={{ marginBottom: 16 }}>
-                            <label
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-brown)",
-                                display: "block",
-                                marginBottom: 6,
-                              }}
-                            >
-                              Size &amp; Price
-                            </label>
-                            <div className="flex items-center gap-3">
-                              <span
-                                className="pill pill-mute"
-                                style={{
-                                  minHeight: 44,
-                                  fontSize: 13,
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Individual
-                              </span>
-                              <div
-                                className="relative"
-                                style={{ flex: 1 }}
-                              >
-                                <span
-                                  className="absolute"
-                                  style={{
-                                    left: 12,
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    fontSize: 14,
-                                    color: "var(--color-brown-soft-2)",
-                                  }}
-                                >
-                                  $
-                                </span>
-                                <input
-                                  type="text"
-                                  className="input tnum"
-                                  placeholder="0.00"
-                                  value={quickDishPrice}
-                                  onChange={(e) =>
-                                    setQuickDishPrice(e.target.value)
-                                  }
-                                  style={{ paddingLeft: 24 }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Publish button */}
+                        <div style={{ marginBottom: 12 }}>
+                          <label className="field-label">Photo</label>
                           <button
                             type="button"
-                            className="btn btn-red btn-block"
-                            onClick={handlePublishDish}
-                            disabled={!quickDishName.trim()}
+                            className="flex flex-col items-center justify-center w-full rounded-xl"
                             style={{
-                              minHeight: 44,
-                              opacity: quickDishName.trim() ? 1 : 0.5,
-                              cursor: quickDishName.trim()
-                                ? "pointer"
-                                : "not-allowed",
+                              height: 88,
+                              border: "2px dashed rgba(51,31,46,0.12)",
+                              background: "var(--color-cream-deep)",
+                              cursor: "pointer",
                             }}
                           >
-                            Publish Dish
+                            <Upload
+                              size={18}
+                              strokeWidth={1.8}
+                              style={{ color: "var(--color-brown-soft-2)" }}
+                            />
+                            <span className="caption" style={{ marginTop: 4 }}>
+                              Tap to upload
+                            </span>
                           </button>
+                        </div>
 
-                          {/* Full editor link */}
-                          <div
-                            style={{
-                              textAlign: "center",
-                              marginTop: 10,
-                            }}
-                          >
-                            <Link
-                              href="/menu/new"
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                color: "var(--color-red)",
-                              }}
+                        <div style={{ marginBottom: 16 }}>
+                          <label className="field-label">
+                            Size &amp; Price
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <span
+                              className="pill pill-mute"
+                              style={{ minHeight: 40, fontSize: 13, fontWeight: 600 }}
                             >
-                              Or use the full editor &rarr;
-                            </Link>
+                              Individual
+                            </span>
+                            <div className="relative" style={{ flex: 1 }}>
+                              <span
+                                className="absolute"
+                                style={{
+                                  left: 12,
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  fontSize: 14,
+                                  color: "var(--color-brown-soft-2)",
+                                }}
+                              >
+                                $
+                              </span>
+                              <input
+                                type="text"
+                                className="input tnum"
+                                placeholder="0.00"
+                                value={quickDishPrice}
+                                onChange={(e) => setQuickDishPrice(e.target.value)}
+                                style={{ paddingLeft: 24 }}
+                              />
+                            </div>
                           </div>
                         </div>
+
+                        <button
+                          type="button"
+                          className="btn btn-red btn-block"
+                          onClick={handlePublishDish}
+                          disabled={!quickDishName.trim()}
+                          style={{
+                            opacity: quickDishName.trim() ? 1 : 0.5,
+                            cursor: quickDishName.trim() ? "pointer" : "not-allowed",
+                          }}
+                        >
+                          Publish Dish
+                        </button>
+
+                        <div style={{ textAlign: "center", marginTop: 10 }}>
+                          <Link
+                            href="/menu/new"
+                            className="caption"
+                            style={{ fontWeight: 600, color: "var(--color-red)" }}
+                          >
+                            Or use the full editor &rarr;
+                          </Link>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         );
       })}
@@ -862,39 +717,38 @@ function ModeA() {
       {/* Motivational sticker */}
       <div
         className="card-sticker"
-        style={{ transform: "rotate(-1.5deg)", maxWidth: 340 }}
+        style={{ transform: "rotate(-1deg)", maxWidth: 340 }}
       >
         <div className="eyebrow" style={{ marginBottom: 8 }}>
           A LITTLE WIND IN YOUR SAILS
         </div>
         <div
           className="fraunces"
-          style={{ fontSize: 56, lineHeight: 1 }}
+          style={{ fontSize: 64, lineHeight: 1 }}
         >
           12
         </div>
-        <p
-          style={{
-            fontSize: 15,
-            color: "var(--color-brown-soft)",
-            marginTop: 6,
-            lineHeight: 1.4,
-          }}
-        >
-          chefs went live this week in Dallas.
-          <br />
+        <p className="body-sm" style={{ marginTop: 6, lineHeight: 1.4 }}>
+          chefs went live this week in Dallas.{" "}
           <strong style={{ color: "var(--color-brown)" }}>
             Yours is next.
           </strong>
         </p>
       </div>
 
+      {/* Need help? — simple text link */}
       <Link
         href="/help"
-        className="btn btn-ghost btn-block"
-        style={{ minHeight: 44 }}
+        className="body-sm"
+        style={{
+          color: "var(--color-red)",
+          fontWeight: 600,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 4,
+        }}
       >
-        Need help? Talk to a real human
+        Need help? Talk to a real human &rarr;
       </Link>
     </div>
   );
@@ -904,79 +758,67 @@ function ModeA() {
 /*  Mode B — Fully set up (Active Dashboard)                          */
 /* ------------------------------------------------------------------ */
 function ModeB() {
+  const greeting = useMemo(() => getGreeting(), []);
+
   return (
-    <div className="section-stack line-reveal">
-      {/* Greeting with wave animation */}
-      <h1 style={{ fontSize: 24, fontWeight: 700 }}>
-        Hi Amira{" "}
+    <div className="content-wide section-stack line-reveal">
+      {/* Greeting */}
+      <h1 className="heading-lg">
+        {greeting}, Amira{" "}
         <span
           role="img"
           aria-label="wave"
-          style={{
-            display: "inline-block",
-            animation: "wave 2.5s ease-in-out infinite",
-            transformOrigin: "70% 70%",
-          }}
+          className="animate-wave"
+          style={{ display: "inline-block" }}
         >
           👋
         </span>
-        <style>{`
-          @keyframes wave {
-            0% { transform: rotate(0deg); }
-            10% { transform: rotate(14deg); }
-            20% { transform: rotate(-8deg); }
-            30% { transform: rotate(14deg); }
-            40% { transform: rotate(-4deg); }
-            50% { transform: rotate(10deg); }
-            60% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); }
-          }
-        `}</style>
       </h1>
 
-      {/* Stat cards with sparklines — 2x2 mobile, 4 across desktop */}
+      {/* Stat cards — 4 across, Stripe-dense */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, i) => (
-          <div key={i} className="card">
-            <div className="eyebrow" style={{ marginBottom: 6 }}>
+          <div key={i} className="card" style={{ padding: 20 }}>
+            <div className="eyebrow" style={{ marginBottom: 8 }}>
               {stat.label}
             </div>
             <div
               className="fraunces tnum"
-              style={{ fontSize: 32, lineHeight: 1.1 }}
+              style={{ fontSize: 36, lineHeight: 1 }}
             >
               {stat.value}
             </div>
+            <Sparkline points={stat.sparkline} />
             {stat.delta === "stars" ? (
-              <div className="flex items-center gap-0.5 mt-1">
+              <div className="flex items-center gap-0.5 mt-2">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star
                     key={s}
-                    size={14}
-                    fill="var(--color-sage)"
+                    size={13}
+                    fill={s <= 4 ? "var(--color-sage)" : "none"}
                     color="var(--color-sage)"
+                    strokeWidth={s <= 4 ? 0 : 1.5}
                   />
                 ))}
               </div>
             ) : (
-              <div
-                className="flex items-center gap-1 mt-1"
-                style={{
-                  fontSize: 13,
-                  color: "var(--color-brown-soft)",
-                }}
-              >
+              <div className="flex items-center gap-1.5 mt-2">
                 {stat.positive !== null && (
                   <span
-                    className={`dot ${
-                      stat.positive ? "dot-sage" : "dot-red"
-                    }`}
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: stat.positive
+                        ? "var(--color-sage)"
+                        : "var(--color-red)",
+                      flexShrink: 0,
+                    }}
                   />
                 )}
-                {stat.delta}
+                <span className="caption">{stat.delta}</span>
               </div>
             )}
-            <Sparkline points={stat.sparkline} />
           </div>
         ))}
       </div>
@@ -986,240 +828,240 @@ function ModeB() {
         className="flex gap-3 overflow-x-auto pb-1"
         style={{ margin: "0 -16px", padding: "0 16px" }}
       >
-        {urgentCards.map((card, i) => (
-          <Link
-            key={i}
-            href={card.href}
-            className="shrink-0 rounded-2xl card-hover"
-            style={{
-              background: "#fff",
-              padding: 14,
-              borderLeft: `4px solid ${card.border}`,
-              minWidth: 220,
-              minHeight: 44,
-              boxShadow: "0 4px 12px rgba(51,31,46,0.05)",
-              textDecoration: "none",
-              color: "inherit",
-              display: "block",
-            }}
-          >
-            <span
-              className={`pill ${card.pillClass}`}
-              style={{ marginBottom: 6, display: "inline-flex" }}
-            >
-              {card.pillText}
-            </span>
-            <p
+        {urgentCards.map((card, i) => {
+          const Icon = card.icon;
+          return (
+            <Link
+              key={i}
+              href={card.href}
+              className="shrink-0 card card-hover"
               style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "var(--color-brown)",
-                marginTop: 6,
+                padding: "12px 16px",
+                borderLeft: `3px solid ${card.border}`,
+                minWidth: 220,
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
               }}
             >
-              {card.text}
-            </p>
-          </Link>
-        ))}
+              <span
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: "var(--color-cream-sunken)",
+                  display: "grid",
+                  placeItems: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Icon size={16} strokeWidth={2} style={{ color: "var(--color-brown-soft)" }} />
+              </span>
+              <div className="flex-1 min-w-0">
+                <span
+                  className={`pill ${card.pillClass}`}
+                  style={{ marginBottom: 4, display: "inline-flex" }}
+                >
+                  {card.pillText}
+                </span>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>
+                  {card.text}
+                </p>
+              </div>
+              <ArrowUpRight
+                size={14}
+                style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }}
+              />
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Quick actions — 3 cards in a row */}
+      {/* Quick actions — 3 cards in a row, 72px height */}
       <div className="grid grid-cols-3 gap-3">
         <Link
           href="/menu/new"
-          className="card card-hover flex flex-col items-center justify-center gap-2 text-center"
+          className="card card-hover flex items-center gap-3"
           style={{
-            height: 80,
+            height: 72,
             background: "var(--color-red)",
             color: "#fff8f3",
             textDecoration: "none",
-            padding: 12,
+            padding: "0 20px",
+            boxShadow:
+              "0 0 0 1px rgba(229,65,65,0.1), 0 4px 12px rgba(229,65,65,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
           }}
         >
           <Plus size={20} strokeWidth={2.5} />
-          <span style={{ fontSize: 13, fontWeight: 600 }}>
-            Create Dish
-          </span>
+          <span style={{ fontSize: 14, fontWeight: 600 }}>Create Dish</span>
         </Link>
         <Link
           href="/store-preview"
-          className="card card-hover flex flex-col items-center justify-center gap-2 text-center"
+          className="card card-hover flex items-center gap-3"
           style={{
-            height: 80,
+            height: 72,
             textDecoration: "none",
             color: "var(--color-brown)",
-            padding: 12,
+            padding: "0 20px",
           }}
         >
           <Eye size={20} strokeWidth={1.8} />
-          <span style={{ fontSize: 13, fontWeight: 600 }}>
-            View My Store
-          </span>
+          <span style={{ fontSize: 14, fontWeight: 600 }}>View My Store</span>
         </Link>
         <Link
           href="/operations"
-          className="card card-hover flex flex-col items-center justify-center gap-2 text-center"
+          className="card card-hover flex items-center gap-3"
           style={{
-            height: 80,
+            height: 72,
             textDecoration: "none",
             color: "var(--color-brown)",
-            padding: 12,
+            padding: "0 20px",
           }}
         >
           <Clock size={20} strokeWidth={1.8} />
-          <span style={{ fontSize: 13, fontWeight: 600 }}>
-            Manage Hours
-          </span>
+          <span style={{ fontSize: 14, fontWeight: 600 }}>Manage Hours</span>
         </Link>
       </div>
 
-      {/* Recent orders */}
+      {/* Recent orders — Stripe transactions style */}
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
           <span className="eyebrow">RECENT ORDERS</span>
           <Link
             href="/orders"
+            className="caption"
             style={{
-              fontSize: 13,
-              fontWeight: 600,
               color: "var(--color-red)",
+              fontWeight: 600,
               display: "flex",
               alignItems: "center",
               gap: 2,
-              minHeight: 44,
             }}
           >
-            View All <ArrowUpRight size={14} />
+            View all <ArrowUpRight size={12} />
           </Link>
         </div>
-        <div className="flex flex-col gap-3">
-          {recentOrders.map((order) => (
+
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+          {recentOrders.map((order, i) => (
             <Link
               key={order.hashId}
-              href={`/orders/${order.numericId}`}
-              className="card card-hover"
+              href="/orders"
               style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                padding: "14px 20px",
                 textDecoration: "none",
                 color: "inherit",
-                padding: 16,
+                borderBottom:
+                  i < recentOrders.length - 1
+                    ? "1px solid rgba(51,31,46,0.06)"
+                    : undefined,
+                transition: "background var(--t-fast)",
               }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "var(--color-cream)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
-              {/* Top row: hash + delivery type pill */}
-              <div
-                className="flex items-center gap-2 flex-wrap"
-                style={{ marginBottom: 8 }}
+              {/* Hash */}
+              <span
+                className="mono"
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "var(--color-brown-soft-2)",
+                  width: 52,
+                  flexShrink: 0,
+                }}
+              >
+                {order.hashId}
+              </span>
+
+              {/* Customer */}
+              <span
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--color-brown)",
+                  width: 90,
+                  flexShrink: 0,
+                }}
+              >
+                {order.customer}
+              </span>
+
+              {/* Items */}
+              <span
+                className="flex-1 min-w-0"
+                style={{
+                  fontSize: 13,
+                  color: "var(--color-brown-soft-2)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {order.items}
+              </span>
+
+              {/* Status pill */}
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: order.statusColor,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  flexShrink: 0,
+                }}
               >
                 <span
-                  className="mono"
                   style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "var(--color-brown-soft-2)",
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: order.statusColor,
                   }}
-                >
-                  {order.hashId}
-                </span>
-                <span className="pill pill-mute">{order.type}</span>
-              </div>
+                />
+                {order.status}
+              </span>
 
-              {/* Middle row: customer, time, status */}
-              <div
-                className="flex items-center justify-between"
-                style={{ marginBottom: 8 }}
+              {/* Price */}
+              <span
+                className="tnum"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--color-brown)",
+                  width: 64,
+                  textAlign: "right",
+                  flexShrink: 0,
+                }}
               >
-                <div>
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: "var(--color-brown)",
-                    }}
-                  >
-                    {order.customer}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "var(--color-brown-soft-2)",
-                      marginLeft: 8,
-                    }}
-                  >
-                    {order.time}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className={`dot ${order.statusDot}`} />
-                  <span
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "var(--color-brown-soft)",
-                    }}
-                  >
-                    {order.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Bottom row: price + payout + action */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <span
-                    className="fraunces tnum"
-                    style={{ fontSize: 18 }}
-                  >
-                    {order.price}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "var(--color-brown-soft-2)",
-                      marginLeft: 8,
-                    }}
-                  >
-                    {order.payout}
-                  </span>
-                </div>
-                <span
-                  className={`btn btn-sm ${
-                    order.actionClass === "btn-terracotta-fill"
-                      ? ""
-                      : order.actionClass
-                  }`}
-                  style={
-                    order.actionClass === "btn-terracotta-fill"
-                      ? {
-                          background: "var(--color-terracotta)",
-                          color: "#fff",
-                          borderColor: "var(--color-terracotta)",
-                        }
-                      : undefined
-                  }
-                >
-                  {order.action} <ChevronRight size={14} />
-                </span>
-              </div>
+                {order.price}
+              </span>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* Today summary card */}
+      {/* Today summary — subtle cream banner */}
       <div
-        className="card"
         style={{
           background: "var(--color-cream-deep)",
+          borderRadius: 12,
+          padding: "14px 20px",
           textAlign: "center",
-          padding: "16px 20px",
         }}
       >
-        <span
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            color: "var(--color-brown)",
-          }}
-        >
+        <span className="body-sm" style={{ fontWeight: 600, color: "var(--color-brown)" }}>
           Today: 4 orders &middot; $186 revenue &middot; 2 pending
         </span>
       </div>

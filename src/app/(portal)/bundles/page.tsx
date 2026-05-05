@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, MoreHorizontal } from "lucide-react";
 
 type BundleStatus = "published" | "draft" | "archived";
 
@@ -86,97 +86,90 @@ export default function BundlesPage() {
   ];
 
   return (
-    <div className="section-stack">
-      {/* Header */}
-      <div>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="fraunces" style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>
-              Bundles
-            </h1>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0 0" }}>
-              Create curated meal bundles to increase average order value
-            </p>
-          </div>
-          <Link
-            href="/menu/new"
-            className="btn"
+    <div className="content-wide section-stack page-fade">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="heading-lg">Bundles</h1>
+          <p className="body-sm" style={{ marginTop: 4 }}>
+            Create curated meal bundles to increase average order value
+          </p>
+        </div>
+        <Link href="/menu/new" className="btn btn-dark" style={{ textDecoration: "none" }}>
+          <Plus size={16} strokeWidth={2.2} />
+          Create Bundle
+        </Link>
+      </div>
+
+      {/* ── Filters Row ── */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+        {/* Status pills */}
+        <div style={{ display: "flex", gap: 6 }}>
+          {statusFilters.map((f) => {
+            const isActive = f.label === activeStatus;
+            return (
+              <button
+                key={f.label}
+                onClick={() => setActiveStatus(f.label)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "0 12px",
+                  height: 32,
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  border: isActive ? "none" : "1px solid rgba(51,31,46,0.1)",
+                  background: isActive ? "var(--color-brown)" : "transparent",
+                  color: isActive ? "var(--color-cream)" : "var(--color-brown-soft)",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                {f.label}
+                <span className="tnum" style={{ fontSize: 11, fontWeight: 700, opacity: isActive ? 0.7 : 0.5 }}>
+                  {f.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ flex: 1 }} />
+
+        {/* Search */}
+        <div className="relative" style={{ width: 280, flexShrink: 0 }}>
+          <Search
+            size={15}
+            strokeWidth={2}
+            className="absolute"
             style={{
-              background: "var(--color-brown)",
-              color: "#fff",
-              borderColor: "var(--color-brown)",
-              textDecoration: "none",
+              left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "var(--color-brown-soft-2)",
+              pointerEvents: "none",
             }}
-          >
-            <Plus size={16} strokeWidth={2} />
-            Create Bundle
-          </Link>
+          />
+          <input
+            type="text"
+            className="input"
+            placeholder="Search bundles..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
+          />
         </div>
       </div>
 
-      {/* Status pills */}
-      <div className="flex gap-2 flex-wrap">
-        {statusFilters.map((f) => {
-          const isActive = f.label === activeStatus;
-          return (
-            <button
-              key={f.label}
-              onClick={() => setActiveStatus(f.label)}
-              className={`pill ${isActive ? "pill-brown" : ""}`}
-              style={{
-                cursor: "pointer",
-                border: isActive ? undefined : "1px solid rgba(51,31,46,0.1)",
-                minHeight: 36,
-                fontSize: 13,
-              }}
-            >
-              {f.label}
-              <span
-                className="tnum"
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  opacity: isActive ? 0.7 : 0.5,
-                  marginLeft: 2,
-                }}
-              >
-                {f.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Search */}
-      <div className="relative" style={{ marginTop: -8 }}>
-        <Search
-          size={16}
-          strokeWidth={2}
-          className="absolute"
-          style={{
-            left: 14,
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--color-brown-soft-2)",
-            pointerEvents: "none",
-          }}
-        />
-        <input
-          type="text"
-          className="input"
-          placeholder="Search bundles..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ paddingLeft: 40 }}
-        />
-      </div>
-
-      {/* Bundle grid */}
+      {/* ── Bundle Grid ── */}
       <div
+        className="line-reveal"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-          gap: 12,
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: 16,
         }}
       >
         {filteredBundles.map((bundle) => {
@@ -185,8 +178,10 @@ export default function BundlesPage() {
             <Link
               key={bundle.id}
               href="/menu/new"
-              className="card-hover bg-white rounded-xl shadow-card overflow-hidden block group"
+              className="card card-hover group"
               style={{
+                padding: 0,
+                overflow: "hidden",
                 textDecoration: "none",
                 color: "inherit",
               }}
@@ -199,7 +194,8 @@ export default function BundlesPage() {
                   className="w-full h-full object-cover"
                   style={{ borderRadius: "12px 12px 0 0" }}
                 />
-                {/* Status badge overlay */}
+
+                {/* Status badge */}
                 <div
                   className="absolute"
                   style={{
@@ -228,49 +224,54 @@ export default function BundlesPage() {
                   />
                   {badge.label}
                 </div>
+
                 {/* Item count pill */}
                 <div
                   className="absolute pill pill-sage"
-                  style={{
-                    bottom: 8,
-                    left: 8,
-                    fontSize: 11,
-                    fontWeight: 600,
-                  }}
+                  style={{ bottom: 8, left: 8, fontSize: 11, fontWeight: 600 }}
                 >
                   {bundle.items} items
                 </div>
-                {/* Hover overlay */}
+
+                {/* 3-dot menu (hover) */}
+                <div
+                  className="absolute opacity-0 group-hover:opacity-100"
+                  style={{
+                    top: 8,
+                    right: 8,
+                    width: 30,
+                    height: 30,
+                    borderRadius: 8,
+                    background: "rgba(255,255,255,0.9)",
+                    backdropFilter: "blur(4px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "opacity var(--t-fast)",
+                    color: "var(--color-brown)",
+                  }}
+                >
+                  <MoreHorizontal size={15} />
+                </div>
+
+                {/* Hover tint */}
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100"
                   style={{
-                    background: "rgba(51,31,46,0.06)",
-                    transition: "opacity 0.15s",
+                    background: "rgba(51,31,46,0.05)",
+                    transition: "opacity var(--t-fast)",
                     borderRadius: "12px 12px 0 0",
                     pointerEvents: "none",
                   }}
                 />
               </div>
+
               {/* Info */}
-              <div style={{ padding: "10px 12px 12px" }}>
-                <div
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: "var(--color-brown)",
-                    lineHeight: 1.3,
-                  }}
-                >
+              <div style={{ padding: "10px 14px 14px" }}>
+                <div className="heading-sm" style={{ fontSize: 14, lineHeight: 1.3 }}>
                   {bundle.name}
                 </div>
-                <div
-                  className="tnum"
-                  style={{
-                    fontSize: 14,
-                    color: "var(--color-brown-soft)",
-                    marginTop: 3,
-                  }}
-                >
+                <div className="body-sm tnum" style={{ marginTop: 3 }}>
                   From ${bundle.price.toFixed(2)}
                 </div>
               </div>
@@ -279,27 +280,15 @@ export default function BundlesPage() {
         })}
       </div>
 
-      {/* Pagination */}
-      <div
-        className="flex items-center justify-between"
-        style={{ paddingTop: 8 }}
-      >
-        <span
-          style={{
-            fontSize: 13,
-            color: "var(--color-brown-soft)",
-          }}
-        >
-          Showing 1-{filteredBundles.length} of {filteredBundles.length}
+      {/* ── Pagination ── */}
+      <div className="flex items-center justify-between" style={{ paddingTop: 4 }}>
+        <span className="caption">
+          Showing 1&ndash;{filteredBundles.length} of {filteredBundles.length}
         </span>
         <div className="flex gap-1">
           <button
             className="pill pill-brown"
-            style={{
-              cursor: "pointer",
-              minWidth: 32,
-              justifyContent: "center",
-            }}
+            style={{ cursor: "pointer", minWidth: 32, justifyContent: "center" }}
           >
             1
           </button>

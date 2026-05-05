@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Search, Menu } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 
 interface TopBarProps {
   title: string;
@@ -13,12 +13,9 @@ interface TopBarProps {
 export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) {
   return (
     <header
-      className="sticky top-0 z-10 flex items-center"
+      className="sticky top-0 z-10 flex items-center glass"
       style={{
-        height: 56,
-        background: "rgba(250,249,246,0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        height: 52,
         borderBottom: "1px solid rgba(51,31,46,0.06)",
         padding: "0 16px",
       }}
@@ -27,20 +24,25 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
       <button
         className="lg:hidden flex items-center justify-center rounded-lg"
         style={{
-          width: 44,
-          height: 44,
-          color: "var(--color-brown-soft)",
+          width: 40,
+          height: 40,
+          color: "var(--color-brown-soft-2)",
           background: "transparent",
           border: "none",
+          transition: `all var(--t-fast) var(--ease-spring)`,
         }}
         onClick={onMobileMenuToggle}
         aria-label="Open menu"
       >
-        <Menu size={20} strokeWidth={1.8} />
+        <Menu size={18} strokeWidth={1.5} />
       </button>
       <h1
         className="lg:hidden flex-1 text-center truncate"
-        style={{ fontSize: 16, fontWeight: 600, color: "var(--color-brown)" }}
+        style={{
+          fontSize: 15,
+          fontWeight: 600,
+          color: "var(--color-brown)",
+        }}
       >
         {title}
       </h1>
@@ -60,16 +62,17 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
                       userSelect: "none",
                     }}
                   >
-                    &gt;
+                    /
                   </span>
                 )}
                 {crumb.href && !isLast ? (
                   <Link
                     href={crumb.href}
                     style={{
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: 500,
                       color: "var(--color-brown-soft-2)",
+                      transition: `color var(--t-fast)`,
                     }}
                     className="hover:underline truncate"
                   >
@@ -79,7 +82,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
                   <span
                     className="truncate"
                     style={{
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: isLast ? 600 : 500,
                       color: isLast
                         ? "var(--color-brown)"
@@ -95,7 +98,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
         ) : (
           <span
             style={{
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: 600,
               color: "var(--color-brown)",
             }}
@@ -106,66 +109,73 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center gap-1">
-        {/* Search — desktop only */}
+      <div className="flex items-center gap-2">
+        {/* Cmd+K search pill — desktop only */}
         <button
-          className="hidden lg:flex items-center justify-center rounded-lg transition-colors"
+          className="hidden lg:flex items-center gap-1.5 rounded-lg"
           style={{
-            width: 44,
-            height: 44,
-            color: "var(--color-brown-soft)",
-            background: "transparent",
+            height: 28,
+            padding: "0 10px",
+            background: "var(--color-cream-sunken)",
             border: "none",
+            cursor: "pointer",
+            fontSize: 12,
+            fontFamily: "var(--font-mono)",
+            color: "var(--color-brown-soft-2)",
+            fontWeight: 500,
+            transition: `all var(--t-fast) var(--ease-spring)`,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.background =
+              "rgba(51,31,46,0.08)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.background =
+              "var(--color-cream-sunken)";
           }}
           aria-label="Search"
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.background =
-              "rgba(51,31,46,0.05)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "";
-          }}
         >
-          <Search size={18} strokeWidth={1.8} />
+          <span style={{ fontSize: 11 }}>&#x2318;K</span>
         </button>
 
-        {/* Bell with red dot — links to orders */}
+        {/* Bell with red dot */}
         <Link
           href="/orders"
-          className="relative flex items-center justify-center rounded-lg transition-colors"
+          className="relative flex items-center justify-center rounded-lg"
           style={{
-            width: 44,
-            height: 44,
-            color: "var(--color-brown-soft)",
+            width: 36,
+            height: 36,
+            color: "var(--color-brown-soft-2)",
+            transition: `all var(--t-fast) var(--ease-spring)`,
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.background =
-              "rgba(51,31,46,0.05)";
+              "rgba(51,31,46,0.04)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "";
+            (e.currentTarget as HTMLElement).style.background = "transparent";
           }}
         >
-          <Bell size={18} strokeWidth={1.8} />
+          <Bell size={18} strokeWidth={1.5} />
           <span
             className="absolute"
             style={{
-              top: 10,
-              right: 10,
-              width: 8,
-              height: 8,
+              top: 7,
+              right: 7,
+              width: 6,
+              height: 6,
               borderRadius: "50%",
               background: "var(--color-red)",
-              border: "2px solid rgba(250,249,246,0.85)",
+              border: "1.5px solid rgba(250,249,246,0.88)",
             }}
           />
         </Link>
 
-        {/* Avatar — links to settings */}
+        {/* Avatar */}
         <Link
           href="/settings"
           className="rounded-full overflow-hidden flex-shrink-0"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 28, height: 28 }}
         >
           <img
             src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"

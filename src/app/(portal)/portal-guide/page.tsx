@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Play, FileText, BookOpen, Video } from "lucide-react";
+import { Play, FileText, BookOpen, Video, Download } from "lucide-react";
 
 const TABS = ["Video Tutorials", "Chef Playbook"] as const;
 type Tab = (typeof TABS)[number];
@@ -10,9 +10,9 @@ export default function PortalGuidePage() {
   const [activeTab, setActiveTab] = useState<Tab>("Video Tutorials");
 
   return (
-    <div className="section-stack" style={{ maxWidth: 720 }}>
-      {/* Tabs */}
-      <div className="flex gap-1" style={{ borderBottom: "1px solid var(--color-cream-sunken)", paddingBottom: 0 }}>
+    <div className="content-default section-stack">
+      {/* Underline tabs */}
+      <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
         {TABS.map((t) => {
           const Icon = t === "Video Tutorials" ? Video : BookOpen;
           return (
@@ -21,17 +21,16 @@ export default function PortalGuidePage() {
               onClick={() => setActiveTab(t)}
               className="flex items-center gap-1.5"
               style={{
-                padding: "10px 16px",
+                padding: "10px 20px",
                 background: "none",
                 border: "none",
                 fontSize: 14,
-                fontWeight: activeTab === t ? 600 : 500,
+                fontWeight: activeTab === t ? 600 : 400,
                 color: activeTab === t ? "var(--color-red)" : "var(--color-brown-soft)",
                 borderBottom: activeTab === t ? "2px solid var(--color-red)" : "2px solid transparent",
                 marginBottom: -1,
                 cursor: "pointer",
-                minHeight: 44,
-                transition: "color 0.15s ease",
+                transition: `color var(--t-fast) var(--ease-spring)`,
               }}
             >
               <Icon size={16} />
@@ -45,46 +44,46 @@ export default function PortalGuidePage() {
       {activeTab === "Video Tutorials" && (
         <div className="section-stack">
           <div>
-            <h2 className="fraunces" style={{ fontSize: 22, margin: "0 0 4px" }}>How-To Videos</h2>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: 0 }}>
+            <h2 className="heading-lg">How-To Videos</h2>
+            <p className="body-sm" style={{ marginTop: 4 }}>
               Watch step-by-step guides to get the most out of your chef portal.
             </p>
           </div>
 
-          {/* YouTube embed placeholder */}
+          {/* Video placeholder - 16:9, dark bg, centered play button */}
           <div
-            className="flex flex-col items-center justify-center"
+            className="card flex flex-col items-center justify-center"
             style={{
               aspectRatio: "16/9",
-              borderRadius: 16,
-              background: "var(--color-cream-deep)",
+              background: "var(--color-brown)",
               position: "relative",
               cursor: "pointer",
               overflow: "hidden",
+              padding: 0,
             }}
           >
-            {/* Play button */}
+            {/* Play button - 48px white circle with red triangle */}
             <div
               className="flex items-center justify-center"
               style={{
-                width: 72,
-                height: 72,
+                width: 48,
+                height: 48,
                 borderRadius: "50%",
-                background: "rgba(255,255,255,0.92)",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
+                background: "rgba(255,255,255,0.95)",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
               }}
             >
               <Play
-                size={32}
+                size={22}
                 fill="var(--color-red)"
-                style={{ color: "var(--color-red)", marginLeft: 4 }}
+                style={{ color: "var(--color-red)", marginLeft: 2 }}
               />
             </div>
             <div style={{ marginTop: 16, textAlign: "center" }}>
-              <div style={{ fontWeight: 600, fontSize: 16, color: "var(--color-brown)" }}>
+              <div className="heading-sm" style={{ color: "var(--color-cream)" }}>
                 Yalla Bites Chef Success Playbook
               </div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
+              <div className="caption" style={{ color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
                 Click to play video
               </div>
             </div>
@@ -96,43 +95,29 @@ export default function PortalGuidePage() {
       {activeTab === "Chef Playbook" && (
         <div className="section-stack">
           <div>
-            <h2 className="fraunces" style={{ fontSize: 22, margin: "0 0 4px" }}>Chef Success Playbook</h2>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: 0 }}>
+            <h2 className="heading-lg">Chef Success Playbook</h2>
+            <p className="body-sm" style={{ marginTop: 4 }}>
               Everything you need to grow your kitchen on Yalla Bites.
             </p>
           </div>
 
-          {/* PDF viewer placeholder */}
-          <div
-            className="flex flex-col items-center justify-center"
-            style={{
-              minHeight: 400,
-              borderRadius: 16,
-              background: "var(--color-cream-deep)",
-              padding: 40,
-            }}
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: 16,
-                background: "var(--color-cream-sunken)",
-                marginBottom: 20,
-              }}
-            >
-              <FileText size={32} style={{ color: "var(--color-brown-soft)" }} />
+          {/* Playbook card */}
+          <div className="card flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div
+                className="flex items-center justify-center"
+                style={{ width: 48, height: 48, borderRadius: 12, background: "var(--color-cream-deep)" }}
+              >
+                <FileText size={24} style={{ color: "var(--color-brown-soft)" }} />
+              </div>
+              <div>
+                <div className="heading-sm">Chef Success Playbook</div>
+                <div className="caption" style={{ marginTop: 2 }}>18 pages</div>
+              </div>
             </div>
-            <div style={{ fontWeight: 600, fontSize: 18, color: "var(--color-brown)", marginBottom: 6 }}>
-              Chef Success Playbook
-            </div>
-            <div className="pill pill-mute tnum" style={{ marginBottom: 20 }}>
-              18 pages
-            </div>
-            <button className="btn btn-red" style={{ minHeight: 48 }}>
-              <FileText size={16} />
-              View Full Playbook PDF
+            <button className="btn btn-dark btn-sm">
+              <Download size={14} />
+              Download PDF
             </button>
           </div>
         </div>

@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { Search, Truck, ShoppingBag, Clock } from "lucide-react";
+import { Search, Truck, ShoppingBag, Clock, Package } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
@@ -22,11 +22,12 @@ type OrderStatus =
   | "cancelled"
   | "rejected";
 
+type Urgency = "overdue" | "due-soon" | null;
+
 interface Order {
   hash: string;
   customer: string;
   items: { qty: number; name: string }[];
-  modifiers?: { label: string; value: string }[];
   method: "delivery" | "pickup";
   date: string;
   time?: string;
@@ -35,10 +36,11 @@ interface Order {
   status: OrderStatus;
   cancelNote?: string;
   readyBy?: string;
+  urgency?: Urgency;
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mock data                                                          */
+/*  Mock data — 12 orders                                              */
 /* ------------------------------------------------------------------ */
 const orders: Order[] = [
   {
@@ -52,9 +54,10 @@ const orders: Order[] = [
     date: "Today",
     time: "2:30 PM",
     price: "$49.00",
-    payout: "$45.20 payout",
+    payout: "$45.20",
     status: "paid",
-    readyBy: "Ready by Today 6:30 PM",
+    readyBy: "6:30 PM",
+    urgency: "due-soon",
   },
   {
     hash: "#b3d4e7",
@@ -67,9 +70,9 @@ const orders: Order[] = [
     date: "Today",
     time: "3:15 PM",
     price: "$26.50",
-    payout: "$22.10 payout",
+    payout: "$22.10",
     status: "confirmed",
-    readyBy: "Ready by Today 7:00 PM",
+    readyBy: "7:00 PM",
   },
   {
     hash: "#c9e1f3",
@@ -79,8 +82,10 @@ const orders: Order[] = [
     date: "Today",
     time: "1:55 PM",
     price: "$18.00",
-    payout: "$16.50 payout",
+    payout: "$16.50",
     status: "preparing",
+    readyBy: "5:15 PM",
+    urgency: "overdue",
   },
   {
     hash: "#d2f4a8",
@@ -90,7 +95,7 @@ const orders: Order[] = [
     date: "Today",
     time: "3:02 PM",
     price: "$48.00",
-    payout: "$44.10 payout",
+    payout: "$44.10",
     status: "ready",
   },
   {
@@ -114,7 +119,7 @@ const orders: Order[] = [
     method: "pickup",
     date: "Yesterday",
     price: "$65.00",
-    payout: "$59.80 payout",
+    payout: "$59.80",
     status: "delivered",
   },
   {
@@ -127,20 +132,19 @@ const orders: Order[] = [
     method: "delivery",
     date: "May 2",
     price: "$28.00",
-    payout: "$25.40 payout",
+    payout: "$25.40",
     status: "pickedUp",
   },
   {
     hash: "#h4k6e7",
     customer: "Omar S.",
     items: [{ qty: 1, name: "Mansaf (Full Tray)" }],
-    modifiers: [{ label: "PORTION", value: "Full Tray - Serves 5-6 - $100.00" }],
     method: "delivery",
     date: "May 2",
     price: "$100.00",
-    payout: "$92.00 payout",
+    payout: "$92.00",
     status: "paid",
-    readyBy: "Ready by May 3 8:00 AM",
+    readyBy: "8:00 AM",
   },
   {
     hash: "#i7l9f8",
@@ -149,7 +153,7 @@ const orders: Order[] = [
     method: "pickup",
     date: "May 1",
     price: "$36.00",
-    payout: "$33.20 payout",
+    payout: "$33.20",
     status: "delivered",
   },
   {
@@ -162,7 +166,7 @@ const orders: Order[] = [
     method: "delivery",
     date: "May 1",
     price: "$64.00",
-    payout: "$58.80 payout",
+    payout: "$58.80",
     status: "delivered",
   },
   {
@@ -172,7 +176,7 @@ const orders: Order[] = [
     method: "delivery",
     date: "Apr 30",
     price: "$75.00",
-    payout: "$69.00 payout",
+    payout: "$69.00",
     status: "rejected",
   },
   {
@@ -185,7 +189,7 @@ const orders: Order[] = [
     method: "pickup",
     date: "Apr 30",
     price: "$43.00",
-    payout: "$39.50 payout",
+    payout: "$39.50",
     status: "delivered",
   },
 ];
@@ -195,17 +199,12 @@ const orders: Order[] = [
 /* ------------------------------------------------------------------ */
 const filterTabs: { label: string; match: (o: Order) => boolean }[] = [
   { label: "All", match: () => true },
-  { label: "Confirmed", match: (o) => o.status === "confirmed" },
   { label: "Paid", match: (o) => o.status === "paid" },
+  { label: "Confirmed", match: (o) => o.status === "confirmed" },
   { label: "Preparing", match: (o) => o.status === "preparing" },
-  { label: "Ready", match: (o) => o.status === "ready" },
-  { label: "Pickup Ready", match: (o) => o.status === "readyForPickup" },
-  { label: "Out for Delivery", match: (o) => o.status === "outForDelivery" },
-  { label: "Delivered", match: (o) => o.status === "delivered" },
-  { label: "Picked Up", match: (o) => o.status === "pickedUp" },
-  { label: "Rescheduling", match: (o) => o.status === "rescheduling" },
-  { label: "Cancelled", match: (o) => o.status === "cancelled" },
-  { label: "Rejected", match: (o) => o.status === "rejected" },
+  { label: "Ready", match: (o) => o.status === "ready" || o.status === "readyForPickup" },
+  { label: "Delivered", match: (o) => o.status === "delivered" || o.status === "pickedUp" },
+  { label: "Cancelled", match: (o) => o.status === "cancelled" || o.status === "rejected" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -228,50 +227,27 @@ function statusLabel(s: OrderStatus): string {
   return map[s];
 }
 
-function statusDotClass(s: OrderStatus): string {
+function statusDotColor(s: OrderStatus): string {
   switch (s) {
     case "paid":
+      return "var(--color-orange)";
     case "confirmed":
-      return "dot-orange";
+      return "var(--color-orange)";
     case "preparing":
-      return "dot-orange";
-    case "ready":
-    case "readyForPickup":
-    case "delivered":
-    case "pickedUp":
-      return "dot-sage";
-    case "outForDelivery":
-      return "dot-sage";
-    case "cancelled":
-    case "rejected":
-      return "dot-red";
-    case "rescheduling":
-      return "dot-orange";
-    default:
-      return "";
-  }
-}
-
-function statusPillClass(s: OrderStatus): string {
-  switch (s) {
-    case "paid":
-    case "confirmed":
-      return "pill-orange";
-    case "preparing":
-      return "pill-orange";
+      return "#e8a832";
     case "ready":
     case "readyForPickup":
     case "delivered":
     case "pickedUp":
     case "outForDelivery":
-      return "pill-sage";
+      return "var(--color-sage)";
     case "cancelled":
     case "rejected":
-      return "pill-red";
+      return "var(--color-red)";
     case "rescheduling":
-      return "pill-orange";
+      return "var(--color-orange)";
     default:
-      return "pill-mute";
+      return "var(--color-brown-soft-2)";
   }
 }
 
@@ -280,9 +256,9 @@ function actionLabel(s: OrderStatus): string | null {
     case "paid":
       return "Confirm";
     case "confirmed":
-      return "Start Prep";
+      return "Prep";
     case "preparing":
-      return "Mark Ready";
+      return "Ready";
     case "ready":
     case "readyForPickup":
       return "Hand Off";
@@ -299,20 +275,12 @@ function actionBtnClass(s: OrderStatus): string {
       return "btn-amber";
     case "preparing":
       return "btn-sage";
+    case "ready":
+    case "readyForPickup":
+      return "btn-terracotta";
     default:
       return "";
   }
-}
-
-function actionBtnStyle(s: OrderStatus): React.CSSProperties | undefined {
-  if (s === "ready" || s === "readyForPickup") {
-    return {
-      background: "var(--color-terracotta)",
-      color: "#fff",
-      borderColor: "var(--color-terracotta)",
-    };
-  }
-  return undefined;
 }
 
 function actionToastMsg(hash: string, s: OrderStatus): string {
@@ -333,6 +301,12 @@ function actionToastMsg(hash: string, s: OrderStatus): string {
 
 function linkId(hash: string): string {
   return hash.replace("#", "").slice(0, 7);
+}
+
+function urgencyBorderColor(u: Urgency): string {
+  if (u === "overdue") return "var(--color-red)";
+  if (u === "due-soon") return "var(--color-orange)";
+  return "transparent";
 }
 
 /* ------------------------------------------------------------------ */
@@ -378,71 +352,136 @@ export default function OrdersPage() {
   const showingEnd = Math.min(page * rowsPerPage, filtered.length);
 
   return (
-    <div className="section-stack">
-      {/* -------- Filter tabs -------- */}
-      <div
-        className="flex gap-2"
-        style={{
-          overflowX: "auto",
-          paddingBottom: 4,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
-        <style>{`.filter-tabs::-webkit-scrollbar { display: none; }`}</style>
-        <div className="filter-tabs flex gap-2" style={{ paddingRight: 8 }}>
-          {filterTabs.map((tab) => {
-            const isActive = tab.label === activeTab;
-            const count = tabCounts[tab.label];
-            return (
-              <button
-                key={tab.label}
-                onClick={() => {
-                  setActiveTab(tab.label);
-                  setPage(1);
-                }}
-                className={`pill ${isActive ? "pill-brown" : ""}`}
-                style={{
-                  cursor: "pointer",
-                  border: isActive ? undefined : "1px solid rgba(51,31,46,0.1)",
-                  background: isActive ? undefined : "#fff",
-                  minHeight: 40,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {tab.label}
-                {count > 0 && tab.label !== "All" && (
-                  <span
-                    className="inline-flex items-center justify-center"
+    <div className="content-default section-stack">
+      {/* -------- Filter bar + Search -------- */}
+      <div className="flex items-center gap-3 flex-wrap">
+        {/* Scrollable tabs */}
+        <div
+          className="flex-1 min-w-0"
+          style={{ overflow: "hidden" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 6,
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              paddingBottom: 2,
+            }}
+          >
+            <style>{`
+              .order-filter-tabs::-webkit-scrollbar { display: none; }
+            `}</style>
+            <div className="order-filter-tabs" style={{ display: "flex", gap: 6 }}>
+              {filterTabs.map((tab) => {
+                const isActive = tab.label === activeTab;
+                const count = tabCounts[tab.label];
+                return (
+                  <button
+                    key={tab.label}
+                    onClick={() => { setActiveTab(tab.label); setPage(1); }}
                     style={{
-                      background: isActive ? "rgba(255,255,255,0.25)" : "var(--color-cream-sunken)",
-                      color: isActive ? "var(--color-cream)" : "var(--color-brown-soft)",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      minWidth: 18,
-                      height: 18,
-                      borderRadius: 9999,
-                      padding: "0 5px",
-                      marginLeft: 2,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                      height: 32,
+                      padding: "0 12px",
+                      borderRadius: 8,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      whiteSpace: "nowrap",
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all var(--t-fast) var(--ease-spring)",
+                      background: isActive ? "var(--color-brown)" : "transparent",
+                      color: isActive ? "var(--color-cream)" : "var(--color-brown-soft-2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) (e.currentTarget.style.background = "rgba(51,31,46,0.04)");
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) (e.currentTarget.style.background = "transparent");
                     }}
                   >
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+                    {tab.label}
+                    {count > 0 && tab.label !== "All" && (
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          minWidth: 16,
+                          height: 16,
+                          padding: "0 4px",
+                          borderRadius: 9999,
+                          fontSize: 10,
+                          fontWeight: 700,
+                          fontVariantNumeric: "tabular-nums",
+                          background: isActive ? "rgba(255,255,255,0.2)" : "var(--color-cream-sunken)",
+                          color: isActive ? "var(--color-cream)" : "var(--color-brown-soft-2)",
+                        }}
+                      >
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Search — right side on desktop */}
+        <div
+          className="hidden lg:block"
+          style={{ position: "relative", width: 280, flexShrink: 0 }}
+        >
+          <Search
+            size={15}
+            strokeWidth={2}
+            style={{
+              position: "absolute",
+              left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "var(--color-brown-soft-2)",
+              pointerEvents: "none",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Search orders..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            style={{
+              width: "100%",
+              height: 40,
+              paddingLeft: 36,
+              paddingRight: 14,
+              borderRadius: 10,
+              border: "1px solid rgba(51,31,46,0.1)",
+              background: "#fff",
+              fontSize: 13,
+              color: "var(--color-brown)",
+              outline: "none",
+              transition: "border-color var(--t-fast), box-shadow var(--t-fast)",
+            }}
+          />
         </div>
       </div>
 
-      {/* -------- Search bar -------- */}
-      <div style={{ position: "relative" }}>
+      {/* Mobile search — full width */}
+      <div
+        className="lg:hidden"
+        style={{ position: "relative", marginTop: -8 }}
+      >
         <Search
-          size={18}
-          strokeWidth={1.8}
+          size={15}
+          strokeWidth={2}
           style={{
             position: "absolute",
-            left: 14,
+            left: 12,
             top: "50%",
             transform: "translateY(-50%)",
             color: "var(--color-brown-soft-2)",
@@ -452,207 +491,293 @@ export default function OrdersPage() {
         <input
           type="text"
           placeholder="Search by order ID, customer, or dish..."
-          className="input"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          style={{
+            width: "100%",
+            height: 40,
+            paddingLeft: 36,
+            paddingRight: 14,
+            borderRadius: 10,
+            border: "1px solid rgba(51,31,46,0.1)",
+            background: "#fff",
+            fontSize: 13,
+            color: "var(--color-brown)",
+            outline: "none",
+            transition: "border-color var(--t-fast), box-shadow var(--t-fast)",
           }}
-          style={{ paddingLeft: 40 }}
         />
       </div>
 
-      {/* -------- Order cards -------- */}
-      <div className="flex flex-col" style={{ gap: 12 }}>
+      {/* -------- Order list — Stripe table rows -------- */}
+      <div
+        className="card"
+        style={{ padding: 0, overflow: "hidden" }}
+      >
         {paginated.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "48px 20px" }}>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: "var(--color-brown)",
-                marginBottom: 6,
-              }}
-            >
+          /* Empty state */
+          <div
+            style={{
+              textAlign: "center",
+              paddingTop: 120,
+              paddingBottom: 120,
+              paddingLeft: 20,
+              paddingRight: 20,
+            }}
+          >
+            <Package
+              size={48}
+              strokeWidth={1.2}
+              style={{ color: "var(--color-brown-soft-2)", margin: "0 auto 16px" }}
+            />
+            <div className="heading-md" style={{ marginBottom: 6 }}>
               No orders found
             </div>
-            <div
-              style={{
-                fontSize: 14,
-                color: "var(--color-brown-soft)",
-                marginBottom: 20,
-              }}
-            >
-              Try a different filter or search
+            <div className="body-sm" style={{ marginBottom: 24 }}>
+              Try a different filter or search term
             </div>
-            <Link href="/dashboard" className="btn btn-ghost" style={{ display: "inline-flex" }}>
+            <Link
+              href="/dashboard"
+              className="btn btn-ghost"
+              style={{ display: "inline-flex" }}
+            >
               Back to Dashboard
             </Link>
           </div>
         ) : (
-          paginated.map((order) => {
-            const label = actionLabel(order.status);
-            const totalQty = order.items.reduce((s, i) => s + i.qty, 0);
-            const itemNames = order.items.map((i) => i.name).join(", ");
+          <div>
+            {paginated.map((order, idx) => {
+              const label = actionLabel(order.status);
+              const itemSummary = order.items
+                .map((i) => (i.qty > 1 ? `${i.qty}x ${i.name}` : i.name))
+                .join(", ");
+              const isStruck =
+                order.status === "cancelled" || order.status === "rejected";
+              const hasUrgency = order.urgency != null;
 
-            return (
-              <Link
-                key={order.hash}
-                href={`/orders/${linkId(order.hash)}`}
-                className="block"
-                style={{
-                  opacity:
-                    order.status === "cancelled" || order.status === "rejected" ? 0.6 : 1,
-                }}
-              >
-                <div
-                  className="bg-white rounded-2xl shadow-card card-hover"
-                  style={{ padding: 16 }}
+              return (
+                <Link
+                  key={order.hash}
+                  href={`/orders/${linkId(order.hash)}`}
+                  className="block"
+                  style={{ textDecoration: "none" }}
                 >
-                  {/* Row 1: hash, method pill, customer + date */}
-                  <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 8 }}>
-                    <span
-                      className="mono"
-                      style={{ fontSize: 13, color: "var(--color-brown-soft-2)" }}
-                    >
-                      {order.hash}
-                    </span>
-                    <span className="pill pill-sage" style={{ fontSize: 11, gap: 4 }}>
-                      {order.method === "delivery" ? (
-                        <Truck size={12} strokeWidth={2} />
-                      ) : (
-                        <ShoppingBag size={12} strokeWidth={2} />
-                      )}
-                      {order.method === "delivery" ? "Delivery" : "Pickup"}
-                    </span>
-                    <span className="flex-1" />
-                    <span style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                      {order.customer}
-                      {order.date && (
-                        <span style={{ color: "var(--color-brown-soft-2)", marginLeft: 6 }}>
-                          {order.date}
-                          {order.time ? ` ${order.time}` : ""}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-
-                  {/* Row 2: status pill + prices */}
-                  <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 8 }}>
-                    <span className={`pill ${statusPillClass(order.status)}`} style={{ gap: 5 }}>
-                      <span className={`dot ${statusDotClass(order.status)}`} style={{ width: 6, height: 6 }} />
-                      {statusLabel(order.status)}
-                      {order.cancelNote && (
-                        <span style={{ fontWeight: 400, fontStyle: "italic" }}>
-                          ({order.cancelNote})
-                        </span>
-                      )}
-                    </span>
-                    <span className="flex-1" />
-                    <span
-                      className="tnum"
-                      style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)" }}
-                    >
-                      {order.price}
-                    </span>
-                    {order.payout && (
-                      <span
-                        className="tnum"
-                        style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}
-                      >
-                        {order.payout}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Row 3: ready-by pill (if applicable) */}
-                  {order.readyBy && (
-                    <div style={{ marginBottom: 8 }}>
-                      <span
-                        className="pill"
-                        style={{
-                          background: "var(--color-orange-soft)",
-                          color: "var(--color-orange-text)",
-                          gap: 5,
-                        }}
-                      >
-                        <Clock size={12} strokeWidth={2} />
-                        {order.readyBy}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Row 4: items */}
-                  <div className="flex items-start gap-2" style={{ marginBottom: label ? 10 : 0 }}>
-                    <span
-                      className="inline-flex items-center justify-center"
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      minHeight: 56,
+                      padding: "8px 20px",
+                      borderBottom:
+                        idx < paginated.length - 1
+                          ? "1px solid rgba(51,31,46,0.06)"
+                          : "none",
+                      borderLeft: hasUrgency
+                        ? `3px solid ${urgencyBorderColor(order.urgency!)}`
+                        : "3px solid transparent",
+                      opacity: isStruck ? 0.55 : 1,
+                      transition:
+                        "background var(--t-fast) var(--ease-spring)",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(245,241,232,0.5)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                    }}
+                  >
+                    {/* Left cluster: hash + dot + name + items */}
+                    <div
                       style={{
-                        background: "var(--color-orange-soft)",
-                        color: "var(--color-orange-text)",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        minWidth: 24,
-                        height: 24,
-                        borderRadius: 9999,
-                        flexShrink: 0,
-                        marginTop: 1,
+                        flex: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        minWidth: 0,
                       }}
                     >
-                      {totalQty}&times;
-                    </span>
-                    <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: 14, color: "var(--color-brown)" }}>
-                        {itemNames}
-                      </span>
-                      {order.modifiers &&
-                        order.modifiers.map((m) => (
-                          <div
-                            key={m.label}
-                            style={{
-                              fontSize: 12,
-                              color: "var(--color-brown-soft-2)",
-                              marginTop: 2,
-                            }}
-                          >
-                            <span style={{ fontWeight: 600 }}>{m.label}:</span> {m.value}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* Action button */}
-                  {label && (
-                    <div className="flex justify-end">
-                      <button
-                        className={`btn btn-sm ${actionBtnClass(order.status)}`}
-                        style={actionBtnStyle(order.status)}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toast(actionToastMsg(order.hash, order.status));
+                      {/* Hash ID */}
+                      <span
+                        className="mono"
+                        style={{
+                          fontSize: 12,
+                          color: "var(--color-brown-soft-2)",
+                          flexShrink: 0,
+                          width: 64,
                         }}
                       >
-                        {label}
-                      </button>
+                        {order.hash}
+                      </span>
+
+                      {/* Status dot */}
+                      <span
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: statusDotColor(order.status),
+                          flexShrink: 0,
+                        }}
+                      />
+
+                      {/* Customer + items */}
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 500,
+                              color: "var(--color-brown)",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {order.customer}
+                          </span>
+                          {order.urgency === "overdue" && (
+                            <span className="pill-red" style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.04em",
+                              padding: "1px 6px",
+                              borderRadius: 9999,
+                              background: "rgba(229,65,65,0.1)",
+                              color: "var(--color-red-deep)",
+                            }}>
+                              OVERDUE
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          style={{
+                            fontSize: 13,
+                            color: "var(--color-brown-soft-2)",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "block",
+                          }}
+                        >
+                          {itemSummary}
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
-              </Link>
-            );
-          })
+
+                    {/* Center: method pill + ready-by */}
+                    <div
+                      className="hidden md:flex"
+                      style={{
+                        alignItems: "center",
+                        gap: 8,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <span
+                        className="pill-mute"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "2px 8px",
+                          borderRadius: 9999,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          background: "var(--color-cream-sunken)",
+                          color: "var(--color-brown-soft-2)",
+                        }}
+                      >
+                        {order.method === "delivery" ? (
+                          <Truck size={12} strokeWidth={2} />
+                        ) : (
+                          <ShoppingBag size={12} strokeWidth={2} />
+                        )}
+                        {order.method === "delivery" ? "Delivery" : "Pickup"}
+                      </span>
+
+                      {order.readyBy && (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 3,
+                            fontSize: 12,
+                            color: "var(--color-brown-soft-2)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          <Clock size={12} strokeWidth={2} />
+                          {order.readyBy}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Right: price + payout + action */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <div style={{ textAlign: "right" }}>
+                        <div
+                          className="tnum"
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "var(--color-brown)",
+                          }}
+                        >
+                          {order.price}
+                        </div>
+                        {order.payout && (
+                          <div
+                            className="caption tnum"
+                            style={{ marginTop: -1 }}
+                          >
+                            {order.payout}
+                          </div>
+                        )}
+                      </div>
+
+                      {label ? (
+                        <button
+                          className={`btn btn-sm ${actionBtnClass(order.status)}`}
+                          style={{ minWidth: 72 }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toast(actionToastMsg(order.hash, order.status));
+                          }}
+                        >
+                          {label}
+                        </button>
+                      ) : (
+                        /* Spacer to keep alignment */
+                        <div style={{ width: 72 }} />
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         )}
       </div>
 
       {/* -------- Pagination -------- */}
       {filtered.length > 0 && (
         <div
-          className="flex items-center justify-between flex-wrap gap-3"
-          style={{ fontSize: 13, color: "var(--color-brown-soft)" }}
+          className="flex items-center justify-between flex-wrap gap-3 caption"
         >
           <div className="flex items-center gap-2">
             <span>Rows per page</span>
             <select
-              className="select"
               value={rowsPerPage}
               onChange={(e) => {
                 setRowsPerPage(Number(e.target.value));
@@ -661,9 +786,13 @@ export default function OrdersPage() {
               style={{
                 width: "auto",
                 padding: "4px 8px",
-                fontSize: 13,
-                minHeight: 32,
+                fontSize: 12,
+                minHeight: 28,
                 borderRadius: 6,
+                border: "1px solid rgba(51,31,46,0.1)",
+                background: "#fff",
+                color: "var(--color-brown-soft)",
+                cursor: "pointer",
               }}
             >
               <option value={12}>12</option>
@@ -673,7 +802,7 @@ export default function OrdersPage() {
           </div>
 
           <span className="tnum">
-            Showing {showingStart}-{showingEnd} of {filtered.length}
+            {showingStart}–{showingEnd} of {filtered.length}
           </span>
 
           <div className="flex gap-1">
@@ -681,14 +810,20 @@ export default function OrdersPage() {
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`pill ${p === page ? "pill-brown" : ""}`}
                 style={{
-                  cursor: "pointer",
-                  minWidth: 32,
-                  minHeight: 32,
+                  display: "inline-flex",
+                  alignItems: "center",
                   justifyContent: "center",
-                  border: p === page ? undefined : "1px solid rgba(51,31,46,0.1)",
-                  background: p === page ? undefined : "#fff",
+                  width: 28,
+                  height: 28,
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  border: p === page ? "none" : "1px solid rgba(51,31,46,0.1)",
+                  background: p === page ? "var(--color-brown)" : "#fff",
+                  color: p === page ? "var(--color-cream)" : "var(--color-brown-soft)",
+                  cursor: "pointer",
+                  transition: "all var(--t-fast) var(--ease-spring)",
                 }}
               >
                 {p}

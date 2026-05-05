@@ -84,113 +84,91 @@ export default function TutorialsPage() {
   const progressPct = (completedCount / totalCount) * 100;
 
   return (
-    <div className="section-stack" style={{ maxWidth: 800 }}>
-      {/* Progress card */}
-      <div className="card flex items-center gap-4">
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 600, fontSize: 16 }}>
-            Your progress: {completedCount} of {totalCount} completed
-          </div>
+    <div className="content-default section-stack">
+      {/* Progress bar - slim 3px at top */}
+      <div>
+        <div className="flex items-center justify-between" style={{ marginBottom: 8 }}>
+          <span className="body" style={{ fontWeight: 600 }}>Your progress</span>
+          <span className="tnum caption">{completedCount} / {totalCount}</span>
+        </div>
+        <div style={{ height: 3, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
           <div
             style={{
-              height: 8,
-              borderRadius: 4,
-              background: "var(--color-cream-sunken)",
-              marginTop: 10,
-              overflow: "hidden",
+              height: "100%",
+              borderRadius: 2,
+              background: "var(--color-sage)",
+              width: `${progressPct}%`,
+              transition: `width 0.3s var(--ease-spring)`,
             }}
-          >
-            <div
-              style={{
-                height: "100%",
-                borderRadius: 4,
-                background: "var(--color-sage)",
-                width: `${progressPct}%`,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 6 }}>
-            Complete all tutorials to become a Yalla Bites pro!
-          </div>
+          />
         </div>
       </div>
 
-      {/* Tutorial grid */}
+      {/* Tutorial grid - 3 cols */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 16,
         }}
       >
         {tutorials.map((t, i) => {
           const Icon = t.icon;
           return (
-            <div
+            <Link
               key={i}
+              href="#"
               className="card card-hover"
               style={{
                 padding: 20,
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
+                textDecoration: "none",
+                color: "inherit",
               }}
             >
-              {/* Icon circle */}
+              {/* Icon in cream-deep circle */}
               <div
                 className="flex items-center justify-center"
                 style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 14,
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
                   background: "var(--color-cream-deep)",
                 }}
               >
-                <Icon size={24} style={{ color: "var(--color-brown-soft)" }} />
+                <Icon size={20} style={{ color: "var(--color-brown-soft)" }} />
               </div>
 
               {/* Title */}
-              <div style={{ fontWeight: 600, fontSize: 15, lineHeight: 1.3 }}>
-                {t.title}
-              </div>
+              <div className="heading-sm">{t.title}</div>
 
               {/* Description */}
-              <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0, flex: 1 }}>
-                {t.desc}
-              </p>
+              <p className="body-sm" style={{ margin: 0, flex: 1 }}>{t.desc}</p>
 
               {/* Footer */}
               <div className="flex items-center justify-between" style={{ marginTop: 4 }}>
                 {t.completed ? (
-                  <span className="pill pill-sage flex items-center gap-1" style={{ fontSize: 12 }}>
+                  <span className="pill pill-sage flex items-center gap-1" style={{ fontSize: 11 }}>
                     <CheckCircle size={12} />
                     Completed
                   </span>
                 ) : (
-                  <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>
+                  <span className="pill pill-sage tnum" style={{ fontSize: 11 }}>
                     {t.steps} steps
                   </span>
                 )}
 
-                <Link
-                  href="#"
-                  className="flex items-center gap-1"
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "var(--color-red)",
-                    textDecoration: "none",
-                    minHeight: 44,
-                    display: "inline-flex",
-                    alignItems: "center",
-                  }}
+                <span
+                  className="caption flex items-center gap-1"
+                  style={{ fontWeight: 600, color: "var(--color-red)" }}
                 >
-                  {t.completed ? "Run again" : "Start tutorial"}
-                  <ArrowRight size={14} />
-                </Link>
+                  {t.completed ? "Run again" : "Start"}
+                  <ArrowRight size={12} />
+                </span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

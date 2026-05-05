@@ -36,174 +36,123 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="section-stack" style={{ maxWidth: 560 }}>
-      {/* Avatar + Name + Email + Phone */}
-      <div className="card section-stack">
-        {/* Avatar */}
+    <div className="content-narrow section-stack">
+      {/* Profile section */}
+      <div className="section-stack" style={{ gap: 0 }}>
+        {/* Avatar + Name */}
         <div className="flex items-center gap-4">
           <img
             src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
             alt="Profile"
             className="rounded-full object-cover"
-            style={{ width: 80, height: 80 }}
+            style={{ width: 64, height: 64 }}
           />
           <div>
-            <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>
-              Change photo
-            </button>
+            <button className="btn btn-ghost btn-sm">Change photo</button>
           </div>
         </div>
 
+        <div className="divider" style={{ margin: "20px 0" }} />
+
         {/* Name */}
         <div>
-          <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-            Full Name
-          </label>
-          <input
-            className="input"
-            defaultValue="Amira Haddad"
-            style={{ minHeight: 44 }}
-          />
+          <label className="field-label">Full Name</label>
+          <input className="input" defaultValue="Amira Haddad" />
         </div>
+
+        <div className="divider" style={{ margin: "20px 0" }} />
 
         {/* Email */}
         <div>
-          <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-            Email
-          </label>
+          <label className="field-label">Email</label>
           <div className="flex items-center gap-2">
             <input
               className="input"
               defaultValue="amira@yallakitchen.com"
               readOnly
-              style={{ background: "var(--color-cream-sunken)", color: "var(--color-brown-soft)", minHeight: 44 }}
+              style={{ background: "var(--color-cream-sunken)", color: "var(--color-brown-soft)" }}
             />
             <span className="pill pill-sage" style={{ flexShrink: 0 }}>Verified</span>
           </div>
         </div>
 
+        <div className="divider" style={{ margin: "20px 0" }} />
+
         {/* Phone */}
         <div>
-          <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-            Phone
-          </label>
+          <label className="field-label">Phone</label>
           <div className="flex items-center gap-2">
             <input
               className="input"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               readOnly={!phoneEditing}
-              style={{
-                minHeight: 44,
-                background: phoneEditing ? "white" : "var(--color-cream-sunken)",
-              }}
+              style={{ background: phoneEditing ? "white" : "var(--color-cream-sunken)" }}
             />
-            <button
-              className="btn btn-ghost btn-sm"
-              style={{ flexShrink: 0, minHeight: 44 }}
-              onClick={() => setPhoneEditing(!phoneEditing)}
-            >
-              {phoneEditing ? (
-                <>
-                  <Check size={14} style={{ color: "var(--color-sage)" }} />
-                  Save
-                </>
-              ) : (
-                "Change"
-              )}
+            <button className="btn btn-ghost btn-sm" style={{ flexShrink: 0 }} onClick={() => setPhoneEditing(!phoneEditing)}>
+              {phoneEditing ? (<><Check size={14} style={{ color: "var(--color-sage)" }} /> Save</>) : "Change"}
             </button>
           </div>
         </div>
       </div>
 
+      <div className="divider" />
+
       {/* Notifications */}
-      <div className="card" style={{ padding: 0 }}>
-        <div style={{ padding: "16px 20px" }}>
-          <div style={{ fontWeight: 600, fontSize: 16 }}>Notifications</div>
-          <p style={{ fontSize: 13, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-            Choose how you want to be notified
-          </p>
-        </div>
+      <div>
+        <div className="heading-sm" style={{ marginBottom: 4 }}>Notifications</div>
+        <p className="body-sm" style={{ margin: "0 0 16px" }}>Choose how you want to be notified</p>
 
         {/* Channel headers */}
-        <div
-          className="flex items-center"
-          style={{
-            padding: "8px 20px",
-            borderTop: "1px solid var(--color-cream-sunken)",
-            borderBottom: "1px solid var(--color-cream-sunken)",
-            background: "var(--color-cream)",
-          }}
-        >
+        <div className="flex items-center" style={{ padding: "8px 0", borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
           <span style={{ flex: 1 }} />
           {CHANNELS.map((ch) => (
-            <span
-              key={ch}
-              className="eyebrow"
-              style={{ width: 64, textAlign: "center" }}
-            >
-              {ch}
-            </span>
+            <span key={ch} className="eyebrow" style={{ width: 64, textAlign: "center" }}>{ch}</span>
           ))}
         </div>
 
         {NOTIF_CATEGORIES.map((cat, i) => (
-          <div
-            key={cat.label}
-            className="flex items-center"
-            style={{
-              padding: "14px 20px",
-              borderTop: i > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
-            }}
-          >
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>{cat.label}</div>
-              <div style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{cat.desc}</div>
-            </div>
-            {CHANNELS.map((ch) => (
-              <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
-                <button
-                  className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`}
-                  onClick={() => toggleNotif(cat.label, ch)}
-                  style={{ transform: "scale(0.85)", minWidth: 44, minHeight: 28 }}
-                >
-                  <span className="toggle-thumb" />
-                </button>
+          <div key={cat.label}>
+            {i > 0 && <div className="divider" />}
+            <div className="flex items-center" style={{ padding: "14px 0" }}>
+              <div style={{ flex: 1 }}>
+                <div className="heading-sm" style={{ fontSize: 14 }}>{cat.label}</div>
+                <div className="caption">{cat.desc}</div>
               </div>
-            ))}
+              {CHANNELS.map((ch) => (
+                <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
+                  <button
+                    className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`}
+                    onClick={() => toggleNotif(cat.label, ch)}
+                    style={{ transform: "scale(0.85)" }}
+                  >
+                    <span className="toggle-thumb" />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
 
+      <div className="divider" />
+
       {/* Co-pilot */}
       <button
-        className="card flex items-center justify-between"
-        style={{
-          width: "100%",
-          textAlign: "left",
-          border: "none",
-          cursor: "pointer",
-          minHeight: 44,
-        }}
+        className="flex items-center justify-between w-full text-left"
+        style={{ background: "none", border: "none", padding: "4px 0", cursor: "pointer" }}
         onClick={() => setShowInvite(!showInvite)}
       >
         <div className="flex items-center gap-3">
           <div
             className="flex items-center justify-center"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              background: "var(--color-cream-sunken)",
-            }}
+            style={{ width: 40, height: 40, borderRadius: 10, background: "var(--color-cream-sunken)" }}
           >
             <UserPlus size={18} style={{ color: "var(--color-brown-soft)" }} />
           </div>
           <div>
-            <div style={{ fontWeight: 600, fontSize: 15 }}>Invite a co-pilot</div>
-            <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-              Add a partner to manage your store
-            </div>
+            <div className="heading-sm" style={{ fontSize: 14 }}>Invite a co-pilot</div>
+            <div className="body-sm">Add a partner to manage your store</div>
           </div>
         </div>
         <ChevronRight
@@ -211,47 +160,40 @@ export default function SettingsPage() {
           style={{
             color: "var(--color-brown-soft-2)",
             transform: showInvite ? "rotate(90deg)" : "none",
-            transition: "transform 0.2s ease",
+            transition: `transform var(--t-fast) var(--ease-spring)`,
           }}
         />
       </button>
       {showInvite && (
-        <div className="card" style={{ background: "var(--color-cream-deep)" }}>
-          <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "0 0 12px" }}>
+        <div style={{ padding: "12px 0 0 52px" }}>
+          <p className="body-sm" style={{ margin: "0 0 12px" }}>
             Co-pilot invitations coming soon. You will be able to share store access with a trusted partner.
           </p>
-          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44, opacity: 0.5, cursor: "not-allowed" }} disabled>
-            Send Invite
-          </button>
+          <button className="btn btn-ghost btn-sm" style={{ opacity: 0.5, cursor: "not-allowed" }} disabled>Send Invite</button>
         </div>
       )}
 
+      <div className="divider" />
+
       {/* Security */}
-      <div className="card section-stack" style={{ gap: 0 }}>
-        <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12 }}>Security</div>
+      <div>
+        <div className="heading-sm" style={{ marginBottom: 12 }}>Security</div>
 
         <button
           className="flex items-center justify-between w-full text-left"
-          style={{
-            padding: "14px 0",
-            background: "none",
-            border: "none",
-            borderTop: "1px solid var(--color-cream-sunken)",
-            cursor: "pointer",
-            minHeight: 48,
-          }}
+          style={{ padding: "14px 0", background: "none", border: "none", cursor: "pointer" }}
           onClick={() => setPasswordOpen(!passwordOpen)}
         >
           <div className="flex items-center gap-3">
             <Shield size={18} style={{ color: "var(--color-brown-soft)" }} />
-            <span style={{ fontWeight: 500, fontSize: 14 }}>Change password</span>
+            <span className="body" style={{ fontWeight: 500 }}>Change password</span>
           </div>
           <ChevronDown
             size={16}
             style={{
               color: "var(--color-brown-soft-2)",
               transform: passwordOpen ? "rotate(180deg)" : "none",
-              transition: "transform 0.2s ease",
+              transition: `transform var(--t-fast) var(--ease-spring)`,
             }}
           />
         </button>
@@ -259,128 +201,69 @@ export default function SettingsPage() {
         {passwordOpen && (
           <div style={{ padding: "0 0 14px 30px" }}>
             <div style={{ marginBottom: 12 }}>
-              <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>
-                Current Password
-              </label>
-              <input
-                type="password"
-                className="input"
-                placeholder="Enter current password"
-                style={{ minHeight: 44 }}
-              />
+              <label className="field-label" style={{ fontSize: 12 }}>Current Password</label>
+              <input type="password" className="input" placeholder="Enter current password" />
             </div>
             <div style={{ marginBottom: 12 }}>
-              <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>
-                New Password
-              </label>
-              <input
-                type="password"
-                className="input"
-                placeholder="Enter new password"
-                style={{ minHeight: 44 }}
-              />
+              <label className="field-label" style={{ fontSize: 12 }}>New Password</label>
+              <input type="password" className="input" placeholder="Enter new password" />
             </div>
-            <button className="btn btn-red btn-sm" style={{ minHeight: 44 }}>
-              Update Password
-            </button>
+            <button className="btn btn-dark btn-sm">Update Password</button>
           </div>
         )}
 
-        <div
-          className="flex items-center justify-between w-full"
-          style={{
-            padding: "14px 0",
-            borderTop: "1px solid var(--color-cream-sunken)",
-          }}
-        >
+        <div className="divider" />
+
+        <div className="flex items-center justify-between w-full" style={{ padding: "14px 0" }}>
           <div className="flex items-center gap-3">
             <Shield size={18} style={{ color: "var(--color-brown-soft)" }} />
             <div>
-              <span style={{ fontWeight: 500, fontSize: 14 }}>Two-factor authentication</span>
-              <div style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>Not enabled</div>
+              <span className="body" style={{ fontWeight: 500 }}>Two-factor authentication</span>
+              <div className="caption">Not enabled</div>
             </div>
           </div>
-          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>
-            Set up
-          </button>
+          <button className="btn btn-ghost btn-sm">Set up</button>
         </div>
       </div>
 
-      {/* Danger zone */}
-      <div style={{ borderTop: "1px solid var(--color-cream-sunken)", paddingTop: 20 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft-2)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+      <div className="divider" />
+
+      {/* Danger zone - minimal, caption red text, no separate card */}
+      <div>
+        <div className="caption" style={{ color: "var(--color-red)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
           Danger Zone
         </div>
         <div className="flex flex-col gap-2">
           <Link
             href="/login"
-            className="flex items-center gap-2"
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 14,
-              fontWeight: 500,
-              color: "var(--color-brown-soft)",
-              padding: "8px 0",
-              textDecoration: "none",
-              minHeight: 44,
-            }}
+            className="flex items-center gap-2 body"
+            style={{ fontWeight: 500, color: "var(--color-brown-soft)", padding: "8px 0" }}
           >
             <LogOut size={16} />
             Log out
           </Link>
           <button
-            className="flex items-center gap-2"
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: 14,
-              fontWeight: 500,
-              color: "var(--color-red)",
-              padding: "8px 0",
-              cursor: "pointer",
-              minHeight: 44,
-            }}
+            className="flex items-center gap-2 body"
+            style={{ background: "none", border: "none", fontWeight: 500, color: "var(--color-red)", padding: "8px 0", cursor: "pointer" }}
             onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
           >
             <Trash2 size={16} />
             Delete my account
           </button>
           {showDeleteConfirm && (
-            <div
-              style={{
-                background: "var(--color-red-soft)",
-                borderRadius: 10,
-                padding: 16,
-              }}
-            >
+            <div style={{ borderLeft: "3px solid var(--color-red)", borderRadius: 8, padding: "14px 16px", marginTop: 4 }}>
               <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
                 <AlertTriangle size={16} style={{ color: "var(--color-red-deep)" }} />
-                <span style={{ fontWeight: 600, fontSize: 14, color: "var(--color-red-deep)" }}>
-                  Are you sure?
-                </span>
+                <span className="heading-sm" style={{ fontSize: 14, color: "var(--color-red-deep)" }}>Are you sure?</span>
               </div>
-              <p style={{ fontSize: 13, color: "var(--color-red-deep)", margin: "0 0 12px" }}>
+              <p className="body-sm" style={{ color: "var(--color-red-deep)", margin: "0 0 12px" }}>
                 This action is permanent and cannot be undone. All your data, menu items, and order history will be deleted.
               </p>
               <div className="flex gap-2">
-                <button
-                  className="btn btn-ghost btn-sm"
-                  style={{ minHeight: 44 }}
-                  onClick={() => setShowDeleteConfirm(false)}
-                >
-                  Cancel
-                </button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
                 <button
                   className="btn btn-sm"
-                  style={{
-                    minHeight: 44,
-                    background: "var(--color-red-deep)",
-                    color: "#fff",
-                    border: "none",
-                    opacity: 0.5,
-                    cursor: "not-allowed",
-                  }}
+                  style={{ background: "var(--color-red-deep)", color: "#fff", border: "none", opacity: 0.5, cursor: "not-allowed" }}
                   disabled
                 >
                   Delete Account

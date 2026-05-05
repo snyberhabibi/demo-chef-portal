@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Star, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
+import { Star, MessageSquare } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -207,79 +207,77 @@ export default function ReviewsPage() {
   }, []);
 
   return (
-    <div className="section-stack" style={{ maxWidth: 680 }}>
-      {/* Tabs + Sort */}
-      <div className="flex flex-wrap items-center gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            className={`pill ${activeTab === t ? "pill-brown" : ""}`}
-            style={{
-              cursor: "pointer",
-              border: "none",
-              minHeight: 44,
-              padding: "8px 16px",
-              fontSize: 13,
-              transition: "all 0.15s ease",
-            }}
-            onClick={() => setActiveTab(t)}
-          >
-            {t}
-          </button>
-        ))}
+    <div className="content-default section-stack">
+      {/* Header row: tabs + sort */}
+      <div className="flex items-end justify-between flex-wrap gap-4">
+        {/* Underline tabs */}
+        <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
+          {TABS.map((t) => (
+            <button
+              key={t}
+              className="body"
+              style={{
+                padding: "10px 20px",
+                background: "none",
+                border: "none",
+                fontWeight: activeTab === t ? 600 : 400,
+                color: activeTab === t ? "var(--color-red)" : "var(--color-brown-soft)",
+                borderBottom: activeTab === t ? "2px solid var(--color-red)" : "2px solid transparent",
+                marginBottom: -1,
+                cursor: "pointer",
+                transition: `color var(--t-fast) var(--ease-spring)`,
+              }}
+              onClick={() => setActiveTab(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
 
-        <div style={{ marginLeft: "auto", position: "relative" }}>
+        {/* Sort dropdown */}
+        <div style={{ position: "relative" }}>
           <button
             className="btn btn-ghost btn-sm"
-            style={{ minHeight: 44, gap: 4, transition: "all 0.15s ease" }}
             onClick={() => setSortOpen(!sortOpen)}
           >
             {sortBy}
-            <ChevronDown
-              size={14}
-              style={{
-                transform: sortOpen ? "rotate(180deg)" : "none",
-                transition: "transform 0.2s ease",
-              }}
-            />
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: sortOpen ? "rotate(180deg)" : "none", transition: `transform var(--t-fast) var(--ease-spring)` }}>
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
           {sortOpen && (
             <div
+              className="shadow-sticker"
               style={{
                 position: "absolute",
-                top: "100%",
+                top: "calc(100% + 4px)",
                 right: 0,
-                marginTop: 4,
                 background: "#fff",
-                borderRadius: 10,
-                boxShadow: "0 8px 32px rgba(51,31,46,0.12)",
-                border: "1px solid var(--color-cream-sunken)",
+                borderRadius: 12,
+                border: "1px solid rgba(51,31,46,0.06)",
                 overflow: "hidden",
                 zIndex: 20,
-                minWidth: 160,
+                minWidth: 150,
+                animation: "fadeUp 0.15s var(--ease-out) both",
               }}
             >
               {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt}
+                  className="body"
                   style={{
                     display: "block",
                     width: "100%",
                     textAlign: "left",
-                    padding: "12px 16px",
+                    padding: "10px 16px",
                     background: opt === sortBy ? "var(--color-cream-sunken)" : "none",
                     border: "none",
-                    fontSize: 14,
                     fontWeight: opt === sortBy ? 600 : 400,
                     color: "var(--color-brown)",
                     cursor: "pointer",
-                    minHeight: 44,
-                    transition: "background 0.1s ease",
+                    transition: `background var(--t-fast)`,
                   }}
-                  onClick={() => {
-                    setSortBy(opt);
-                    setSortOpen(false);
-                  }}
+                  onClick={() => { setSortBy(opt); setSortOpen(false); }}
                 >
                   {opt}
                 </button>
@@ -292,247 +290,220 @@ export default function ReviewsPage() {
       {/* Chef Profile tab */}
       {activeTab === "Chef Profile" && (
         <>
-          {/* Rating summary */}
+          {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
               <div className="fraunces" style={{ fontSize: 48, lineHeight: 1, color: "var(--color-brown)" }}>
                 4.0
               </div>
-              <div style={{ marginTop: 6 }}>
-                <StarRow rating={4} size={16} />
+              <div style={{ marginTop: 8 }}>
+                <StarRow rating={4} size={18} />
               </div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
-                4 ratings
-              </div>
+              <div className="caption" style={{ marginTop: 6 }}>4 ratings</div>
             </div>
+
+            {/* Distribution bars */}
             <div style={{ flex: 1, width: "100%" }}>
               {breakdownData.map((row) => (
-                <div key={row.stars} className="flex items-center gap-2" style={{ marginBottom: 4 }}>
-                  <span className="tnum" style={{ fontSize: 13, width: 24, textAlign: "right", color: "var(--color-brown-soft)" }}>
-                    {row.stars}.0
+                <div key={row.stars} className="flex items-center gap-2" style={{ marginBottom: 6 }}>
+                  <span className="tnum caption" style={{ width: 20, textAlign: "right" }}>
+                    {row.stars}
                   </span>
                   <Star size={12} fill="var(--color-sage)" stroke="var(--color-sage)" />
-                  <div
-                    style={{
-                      flex: 1,
-                      height: 8,
-                      borderRadius: 4,
-                      background: "var(--color-cream-sunken)",
-                      overflow: "hidden",
-                    }}
-                  >
+                  <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
                     <div
                       style={{
                         width: `${row.pct}%`,
                         height: "100%",
-                        borderRadius: 4,
+                        borderRadius: 3,
                         background: "var(--color-sage)",
-                        transition: "width 0.3s ease",
+                        transition: `width 0.3s var(--ease-spring)`,
                       }}
                     />
                   </div>
-                  <span className="tnum" style={{ fontSize: 12, width: 20, color: "var(--color-brown-soft-2)" }}>
-                    {row.count}
-                  </span>
+                  <span className="tnum caption" style={{ width: 16 }}>{row.count}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Review cards */}
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="card"
-              style={{ padding: 0 }}
-            >
-              <div style={{ padding: 20 }}>
-                {/* Header */}
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex items-center justify-center rounded-full"
-                    style={{
-                      width: 40,
-                      height: 40,
-                      background: "var(--color-cream-sunken)",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "var(--color-brown-soft)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {review.initials}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span style={{ fontWeight: 600, fontSize: 15 }}>{review.name}</span>
-                      <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{review.date}</span>
-                    </div>
-                    <StarRow rating={review.rating} />
-                  </div>
-                </div>
-
-                {/* Body */}
-                <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--color-brown-soft)", margin: "12px 0 0" }}>
-                  {review.text}
-                </p>
-              </div>
-
-              {/* Posted reply */}
-              {review.reply && (
-                <div
-                  style={{
-                    margin: "0 20px 20px",
-                    padding: 14,
-                    borderRadius: 10,
-                    background: "var(--color-cream-deep)",
-                    borderLeft: "3px solid var(--color-sage)",
-                  }}
-                >
-                  <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>{review.reply.name}</span>
-                    <span style={{ fontSize: 11, color: "var(--color-brown-soft-2)" }}>{review.reply.time}</span>
-                  </div>
-                  <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0 }}>
-                    {review.reply.text}
-                  </p>
-                </div>
-              )}
-
-              {/* Reply composer */}
-              {review.composerOpen && (
-                <div style={{ padding: "0 20px 20px" }}>
-                  <div style={{ position: "relative" }}>
-                    <textarea
-                      className="textarea"
-                      value={review.composerText}
-                      onChange={(e) => updateComposerText(review.id, e.target.value)}
-                      rows={4}
-                      placeholder="Write a reply..."
-                      style={{ fontSize: 13, minHeight: 120, transition: "border-color 0.15s ease" }}
-                    />
-                    <span
-                      className="tnum"
+          {/* Review list - single card with dividers */}
+          <div className="card" style={{ padding: 0 }}>
+            {reviews.map((review, idx) => (
+              <div key={review.id}>
+                {idx > 0 && <div className="divider" />}
+                <div style={{ padding: 24 }}>
+                  {/* Header row */}
+                  <div className="flex items-start gap-3">
+                    <div
+                      className="flex items-center justify-center rounded-full"
                       style={{
-                        position: "absolute",
-                        bottom: 10,
-                        right: 12,
-                        fontSize: 11,
-                        color: review.composerText.length > maxChars * 0.9 ? "var(--color-red)" : "var(--color-brown-soft-2)",
+                        width: 36,
+                        height: 36,
+                        background: "var(--color-cream-sunken)",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "var(--color-brown-soft)",
+                        flexShrink: 0,
                       }}
                     >
-                      {review.composerText.length}/{maxChars}
-                    </span>
+                      {review.initials}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="heading-sm" style={{ fontSize: 14 }}>{review.name}</span>
+                        <span className="caption">{review.date}</span>
+                      </div>
+                      <div style={{ marginTop: 2 }}>
+                        <StarRow rating={review.rating} />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-end gap-2" style={{ marginTop: 10 }}>
+
+                  {/* Body text */}
+                  <p className="body-sm" style={{ margin: "12px 0 0" }}>{review.text}</p>
+
+                  {/* Posted reply */}
+                  {review.reply && (
+                    <div
+                      style={{
+                        marginTop: 16,
+                        padding: 14,
+                        borderRadius: 10,
+                        background: "var(--color-cream-deep)",
+                        borderLeft: "3px solid var(--color-sage)",
+                      }}
+                    >
+                      <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
+                        <span className="body" style={{ fontWeight: 600 }}>{review.reply.name}</span>
+                        <span className="caption">{review.reply.time}</span>
+                      </div>
+                      <p className="body-sm" style={{ margin: 0 }}>{review.reply.text}</p>
+                    </div>
+                  )}
+
+                  {/* Reply composer */}
+                  {review.composerOpen && (
+                    <div style={{ marginTop: 16 }}>
+                      <div style={{ position: "relative" }}>
+                        <textarea
+                          className="textarea"
+                          value={review.composerText}
+                          onChange={(e) => updateComposerText(review.id, e.target.value)}
+                          placeholder="Write a reply..."
+                          style={{ minHeight: 80, fontSize: 14, transition: `border-color var(--t-fast)` }}
+                        />
+                        <span
+                          className="tnum caption"
+                          style={{
+                            position: "absolute",
+                            bottom: 10,
+                            right: 12,
+                            color: review.composerText.length > maxChars * 0.9 ? "var(--color-red)" : undefined,
+                          }}
+                        >
+                          {review.composerText.length}/{maxChars}
+                        </span>
+                      </div>
+                      <div className="flex justify-end gap-2" style={{ marginTop: 10 }}>
+                        <button className="btn btn-ghost btn-sm" onClick={() => cancelReply(review.id)}>
+                          Cancel
+                        </button>
+                        <button
+                          className="btn btn-dark btn-sm"
+                          onClick={() => postReply(review.id)}
+                          disabled={review.composerText.trim().length === 0}
+                        >
+                          Post Reply
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Reply button */}
+                  {!review.reply && !review.composerOpen && (
                     <button
                       className="btn btn-ghost btn-sm"
-                      style={{ minHeight: 44, transition: "all 0.15s ease" }}
-                      onClick={() => cancelReply(review.id)}
+                      style={{ marginTop: 12, gap: 6 }}
+                      onClick={() => toggleComposer(review.id)}
                     >
-                      Cancel
+                      <MessageSquare size={14} />
+                      Reply
                     </button>
-                    <button
-                      className="btn btn-red btn-sm"
-                      style={{ minHeight: 44, transition: "all 0.15s ease" }}
-                      onClick={() => postReply(review.id)}
-                      disabled={review.composerText.trim().length === 0}
-                    >
-                      Post Reply
-                    </button>
-                  </div>
+                  )}
                 </div>
-              )}
-
-              {/* Reply button for cards without reply or composer */}
-              {!review.reply && !review.composerOpen && (
-                <div style={{ padding: "0 20px 16px" }}>
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    style={{ gap: 6, minHeight: 44, transition: "all 0.15s ease" }}
-                    onClick={() => toggleComposer(review.id)}
-                  >
-                    <MessageSquare size={14} />
-                    Reply
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </>
       )}
 
       {/* Dishes tab */}
       {activeTab === "Dishes" && (
-        <div className="section-stack">
+        <div className="card" style={{ padding: 0 }}>
           {DISH_REVIEWS.map((dish, idx) => (
-            <div key={idx} className="card" style={{ padding: 0 }}>
+            <div key={idx}>
+              {idx > 0 && <div className="divider" />}
               <button
                 className="flex items-center gap-3 w-full text-left"
                 style={{
-                  padding: "16px 20px",
+                  padding: "16px 24px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  minHeight: 56,
                 }}
                 onClick={() => setExpandedDish(expandedDish === idx ? null : idx)}
               >
                 <div className="flex-1">
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>{dish.name}</span>
+                  <span className="heading-sm" style={{ fontSize: 14 }}>{dish.name}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
-                  <span className="tnum" style={{ fontWeight: 600, fontSize: 14 }}>{dish.rating.toFixed(1)}</span>
+                  <span className="tnum body" style={{ fontWeight: 600 }}>{dish.rating.toFixed(1)}</span>
                 </div>
-                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>
-                  {dish.count} reviews
-                </span>
-                <ChevronRight
-                  size={16}
+                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>{dish.count} reviews</span>
+                <svg
+                  width="16" height="16" viewBox="0 0 16 16" fill="none"
                   style={{
                     color: "var(--color-brown-soft-2)",
                     transform: expandedDish === idx ? "rotate(90deg)" : "none",
-                    transition: "transform 0.2s ease",
+                    transition: `transform var(--t-fast) var(--ease-spring)`,
                   }}
-                />
+                >
+                  <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
               {expandedDish === idx && (
-                <div style={{ borderTop: "1px solid var(--color-cream-sunken)" }}>
+                <div>
                   {dish.reviews.map((r, ri) => (
-                    <div
-                      key={ri}
-                      style={{
-                        padding: "14px 20px",
-                        borderTop: ri > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="flex items-center justify-center rounded-full"
-                          style={{
-                            width: 32,
-                            height: 32,
-                            background: "var(--color-cream-sunken)",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: "var(--color-brown-soft)",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {r.initials}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</span>
-                            <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{r.date}</span>
+                    <div key={ri}>
+                      <div className="divider" />
+                      <div style={{ padding: "14px 24px 14px 44px" }}>
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="flex items-center justify-center rounded-full"
+                            style={{
+                              width: 28,
+                              height: 28,
+                              background: "var(--color-cream-sunken)",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: "var(--color-brown-soft)",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {r.initials}
                           </div>
-                          <StarRow rating={r.rating} size={12} />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="body" style={{ fontWeight: 600 }}>{r.name}</span>
+                              <span className="caption">{r.date}</span>
+                            </div>
+                            <StarRow rating={r.rating} size={12} />
+                          </div>
                         </div>
+                        <p className="body-sm" style={{ margin: "8px 0 0 40px" }}>{r.text}</p>
                       </div>
-                      <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: "8px 0 0 44px" }}>
-                        {r.text}
-                      </p>
                     </div>
                   ))}
                 </div>
@@ -544,75 +515,70 @@ export default function ReviewsPage() {
 
       {/* Bundles tab */}
       {activeTab === "Bundles" && (
-        <div className="section-stack">
+        <div className="card" style={{ padding: 0 }}>
           {BUNDLE_REVIEWS.map((bundle, idx) => (
-            <div key={idx} className="card" style={{ padding: 0 }}>
+            <div key={idx}>
+              {idx > 0 && <div className="divider" />}
               <button
                 className="flex items-center gap-3 w-full text-left"
                 style={{
-                  padding: "16px 20px",
+                  padding: "16px 24px",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  minHeight: 56,
                 }}
                 onClick={() => setExpandedBundle(expandedBundle === idx ? null : idx)}
               >
                 <div className="flex-1">
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>{bundle.name}</span>
+                  <span className="heading-sm" style={{ fontSize: 14 }}>{bundle.name}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
-                  <span className="tnum" style={{ fontWeight: 600, fontSize: 14 }}>{bundle.rating.toFixed(1)}</span>
+                  <span className="tnum body" style={{ fontWeight: 600 }}>{bundle.rating.toFixed(1)}</span>
                 </div>
-                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>
-                  {bundle.count} reviews
-                </span>
-                <ChevronRight
-                  size={16}
+                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>{bundle.count} reviews</span>
+                <svg
+                  width="16" height="16" viewBox="0 0 16 16" fill="none"
                   style={{
                     color: "var(--color-brown-soft-2)",
                     transform: expandedBundle === idx ? "rotate(90deg)" : "none",
-                    transition: "transform 0.2s ease",
+                    transition: `transform var(--t-fast) var(--ease-spring)`,
                   }}
-                />
+                >
+                  <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
               {expandedBundle === idx && (
-                <div style={{ borderTop: "1px solid var(--color-cream-sunken)" }}>
+                <div>
                   {bundle.reviews.map((r, ri) => (
-                    <div
-                      key={ri}
-                      style={{
-                        padding: "14px 20px",
-                        borderTop: ri > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="flex items-center justify-center rounded-full"
-                          style={{
-                            width: 32,
-                            height: 32,
-                            background: "var(--color-cream-sunken)",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: "var(--color-brown-soft)",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {r.initials}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</span>
-                            <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{r.date}</span>
+                    <div key={ri}>
+                      <div className="divider" />
+                      <div style={{ padding: "14px 24px 14px 44px" }}>
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="flex items-center justify-center rounded-full"
+                            style={{
+                              width: 28,
+                              height: 28,
+                              background: "var(--color-cream-sunken)",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: "var(--color-brown-soft)",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {r.initials}
                           </div>
-                          <StarRow rating={r.rating} size={12} />
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="body" style={{ fontWeight: 600 }}>{r.name}</span>
+                              <span className="caption">{r.date}</span>
+                            </div>
+                            <StarRow rating={r.rating} size={12} />
+                          </div>
                         </div>
+                        <p className="body-sm" style={{ margin: "8px 0 0 40px" }}>{r.text}</p>
                       </div>
-                      <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: "8px 0 0 44px" }}>
-                        {r.text}
-                      </p>
                     </div>
                   ))}
                 </div>

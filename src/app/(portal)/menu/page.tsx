@@ -159,8 +159,8 @@ export default function MenuPage() {
   ];
 
   return (
-    <div className="section-stack">
-      {/* Create Dish Modal */}
+    <div className="content-wide section-stack page-fade">
+      {/* ── Create Dish Modal ── */}
       {showCreateModal && (
         <div
           style={{
@@ -171,7 +171,8 @@ export default function MenuPage() {
             alignItems: "center",
             justifyContent: "center",
             background: "rgba(51,31,46,0.4)",
-            backdropFilter: "blur(4px)",
+            backdropFilter: "blur(6px)",
+            animation: "fadeIn 0.15s ease-out both",
           }}
           onClick={() => setShowCreateModal(false)}
         >
@@ -179,10 +180,10 @@ export default function MenuPage() {
             className="card"
             style={{
               width: "100%",
-              maxWidth: 520,
+              maxWidth: 480,
               margin: "0 16px",
-              padding: "28px",
               position: "relative",
+              animation: "scaleIn 0.2s var(--ease-spring) both",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -195,39 +196,38 @@ export default function MenuPage() {
                 background: "none",
                 border: "none",
                 color: "var(--color-brown-soft-2)",
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 8,
+                transition: "color var(--t-fast)",
               }}
             >
-              <X size={18} />
+              <X size={16} />
             </button>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: "var(--color-brown)", marginBottom: 4 }}>
+
+            <h2 className="heading-md" style={{ marginBottom: 4 }}>
               Create New Dish
             </h2>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "0 0 24px 0" }}>
+            <p className="body-sm" style={{ margin: "0 0 24px 0" }}>
               Choose how you want to create your dish
             </p>
-            <div className="grid grid-cols-2 gap-3">
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <Link
                 href="/menu/new"
-                className="card-hover"
+                className="card card-hover"
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                   padding: "28px 16px",
-                  borderRadius: 12,
-                  border: "1px solid rgba(51,31,46,0.1)",
-                  background: "#fff",
                   textDecoration: "none",
                   color: "inherit",
                   textAlign: "center",
-                  transition: "border-color 0.15s, box-shadow 0.15s",
                 }}
               >
                 <div
@@ -245,29 +245,26 @@ export default function MenuPage() {
                 >
                   <ClipboardList size={22} strokeWidth={1.8} />
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)", marginBottom: 4 }}>
-                  Create from Scratch
+                <div className="heading-sm" style={{ marginBottom: 4 }}>
+                  From Scratch
                 </div>
-                <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                <div className="body-sm">
                   Start with a blank canvas
                 </div>
               </Link>
+
               <Link
                 href="/menu/new"
-                className="card-hover"
+                className="card card-hover"
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                   padding: "28px 16px",
-                  borderRadius: 12,
-                  border: "1px solid rgba(51,31,46,0.1)",
-                  background: "#fff",
                   textDecoration: "none",
                   color: "inherit",
                   textAlign: "center",
-                  transition: "border-color 0.15s, box-shadow 0.15s",
                 }}
               >
                 <div
@@ -285,10 +282,10 @@ export default function MenuPage() {
                 >
                   <Copy size={22} strokeWidth={1.8} />
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)", marginBottom: 4 }}>
-                  Create from Template
+                <div className="heading-sm" style={{ marginBottom: 4 }}>
+                  From Template
                 </div>
-                <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                <div className="body-sm">
                   Use a pre-made template
                 </div>
               </Link>
@@ -297,152 +294,134 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="fraunces" style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>
-              Dishes
-            </h1>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0 0" }}>
-              Manage your menu dishes
-            </p>
-          </div>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="btn"
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <h1 className="heading-lg">Dishes</h1>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="btn btn-dark"
+        >
+          <Plus size={16} strokeWidth={2.2} />
+          Create Dish
+        </button>
+      </div>
+
+      {/* ── Filters Row ── */}
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+        {/* Status pills */}
+        <div style={{ display: "flex", gap: 6 }}>
+          {statusFilters.map((f) => {
+            const isActive = f.label === activeStatus;
+            return (
+              <button
+                key={f.label}
+                onClick={() => setActiveStatus(f.label)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "0 12px",
+                  height: 32,
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  border: isActive ? "none" : "1px solid rgba(51,31,46,0.1)",
+                  background: isActive ? "var(--color-brown)" : "transparent",
+                  color: isActive ? "var(--color-cream)" : "var(--color-brown-soft)",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                {f.label}
+                <span className="tnum" style={{ fontSize: 11, fontWeight: 700, opacity: isActive ? 0.7 : 0.5 }}>
+                  {f.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, background: "rgba(51,31,46,0.1)" }} />
+
+        {/* Category pills */}
+        <div
+          style={{
+            display: "flex",
+            gap: 6,
+            flex: 1,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+            paddingBottom: 2,
+          }}
+        >
+          {categories.map((cat) => {
+            const isActive = cat.label === activeCategory;
+            return (
+              <button
+                key={cat.label}
+                onClick={() => setActiveCategory(cat.label)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "0 10px",
+                  height: 32,
+                  borderRadius: 9999,
+                  fontSize: 12,
+                  fontWeight: isActive ? 600 : 500,
+                  cursor: "pointer",
+                  border: `1px solid ${isActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
+                  background: isActive ? "var(--color-terracotta-soft)" : "transparent",
+                  color: isActive ? "var(--color-terracotta)" : "var(--color-brown-soft)",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                {cat.emoji && <span style={{ fontSize: 14 }}>{cat.emoji}</span>}
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search */}
+        <div className="relative" style={{ width: 280, flexShrink: 0 }}>
+          <Search
+            size={15}
+            strokeWidth={2}
+            className="absolute"
             style={{
-              background: "var(--color-brown)",
-              color: "#fff",
-              borderColor: "var(--color-brown)",
+              left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "var(--color-brown-soft-2)",
+              pointerEvents: "none",
             }}
-          >
-            <Plus size={16} strokeWidth={2} />
-            Create Dish
-          </button>
+          />
+          <input
+            type="text"
+            className="input"
+            placeholder="Search dishes..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
+          />
         </div>
       </div>
 
-      {/* Status pills */}
-      <div className="flex gap-2 flex-wrap">
-        {statusFilters.map((f) => {
-          const isActive = f.label === activeStatus;
-          return (
-            <button
-              key={f.label}
-              onClick={() => setActiveStatus(f.label)}
-              className={`pill ${isActive ? "pill-brown" : ""}`}
-              style={{
-                cursor: "pointer",
-                border: isActive ? undefined : "1px solid rgba(51,31,46,0.1)",
-                minHeight: 36,
-                fontSize: 13,
-              }}
-            >
-              {f.label}
-              <span
-                className="tnum"
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  opacity: isActive ? 0.7 : 0.5,
-                  marginLeft: 2,
-                }}
-              >
-                {f.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Category tabs */}
-      <div
-        className="flex gap-2"
-        style={{
-          overflowX: "auto",
-          scrollbarWidth: "none",
-          marginTop: -8,
-          paddingBottom: 2,
-        }}
-      >
-        {categories.map((cat) => {
-          const isActive = cat.label === activeCategory;
-          return (
-            <button
-              key={cat.label}
-              onClick={() => setActiveCategory(cat.label)}
-              className="pill"
-              style={{
-                cursor: "pointer",
-                fontSize: 12,
-                minHeight: 36,
-                background: isActive ? "var(--color-terracotta-soft)" : "transparent",
-                border: `1px solid ${isActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.12)"}`,
-                color: isActive ? "var(--color-terracotta)" : "var(--color-brown-soft)",
-                fontWeight: isActive ? 600 : 500,
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              {cat.emoji ? `${cat.emoji} ` : ""}{cat.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Search */}
-      <div className="relative">
-        <Search
-          size={16}
-          strokeWidth={2}
-          className="absolute"
-          style={{
-            left: 14,
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--color-brown-soft-2)",
-            pointerEvents: "none",
-          }}
-        />
-        <input
-          type="text"
-          className="input"
-          placeholder="Search dishes..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ paddingLeft: 40, marginTop: -8 }}
-        />
-      </div>
-
-      {/* Dish grid */}
+      {/* ── Dish Grid ── */}
       {filteredDishes.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "48px 20px" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>{"\u{1F37D}\u{FE0F}"}</div>
-          <div
-            style={{
-              fontSize: 18,
-              fontWeight: 600,
-              color: "var(--color-brown)",
-              marginBottom: 6,
-            }}
-          >
+        <div style={{ textAlign: "center", padding: "56px 20px" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>{"\u{1F37D}\u{FE0F}"}</div>
+          <div className="heading-md" style={{ marginBottom: 6 }}>
             No dishes yet
           </div>
-          <div
-            style={{
-              fontSize: 14,
-              color: "var(--color-brown-soft)",
-              marginBottom: 20,
-            }}
-          >
+          <p className="body-sm" style={{ marginBottom: 24 }}>
             Create your first dish to start receiving orders
-          </div>
-          <Link
-            href="/menu/new"
-            className="btn btn-red"
-            style={{ display: "inline-flex" }}
-          >
+          </p>
+          <Link href="/menu/new" className="btn btn-dark" style={{ display: "inline-flex" }}>
             <Plus size={16} strokeWidth={2} />
             Create Dish
           </Link>
@@ -450,12 +429,12 @@ export default function MenuPage() {
       ) : (
         <>
           <div
+            className="line-reveal"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 12,
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: 16,
             }}
-            className="sm:!grid-cols-3 md:!grid-cols-3 lg:!grid-cols-4 xl:!grid-cols-5"
           >
             {filteredDishes.map((dish) => {
               const badge = statusBadge(dish.status);
@@ -463,9 +442,11 @@ export default function MenuPage() {
                 <Link
                   key={dish.id}
                   href="/menu/new"
-                  className="card-hover bg-white rounded-xl shadow-card overflow-hidden block group"
+                  className="card card-hover group"
                   style={{
-                    opacity: dish.status === "archived" ? 0.65 : 1,
+                    padding: 0,
+                    overflow: "hidden",
+                    opacity: dish.status === "archived" ? 0.6 : 1,
                     textDecoration: "none",
                     color: "inherit",
                   }}
@@ -478,7 +459,8 @@ export default function MenuPage() {
                       className="w-full h-full object-cover"
                       style={{ borderRadius: "12px 12px 0 0" }}
                     />
-                    {/* Status badge overlay */}
+
+                    {/* Status pill overlay */}
                     <div
                       className="absolute"
                       style={{
@@ -507,67 +489,49 @@ export default function MenuPage() {
                       />
                       {badge.label}
                     </div>
-                    {/* 3-dot menu */}
+
+                    {/* 3-dot menu (hover) */}
                     <div
                       className="absolute opacity-0 group-hover:opacity-100"
                       style={{
                         top: 8,
                         right: 8,
-                        width: 32,
-                        height: 32,
+                        width: 30,
+                        height: 30,
                         borderRadius: 8,
-                        background: "rgba(255,255,255,0.85)",
+                        background: "rgba(255,255,255,0.9)",
                         backdropFilter: "blur(4px)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        transition: "opacity 0.15s",
+                        transition: "opacity var(--t-fast)",
                         color: "var(--color-brown)",
                       }}
                     >
-                      <MoreHorizontal size={16} />
+                      <MoreHorizontal size={15} />
                     </div>
-                    {/* Hover overlay */}
+
+                    {/* Hover tint */}
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100"
                       style={{
-                        background: "rgba(51,31,46,0.06)",
-                        transition: "opacity 0.15s",
+                        background: "rgba(51,31,46,0.05)",
+                        transition: "opacity var(--t-fast)",
                         borderRadius: "12px 12px 0 0",
                         pointerEvents: "none",
                       }}
                     />
                   </div>
+
                   {/* Info */}
-                  <div style={{ padding: "10px 12px 12px" }}>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 500,
-                        color: "var(--color-brown-soft-2)",
-                        marginBottom: 2,
-                      }}
-                    >
+                  <div style={{ padding: "10px 14px 14px" }}>
+                    <div className="caption" style={{ marginBottom: 2 }}>
                       {dish.category}
                     </div>
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "var(--color-brown)",
-                        lineHeight: 1.3,
-                      }}
-                    >
+                    <div className="heading-sm" style={{ fontSize: 14, lineHeight: 1.3 }}>
                       {dish.name}
                     </div>
-                    <div
-                      className="tnum"
-                      style={{
-                        fontSize: 14,
-                        color: "var(--color-brown-soft)",
-                        marginTop: 3,
-                      }}
-                    >
+                    <div className="body-sm tnum" style={{ marginTop: 3 }}>
                       ${dish.price.toFixed(2)}
                     </div>
                   </div>
@@ -577,26 +541,14 @@ export default function MenuPage() {
           </div>
 
           {/* Pagination */}
-          <div
-            className="flex items-center justify-between"
-            style={{ paddingTop: 8 }}
-          >
-            <span
-              style={{
-                fontSize: 13,
-                color: "var(--color-brown-soft)",
-              }}
-            >
-              Showing 1-{filteredDishes.length} of {filteredDishes.length}
+          <div className="flex items-center justify-between" style={{ paddingTop: 4 }}>
+            <span className="caption">
+              Showing 1&ndash;{filteredDishes.length} of {filteredDishes.length}
             </span>
             <div className="flex gap-1">
               <button
                 className="pill pill-brown"
-                style={{
-                  cursor: "pointer",
-                  minWidth: 32,
-                  justifyContent: "center",
-                }}
+                style={{ cursor: "pointer", minWidth: 32, justifyContent: "center" }}
               >
                 1
               </button>
@@ -604,21 +556,6 @@ export default function MenuPage() {
           </div>
         </>
       )}
-
-      <style jsx>{`
-        @media (min-width: 640px) {
-          .sm\\:!grid-cols-3 { grid-template-columns: repeat(3, 1fr) !important; }
-        }
-        @media (min-width: 768px) {
-          .md\\:!grid-cols-3 { grid-template-columns: repeat(3, 1fr) !important; }
-        }
-        @media (min-width: 1024px) {
-          .lg\\:!grid-cols-4 { grid-template-columns: repeat(4, 1fr) !important; }
-        }
-        @media (min-width: 1280px) {
-          .xl\\:!grid-cols-5 { grid-template-columns: repeat(5, 1fr) !important; }
-        }
-      `}</style>
     </div>
   );
 }

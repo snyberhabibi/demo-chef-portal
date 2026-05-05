@@ -159,14 +159,11 @@ export default function PortalLayout({
         />
         <main
           className="flex-1 page-fade"
-          style={{ padding: "16px" }}
+          style={{ padding: "20px" }}
         >
           <style>{`
-            @media (min-width: 768px) {
-              main { padding: 24px !important; }
-            }
             @media (min-width: 1024px) {
-              main { padding: 28px !important; }
+              main { padding: 32px !important; }
             }
           `}</style>
           <div className="pb-20 lg:pb-0">{children}</div>

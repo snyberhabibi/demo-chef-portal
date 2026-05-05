@@ -16,35 +16,30 @@ const steps = [
     num: 1,
     icon: ChefHat,
     title: "Tell us about your kitchen",
-    time: "1 min",
     href: "/profile",
   },
   {
     num: 2,
     icon: UtensilsCrossed,
     title: "Add your first dish",
-    time: "2 min",
     href: "/menu/new",
   },
   {
     num: 3,
     icon: Clock,
     title: "Set your hours",
-    time: "1 min",
     href: "/operations",
   },
   {
     num: 4,
     icon: Landmark,
     title: "Connect your bank",
-    time: "1 min",
     href: "/payments",
   },
   {
     num: 5,
     icon: Rocket,
     title: "Go live!",
-    time: "Instant",
     href: "/operations",
   },
 ];
@@ -55,27 +50,29 @@ export default function WelcomePage() {
       className="relative flex items-center justify-center min-h-screen overflow-hidden px-5 py-12"
       style={{ background: "var(--color-cream)" }}
     >
-      {/* Decorative blobs */}
+      {/* Decorative blobs — 2 only, subtle */}
       <div
         className="blob"
         style={{
-          width: 320,
-          height: 320,
+          width: 300,
+          height: 300,
           background: "var(--color-orange-soft)",
           top: "5%",
           left: "-10%",
-          animationDelay: "-3s",
+          opacity: 0.2,
+          filter: "blur(80px)",
         }}
       />
       <div
         className="blob"
         style={{
-          width: 260,
-          height: 260,
+          width: 240,
+          height: 240,
           background: "var(--color-terracotta-soft)",
           bottom: "8%",
           right: "-8%",
-          animationDelay: "-8s",
+          opacity: 0.2,
+          filter: "blur(80px)",
         }}
       />
 
@@ -83,25 +80,25 @@ export default function WelcomePage() {
         className="relative w-full page-fade"
         style={{ maxWidth: 480 }}
       >
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
+        {/* Logo — 24px at top */}
+        <div className="flex justify-center" style={{ marginBottom: 32 }}>
           <img
             src="/logo-light.png"
             alt="Yalla Bites"
-            style={{ height: 28 }}
+            style={{ height: 24 }}
           />
         </div>
 
-        {/* Celebration emoji sticker */}
-        <div className="flex justify-center mb-6">
+        {/* Celebration emoji — 72px circle, cream-deep bg, no shadow */}
+        <div className="flex justify-center" style={{ marginBottom: 24 }}>
           <div
-            className="card-sticker flex items-center justify-center"
+            className="flex items-center justify-center"
             style={{
-              width: 80,
-              height: 80,
+              width: 72,
+              height: 72,
               borderRadius: "50%",
-              padding: 0,
-              fontSize: 40,
+              background: "var(--color-cream-deep)",
+              fontSize: 36,
             }}
           >
             <span role="img" aria-label="celebration">
@@ -110,60 +107,57 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        {/* Headline */}
-        <h1
-          className="fraunces text-center"
-          style={{
-            fontSize: "clamp(28px, 5vw, 40px)",
-            lineHeight: 1.15,
-            color: "var(--color-brown)",
-            marginBottom: 8,
-          }}
-        >
-          Welcome to Yalla Bites,{" "}
-          <span className="fraunces-italic">Amira!</span>
+        {/* Headline — heading-xl, "Amira!" on second line in fraunces-italic */}
+        <h1 className="heading-xl text-center" style={{ marginBottom: 0 }}>
+          Welcome to Yalla Bites,
         </h1>
+        <h1
+          className="heading-xl fraunces-italic text-center"
+          style={{ marginBottom: 0 }}
+        >
+          Amira!
+        </h1>
+
+        {/* Subtitle — body-lg */}
         <p
-          className="text-center"
+          className="body-lg text-center"
           style={{
-            fontSize: 16,
+            marginTop: 16,
             color: "var(--color-brown-soft)",
             marginBottom: 32,
           }}
         >
-          Let&apos;s get your kitchen set up. This takes about 5 minutes.
+          Let&apos;s set up your kitchen. Takes about 5 minutes.
         </p>
 
-        {/* Step cards — staggered entrance */}
-        <div className="flex flex-col gap-3 mb-8 line-reveal">
+        {/* Step cards — 56px height, 8px gap */}
+        <div className="flex flex-col line-reveal" style={{ gap: 8, marginBottom: 32 }}>
           {steps.map((step) => {
             const Icon = step.icon;
             return (
               <Link
                 key={step.num}
                 href={step.href}
-                className="card-hover"
+                className="card card-hover"
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
-                  padding: "14px 16px",
+                  padding: "0 16px",
+                  height: 56,
                   cursor: "pointer",
                   textDecoration: "none",
                   color: "inherit",
-                  minHeight: 44,
-                  background: "var(--color-cream-deep)",
-                  borderRadius: 16,
                 }}
               >
-                {/* Number circle */}
+                {/* Number circle — 24px, cream-sunken bg */}
                 <span
                   className="flex items-center justify-center rounded-full shrink-0"
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 24,
+                    height: 24,
                     background: "var(--color-cream-sunken)",
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: 700,
                     color: "var(--color-brown)",
                   }}
@@ -171,41 +165,31 @@ export default function WelcomePage() {
                   {step.num}
                 </span>
 
-                {/* Icon */}
+                {/* Icon — 18px, brown-soft-2 */}
                 <Icon
-                  size={20}
+                  size={18}
                   strokeWidth={1.8}
                   style={{
-                    color: "var(--color-brown-soft)",
+                    color: "var(--color-brown-soft-2)",
                     flexShrink: 0,
                   }}
                 />
 
-                {/* Text */}
-                <div className="flex-1 min-w-0">
-                  <div
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: "var(--color-brown)",
-                    }}
-                  >
-                    {step.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "var(--color-brown-soft-2)",
-                      marginTop: 1,
-                    }}
-                  >
-                    {step.time}
-                  </div>
-                </div>
+                {/* Text — 14px, 500 weight */}
+                <span
+                  className="flex-1 min-w-0"
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "var(--color-brown)",
+                  }}
+                >
+                  {step.title}
+                </span>
 
-                {/* Chevron */}
+                {/* Chevron — 14px, brown-soft-2 */}
                 <ChevronRight
-                  size={18}
+                  size={14}
                   style={{
                     color: "var(--color-brown-soft-2)",
                     flexShrink: 0,
@@ -216,12 +200,11 @@ export default function WelcomePage() {
           })}
         </div>
 
-        {/* CTA */}
+        {/* CTA — btn-red btn-block btn-lg */}
         <Link
           href="/dashboard"
           className="btn btn-red btn-lg btn-block"
           style={{
-            minHeight: 44,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -230,20 +213,20 @@ export default function WelcomePage() {
           Let&apos;s go
         </Link>
 
-        {/* Skip */}
-        <div className="text-center mt-4">
+        {/* Skip link — caption, 16px below CTA */}
+        <div className="text-center" style={{ marginTop: 16 }}>
           <Link
             href="/dashboard"
+            className="caption"
             style={{
-              fontSize: 14,
               fontWeight: 500,
               color: "var(--color-brown-soft-2)",
-              minHeight: 44,
               display: "inline-flex",
               alignItems: "center",
+              minHeight: 44,
             }}
           >
-            Skip for now
+            Skip for now &mdash; I&apos;ll explore on my own
           </Link>
         </div>
       </div>

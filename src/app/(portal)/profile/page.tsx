@@ -6,8 +6,6 @@ import Link from "next/link";
 import {
   ChevronRight,
   ChevronLeft,
-  ChevronDown,
-  ChevronUp,
   X,
   Upload,
   Lightbulb,
@@ -65,7 +63,6 @@ export default function ProfilePage() {
   const [available, setAvailable] = useState(true);
   const [autoAccept, setAutoAccept] = useState(true);
   const [pickup, setPickup] = useState(true);
-  const [scheduleOpen, setScheduleOpen] = useState<number | null>(null);
   const [schedule] = useState(
     DAYS.map((day, i) => ({ day, enabled: i < 5, open: "10:00 AM", close: "6:00 PM" }))
   );
@@ -82,32 +79,41 @@ export default function ProfilePage() {
   const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
 
   return (
-    <div style={{ maxWidth: 900 }}>
+    <div className="content-default">
       {/* Top bar */}
       <div className="flex items-center justify-between flex-wrap gap-3" style={{ marginBottom: 24 }}>
         <div className="flex items-center gap-3">
-          <span className="fraunces" style={{ fontSize: 18 }}>{businessName || "Your Kitchen"}</span>
+          <span className="heading-lg" style={{ fontSize: 20 }}>{businessName || "Your Kitchen"}</span>
           <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>Step {step} of 5</span>
         </div>
         <div className="flex items-center gap-2">
-          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>Discard</button>
-          <button className="btn btn-red btn-sm" style={{ minHeight: 44 }}>Save</button>
+          <Link
+            href="/store-preview"
+            className="caption flex items-center gap-1"
+            style={{ color: "var(--color-red)", fontWeight: 500 }}
+          >
+            <ExternalLink size={12} />
+            Preview My Store
+          </Link>
+          <button className="btn btn-ghost btn-sm">Discard</button>
+          <button className="btn btn-dark btn-sm">Save</button>
         </div>
       </div>
 
-      <div className="flex gap-6" style={{ alignItems: "flex-start" }}>
-        {/* Left sidebar */}
-        <div className="hidden md:block" style={{ width: 220, flexShrink: 0 }}>
-          <div className="card" style={{ padding: 16 }}>
+      {/* FormWizard layout */}
+      <div className="grid" style={{ gridTemplateColumns: "260px 1fr", gap: 24, alignItems: "start" }}>
+        {/* Sidebar */}
+        <div className="hidden md:block">
+          <div className="card" style={{ padding: 20 }}>
             {/* Progress bar */}
-            <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", marginBottom: 20 }}>
+            <div style={{ height: 3, borderRadius: 2, background: "var(--color-cream-sunken)", marginBottom: 20 }}>
               <div
                 style={{
                   height: "100%",
                   borderRadius: 2,
                   background: "var(--color-sage)",
                   width: `${progressPct}%`,
-                  transition: "width 0.3s ease",
+                  transition: `width 0.3s var(--ease-spring)`,
                 }}
               />
             </div>
@@ -123,10 +129,9 @@ export default function ProfilePage() {
                     padding: "10px 8px",
                     background: isCurrent ? "var(--color-cream-sunken)" : "none",
                     border: "none",
-                    borderRadius: 8,
+                    borderRadius: 10,
                     cursor: "pointer",
-                    minHeight: 44,
-                    transition: "background 0.15s ease",
+                    transition: `background var(--t-fast) var(--ease-spring)`,
                     marginTop: i > 0 ? 2 : 0,
                   }}
                   onClick={() => setStep(s.num)}
@@ -140,20 +145,20 @@ export default function ProfilePage() {
                       background: isDone
                         ? "var(--color-sage)"
                         : isCurrent
-                        ? "var(--color-red)"
+                        ? "var(--color-brown)"
                         : "var(--color-cream-sunken)",
                       color: isDone || isCurrent ? "#fff" : "var(--color-brown-soft-2)",
                       fontSize: 13,
                       fontWeight: 700,
                       flexShrink: 0,
-                      transition: "all 0.2s",
+                      transition: `all var(--t-base)`,
                     }}
                   >
                     {s.num}
                   </div>
                   <span
+                    className="body"
                     style={{
-                      fontSize: 14,
                       fontWeight: isCurrent ? 600 : 400,
                       color: isCurrent ? "var(--color-brown)" : "var(--color-brown-soft)",
                     }}
@@ -165,63 +170,35 @@ export default function ProfilePage() {
             })}
 
             {/* Tip box */}
-            <div
-              style={{
-                marginTop: 16,
-                padding: 14,
-                borderRadius: 10,
-                background: "var(--color-cream-deep)",
-              }}
-            >
+            <div style={{ marginTop: 16, padding: 14, borderRadius: 10, background: "var(--color-cream-deep)" }}>
               <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
                 <Lightbulb size={14} style={{ color: "var(--color-orange)" }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft)" }}>Tip</span>
+                <span className="caption" style={{ fontWeight: 600 }}>Tip</span>
               </div>
-              <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0 }}>
-                {TIPS[step]}
-              </p>
+              <p className="caption" style={{ margin: 0, lineHeight: 1.5 }}>{TIPS[step]}</p>
             </div>
           </div>
         </div>
 
         {/* Main content */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div>
           {/* Step 1: Basic Info */}
           {step === 1 && (
             <div className="card section-stack">
               <div>
-                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Basic Info</h2>
-                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-                  The essentials about your kitchen
-                </p>
+                <h2 className="heading-lg">Basic Info</h2>
+                <p className="body-sm" style={{ marginTop: 4 }}>The essentials about your kitchen</p>
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-                  Business Name *
-                </label>
-                <input
-                  className="input"
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="Your kitchen name"
-                  style={{ minHeight: 44 }}
-                />
+                <label className="field-label">Business Name *</label>
+                <input className="input" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Your kitchen name" />
+                <p className="field-help">This is how customers will find you</p>
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-                  Years of Experience
-                </label>
-                <input
-                  className="input"
-                  type="number"
-                  value={yearsExp}
-                  onChange={(e) => setYearsExp(e.target.value)}
-                  min={0}
-                  max={50}
-                  style={{ minHeight: 44, maxWidth: 120 }}
-                />
+                <label className="field-label">Years of Experience</label>
+                <input className="input" type="number" value={yearsExp} onChange={(e) => setYearsExp(e.target.value)} min={0} max={50} style={{ maxWidth: 120 }} />
               </div>
             </div>
           )}
@@ -230,46 +207,24 @@ export default function ProfilePage() {
           {step === 2 && (
             <div className="card section-stack">
               <div>
-                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>About You</h2>
-                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-                  Help customers connect with you
-                </p>
+                <h2 className="heading-lg">About You</h2>
+                <p className="body-sm" style={{ marginTop: 4 }}>Help customers connect with you</p>
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>Bio</label>
-                <textarea
-                  className="textarea"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="A short bio for your profile (2-3 sentences)"
-                  rows={3}
-                  style={{ minHeight: 96 }}
-                />
+                <label className="field-label">Bio</label>
+                <textarea className="textarea" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="A short bio for your profile (2-3 sentences)" rows={3} />
+                <p className="field-help">Appears on your store page</p>
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>Your Story</label>
-                <textarea
-                  className="textarea"
-                  value={story}
-                  onChange={(e) => setStory(e.target.value)}
-                  placeholder="How did you start cooking? What's your journey?"
-                  rows={4}
-                  style={{ minHeight: 120 }}
-                />
+                <label className="field-label">Your Story</label>
+                <textarea className="textarea" value={story} onChange={(e) => setStory(e.target.value)} placeholder="How did you start cooking? What's your journey?" rows={4} />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>What Inspires You</label>
-                <textarea
-                  className="textarea"
-                  value={inspires}
-                  onChange={(e) => setInspires(e.target.value)}
-                  placeholder="What inspires your cooking? Family recipes, regional traditions, fusion experiments?"
-                  rows={3}
-                  style={{ minHeight: 96 }}
-                />
+                <label className="field-label">What Inspires You</label>
+                <textarea className="textarea" value={inspires} onChange={(e) => setInspires(e.target.value)} placeholder="Family recipes, regional traditions, fusion experiments?" rows={3} />
               </div>
             </div>
           )}
@@ -278,10 +233,8 @@ export default function ProfilePage() {
           {step === 3 && (
             <div className="card section-stack">
               <div>
-                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Cuisines</h2>
-                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-                  Select the cuisines you specialize in
-                </p>
+                <h2 className="heading-lg">Cuisines</h2>
+                <p className="body-sm" style={{ marginTop: 4 }}>Select the cuisines you specialize in</p>
               </div>
 
               {/* Selected tags */}
@@ -290,7 +243,7 @@ export default function ProfilePage() {
                   <span
                     key={c}
                     className="pill pill-sage flex items-center gap-1"
-                    style={{ padding: "6px 10px", fontSize: 13 }}
+                    style={{ padding: "6px 12px", fontSize: 13 }}
                   >
                     {c}
                     <button
@@ -303,8 +256,6 @@ export default function ProfilePage() {
                         color: "var(--color-sage-deep)",
                         display: "flex",
                         alignItems: "center",
-                        minWidth: 20,
-                        minHeight: 20,
                       }}
                     >
                       <X size={14} />
@@ -315,9 +266,7 @@ export default function ProfilePage() {
 
               {/* Available cuisines */}
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 8 }}>
-                  Add more cuisines
-                </label>
+                <label className="field-label" style={{ marginBottom: 8 }}>Add more cuisines</label>
                 <div className="flex flex-wrap gap-2">
                   {ALL_CUISINES.filter((c) => !selectedCuisines.includes(c)).map((c) => (
                     <button
@@ -327,8 +276,7 @@ export default function ProfilePage() {
                         cursor: "pointer",
                         border: "1px dashed var(--color-brown-soft-2)",
                         background: "transparent",
-                        minHeight: 36,
-                        transition: "all 0.15s ease",
+                        transition: `all var(--t-fast) var(--ease-spring)`,
                       }}
                       onClick={() => addCuisine(c)}
                     >
@@ -344,10 +292,8 @@ export default function ProfilePage() {
           {step === 4 && (
             <div className="card section-stack">
               <div>
-                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Branding</h2>
-                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-                  Upload a banner image for your store page
-                </p>
+                <h2 className="heading-lg">Branding</h2>
+                <p className="body-sm" style={{ marginTop: 4 }}>Upload a banner image for your store page</p>
               </div>
 
               <div
@@ -358,19 +304,13 @@ export default function ProfilePage() {
                   border: "2px dashed var(--color-brown-soft-2)",
                   background: "var(--color-cream-deep)",
                   cursor: "pointer",
-                  transition: "border-color 0.15s ease",
+                  transition: `border-color var(--t-fast)`,
                 }}
               >
                 <Upload size={32} style={{ color: "var(--color-brown-soft-2)", marginBottom: 12 }} />
-                <span style={{ fontWeight: 600, fontSize: 15, color: "var(--color-brown)" }}>
-                  Upload banner image
-                </span>
-                <span style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
-                  Recommended: 1920 x 600px
-                </span>
-                <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)", marginTop: 2 }}>
-                  PNG, JPG up to 5MB
-                </span>
+                <span className="heading-sm">Upload banner image</span>
+                <span className="body-sm" style={{ marginTop: 4 }}>Recommended: 1920 x 600px</span>
+                <span className="caption" style={{ marginTop: 2 }}>PNG, JPG up to 5MB</span>
               </div>
             </div>
           )}
@@ -379,23 +319,14 @@ export default function ProfilePage() {
           {step === 5 && (
             <div className="card section-stack">
               <div>
-                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Operations</h2>
-                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-                  Set your availability and preferences
-                </p>
+                <h2 className="heading-lg">Operations</h2>
+                <p className="body-sm" style={{ marginTop: 4 }}>Set your availability and preferences</p>
               </div>
 
               {/* Timezone */}
               <div>
-                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-                  Timezone
-                </label>
-                <select
-                  className="select"
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
-                  style={{ minHeight: 44 }}
-                >
+                <label className="field-label">Timezone</label>
+                <select className="select" value={timezone} onChange={(e) => setTimezone(e.target.value)}>
                   <option value="America/Chicago">Central Time (CT)</option>
                   <option value="America/New_York">Eastern Time (ET)</option>
                   <option value="America/Denver">Mountain Time (MT)</option>
@@ -404,116 +335,56 @@ export default function ProfilePage() {
               </div>
 
               {/* Toggles */}
-              <div className="flex items-center justify-between" style={{ padding: "8px 0" }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 15 }}>Available for orders</div>
-                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                    Show your store as open to customers
+              {[
+                { label: "Available for orders", desc: "Show your store as open to customers", value: available, setter: setAvailable },
+                { label: "Auto-accept orders", desc: "Automatically confirm incoming orders", value: autoAccept, setter: setAutoAccept },
+                { label: "Pickup enabled", desc: "Allow customers to pick up orders", value: pickup, setter: setPickup },
+              ].map((toggle, i) => (
+                <div key={toggle.label}>
+                  {i === 0 && <div className="divider" />}
+                  <div className="flex items-center justify-between" style={{ padding: "14px 0" }}>
+                    <div>
+                      <div className="heading-sm" style={{ fontSize: 14 }}>{toggle.label}</div>
+                      <div className="body-sm" style={{ marginTop: 2 }}>{toggle.desc}</div>
+                    </div>
+                    <button
+                      className={`toggle ${toggle.value ? "is-on" : ""}`}
+                      onClick={() => toggle.setter(!toggle.value)}
+                    >
+                      <span className="toggle-thumb" />
+                    </button>
                   </div>
+                  <div className="divider" />
                 </div>
-                <button
-                  className={`toggle ${available ? "is-on" : ""}`}
-                  onClick={() => setAvailable(!available)}
-                  style={{ minWidth: 44, minHeight: 44 }}
-                >
-                  <span className="toggle-thumb" />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between" style={{ padding: "8px 0", borderTop: "1px solid var(--color-cream-sunken)" }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 15 }}>Auto-accept orders</div>
-                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                    Automatically confirm incoming orders
-                  </div>
-                </div>
-                <button
-                  className={`toggle ${autoAccept ? "is-on" : ""}`}
-                  onClick={() => setAutoAccept(!autoAccept)}
-                  style={{ minWidth: 44, minHeight: 44 }}
-                >
-                  <span className="toggle-thumb" />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between" style={{ padding: "8px 0", borderTop: "1px solid var(--color-cream-sunken)" }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 15 }}>Pickup enabled</div>
-                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                    Allow customers to pick up orders
-                  </div>
-                </div>
-                <button
-                  className={`toggle ${pickup ? "is-on" : ""}`}
-                  onClick={() => setPickup(!pickup)}
-                  style={{ minWidth: 44, minHeight: 44 }}
-                >
-                  <span className="toggle-thumb" />
-                </button>
-              </div>
+              ))}
 
               {/* Weekly schedule */}
-              <div style={{ borderTop: "1px solid var(--color-cream-sunken)", paddingTop: 16 }}>
-                <div className="eyebrow" style={{ marginBottom: 12 }}>Weekly Schedule</div>
-                {schedule.map((row, i) => (
-                  <div key={row.day}>
-                    <button
-                      className="flex items-center gap-3 w-full text-left"
-                      style={{
-                        padding: "10px 0",
-                        background: "none",
-                        border: "none",
-                        borderTop: i > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
-                        cursor: "pointer",
-                        minHeight: 44,
-                      }}
-                      onClick={() => setScheduleOpen(scheduleOpen === i ? null : i)}
-                    >
-                      <span
-                        style={{
-                          flex: 1,
-                          fontWeight: 500,
-                          color: row.enabled ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-                        }}
-                      >
-                        {row.day}
-                      </span>
-                      {row.enabled ? (
-                        <span className="tnum" style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                          {row.open} &ndash; {row.close}
+              <div style={{ paddingTop: 8 }}>
+                <span className="eyebrow" style={{ display: "block", marginBottom: 12 }}>Weekly Schedule</span>
+                <div className="card" style={{ padding: 0 }}>
+                  {schedule.map((row, i) => (
+                    <div key={row.day}>
+                      {i > 0 && <div className="divider" />}
+                      <div className="flex items-center gap-3" style={{ padding: "12px 20px" }}>
+                        <span
+                          className="body"
+                          style={{
+                            flex: 1,
+                            fontWeight: 500,
+                            color: row.enabled ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+                          }}
+                        >
+                          {row.day}
                         </span>
-                      ) : (
-                        <span style={{ fontSize: 13, color: "var(--color-brown-soft-2)" }}>Closed</span>
-                      )}
-                      {scheduleOpen === i ? (
-                        <ChevronUp size={16} style={{ color: "var(--color-brown-soft-2)" }} />
-                      ) : (
-                        <ChevronDown size={16} style={{ color: "var(--color-brown-soft-2)" }} />
-                      )}
-                    </button>
-                    {scheduleOpen === i && row.enabled && (
-                      <div className="flex items-center gap-3" style={{ padding: "0 0 12px 16px" }}>
-                        <div>
-                          <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>Open</label>
-                          <select className="select" defaultValue={row.open} style={{ width: 130, minHeight: 44 }}>
-                            {["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM"].map((t) => (
-                              <option key={t} value={t}>{t}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <span style={{ marginTop: 20, color: "var(--color-brown-soft-2)" }}>&ndash;</span>
-                        <div>
-                          <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>Close</label>
-                          <select className="select" defaultValue={row.close} style={{ width: 130, minHeight: 44 }}>
-                            {["4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"].map((t) => (
-                              <option key={t} value={t}>{t}</option>
-                            ))}
-                          </select>
-                        </div>
+                        {row.enabled ? (
+                          <span className="tnum body-sm">{row.open} &ndash; {row.close}</span>
+                        ) : (
+                          <span className="body-sm" style={{ color: "var(--color-brown-soft-2)" }}>Closed</span>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -524,7 +395,7 @@ export default function ProfilePage() {
               className="btn btn-ghost"
               disabled={step <= 1}
               onClick={goBack}
-              style={{ opacity: step <= 1 ? 0.4 : 1, minHeight: 44 }}
+              style={{ opacity: step <= 1 ? 0.4 : 1 }}
             >
               <ChevronLeft size={16} />
               Back
@@ -540,45 +411,25 @@ export default function ProfilePage() {
                     width: s.num === step ? 20 : 8,
                     height: 8,
                     borderRadius: 4,
-                    background: s.num === step ? "var(--color-red)" : s.num < step ? "var(--color-sage)" : "var(--color-cream-sunken)",
+                    background: s.num === step ? "var(--color-brown)" : s.num < step ? "var(--color-sage)" : "var(--color-cream-sunken)",
                     border: "none",
                     cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    minWidth: 8,
-                    minHeight: 8,
+                    transition: `all var(--t-base) var(--ease-spring)`,
                     padding: 0,
                   }}
                 />
               ))}
             </div>
 
-            <div className="flex items-center gap-3">
-              <Link
-                href="/store-preview"
-                className="flex items-center gap-1"
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--color-red)",
-                  textDecoration: "none",
-                  minHeight: 44,
-                  display: "inline-flex",
-                  alignItems: "center",
-                }}
-              >
-                <ExternalLink size={13} />
-                Preview My Store
-              </Link>
-              <button
-                className="btn btn-red"
-                onClick={goNext}
-                disabled={step >= 5}
-                style={{ minHeight: 44, opacity: step >= 5 ? 0.5 : 1 }}
-              >
-                Continue
-                <ChevronRight size={16} />
-              </button>
-            </div>
+            <button
+              className="btn btn-dark"
+              onClick={goNext}
+              disabled={step >= 5}
+              style={{ opacity: step >= 5 ? 0.5 : 1 }}
+            >
+              Continue
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
       </div>

@@ -15,124 +15,106 @@ export default function LoginPage() {
       className="relative flex items-center justify-center min-h-screen overflow-hidden px-5"
       style={{ background: "var(--color-cream)" }}
     >
-      {/* Decorative blobs with drift animation */}
+      {/* Decorative blobs — 2 only, more subtle */}
       <div
         className="blob"
         style={{
-          width: 340,
-          height: 340,
+          width: 320,
+          height: 320,
           background: "var(--color-orange-soft)",
-          top: "-8%",
-          right: "-6%",
-          animationDelay: "0s",
+          top: "-10%",
+          right: "-8%",
+          opacity: 0.2,
+          filter: "blur(80px)",
         }}
       />
       <div
         className="blob"
         style={{
-          width: 280,
-          height: 280,
+          width: 260,
+          height: 260,
           background: "var(--color-terracotta-soft)",
-          bottom: "-5%",
-          left: "-8%",
-          animationDelay: "-6s",
-        }}
-      />
-      <div
-        className="blob"
-        style={{
-          width: 200,
-          height: 200,
-          background: "var(--color-sage-soft)",
-          top: "40%",
-          left: "60%",
-          animationDelay: "-10s",
-          opacity: 0.25,
+          bottom: "-8%",
+          left: "-10%",
+          opacity: 0.2,
+          filter: "blur(80px)",
         }}
       />
 
       <div
         className="relative w-full page-fade"
-        style={{ maxWidth: 400 }}
+        style={{ maxWidth: 380 }}
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
+        {/* Logo — 24px height, 40px above headline */}
+        <div className="text-center" style={{ marginBottom: 40 }}>
           <img
             src="/logo-light.png"
             alt="Yalla Bites"
-            style={{ height: 28, display: "inline-block" }}
+            style={{ height: 24, display: "inline-block" }}
           />
         </div>
 
-        {/* Headline */}
+        {/* Headline — heading-xl, single line on desktop */}
         <h1
-          className="fraunces text-center"
-          style={{
-            fontSize: "clamp(32px, 6vw, 52px)",
-            lineHeight: 1.1,
-            color: "var(--color-brown)",
-            marginBottom: 32,
-          }}
+          className="heading-xl text-center"
+          style={{ marginBottom: 32 }}
         >
-          Welcome to
-          <br />
-          your kitchen.
+          Welcome to your kitchen.
         </h1>
 
-        {/* Magic link form — full width on mobile */}
-        <div className="flex flex-col gap-3">
+        {/* Email input — 48px, rounded-xl (14px) */}
+        <div className="flex flex-col" style={{ gap: 12 }}>
           <input
             type="email"
-            placeholder="chef@example.com"
+            placeholder="your@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input"
-            style={{ minHeight: 44 }}
+            style={{
+              height: 48,
+              borderRadius: 14,
+              fontSize: 15,
+            }}
           />
+
+          {/* CTA — btn-red btn-block btn-lg, 52px */}
           <button
             className="btn btn-red btn-lg btn-block"
-            style={{ minHeight: 44 }}
+            style={{ minHeight: 52, borderRadius: 14 }}
             onClick={() => router.push("/welcome")}
           >
             Send me a login link
           </button>
         </div>
 
+        {/* Helper caption */}
         <p
-          className="text-center mt-3"
-          style={{
-            fontSize: 13,
-            color: "var(--color-brown-soft-2)",
-          }}
+          className="caption text-center"
+          style={{ marginTop: 12 }}
         >
-          We&apos;ll email you a link that signs you in instantly.
+          We&apos;ll email you a login link &mdash; no password needed
         </p>
 
-        {/* Divider */}
-        <div className="flex items-center gap-3 my-6">
+        {/* Divider with "or" centered */}
+        <div className="flex items-center gap-3" style={{ margin: "24px 0" }}>
           <div
-            className="flex-1"
-            style={{ height: 1, background: "rgba(51,31,46,0.1)" }}
+            className="flex-1 divider"
           />
           <span
-            style={{
-              fontSize: 13,
-              color: "var(--color-brown-soft-2)",
-              fontWeight: 500,
-            }}
+            className="caption"
+            style={{ fontWeight: 500 }}
           >
             or
           </span>
           <div
-            className="flex-1"
-            style={{ height: 1, background: "rgba(51,31,46,0.1)" }}
+            className="flex-1 divider"
           />
         </div>
 
-        {/* Google sign-in */}
+        {/* Google sign-in — btn-ghost btn-block */}
         <button
           className="btn btn-ghost btn-block"
-          style={{ minHeight: 44 }}
+          style={{ minHeight: 48, borderRadius: 14 }}
           onClick={() => router.push("/welcome")}
         >
           <svg
@@ -158,28 +140,29 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          Sign in with Google
+          Continue with Google
         </button>
 
-        {/* Collapsible password section */}
-        <div className="mt-4">
+        {/* Collapsible password section — caption text link */}
+        <div style={{ marginTop: 16 }}>
           <button
             onClick={() => setShowPassword(!showPassword)}
             className="flex items-center gap-1 mx-auto"
             style={{
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 500,
-              color: "var(--color-brown-soft)",
+              color: "var(--color-brown-soft-2)",
               background: "none",
               border: "none",
               minHeight: 44,
+              cursor: "pointer",
             }}
           >
             Sign in with password
             {showPassword ? (
-              <ChevronUp size={16} />
+              <ChevronUp size={14} />
             ) : (
-              <ChevronDown size={16} />
+              <ChevronDown size={14} />
             )}
           </button>
 
@@ -189,25 +172,24 @@ export default function LoginPage() {
                 type="email"
                 placeholder="Email"
                 className="input"
-                style={{ minHeight: 44 }}
+                style={{ height: 48, borderRadius: 14 }}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="input"
-                style={{ minHeight: 44 }}
+                style={{ height: 48, borderRadius: 14 }}
               />
               <button
                 className="btn btn-ghost btn-block"
-                style={{ minHeight: 44 }}
+                style={{ minHeight: 48, borderRadius: 14 }}
                 onClick={() => router.push("/dashboard")}
               >
                 Sign in
               </button>
               <button
-                className="mx-auto"
+                className="mx-auto caption"
                 style={{
-                  fontSize: 13,
                   fontWeight: 500,
                   color: "var(--color-brown-soft-2)",
                   background: "none",
@@ -222,20 +204,19 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* Help — mailto link */}
+        {/* Help — subtle caption */}
         <p
-          className="text-center mt-8"
-          style={{
-            fontSize: 13,
-            color: "var(--color-brown-soft-2)",
-          }}
+          className="caption text-center"
+          style={{ marginTop: 32 }}
         >
           Need help?{" "}
           <a
             href="mailto:support@yallabites.com"
             style={{
-              color: "var(--color-red)",
+              color: "var(--color-brown-soft-2)",
               fontWeight: 500,
+              textDecoration: "underline",
+              textUnderlineOffset: 2,
             }}
           >
             support@yallabites.com

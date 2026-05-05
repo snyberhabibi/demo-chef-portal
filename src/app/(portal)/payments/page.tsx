@@ -30,14 +30,13 @@ export default function PaymentsPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
   return (
-    <div className="section-stack" style={{ maxWidth: 560 }}>
+    <div className="content-narrow section-stack">
       {/* State toggle */}
       <div className="flex gap-2">
         {(["A", "B", "C"] as StripeState[]).map((s) => (
           <button
             key={s}
-            className={`btn btn-sm ${state === s ? "btn-red" : "btn-ghost"}`}
-            style={{ minHeight: 44, transition: "all 0.15s ease" }}
+            className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
             onClick={() => setState(s)}
           >
             State {s}
@@ -49,15 +48,15 @@ export default function PaymentsPage() {
       {state === "A" && (
         <>
           <div className="card-cream" style={{ textAlign: "center", padding: 32 }}>
-            <div className="fraunces" style={{ fontSize: 28, marginBottom: 8 }}>
+            <div className="heading-lg" style={{ fontSize: 24, marginBottom: 8 }}>
               Get paid for your cooking
             </div>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", maxWidth: 380, margin: "0 auto 28px" }}>
+            <p className="body-sm" style={{ maxWidth: 380, margin: "0 auto 28px" }}>
               Connect your bank account through Stripe to receive payouts for every order.
             </p>
 
             {/* 3-step visual */}
-            <div className="flex items-center justify-center gap-0" style={{ marginBottom: 28 }}>
+            <div className="flex items-center justify-center" style={{ marginBottom: 28 }}>
               {[
                 { num: 1, label: "Connect Stripe" },
                 { num: 2, label: "Verify identity" },
@@ -65,30 +64,24 @@ export default function PaymentsPage() {
               ].map((step, i) => (
                 <div key={step.num} className="flex items-center">
                   {i > 0 && (
-                    <div
-                      style={{
-                        width: 40,
-                        height: 2,
-                        background: "var(--color-cream-sunken)",
-                      }}
-                    />
+                    <div style={{ width: 40, height: 2, background: "var(--color-cream-sunken)" }} />
                   )}
                   <div className="flex flex-col items-center gap-2">
                     <div
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center tnum"
                       style={{
-                        width: 40,
-                        height: 40,
+                        width: 28,
+                        height: 28,
                         borderRadius: "50%",
                         background: "var(--color-cream-sunken)",
-                        fontSize: 15,
+                        fontSize: 13,
                         fontWeight: 700,
                         color: "var(--color-brown-soft)",
                       }}
                     >
                       {step.num}
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: "var(--color-brown-soft)", whiteSpace: "nowrap" }}>
+                    <span className="caption" style={{ fontWeight: 500, whiteSpace: "nowrap" }}>
                       {step.label}
                     </span>
                   </div>
@@ -97,8 +90,7 @@ export default function PaymentsPage() {
             </div>
 
             <button
-              className="btn btn-red btn-block btn-lg"
-              style={{ minHeight: 48, transition: "all 0.15s ease" }}
+              className="btn btn-dark btn-block btn-lg"
               onClick={() => setState("C")}
             >
               <CreditCard size={18} />
@@ -106,56 +98,44 @@ export default function PaymentsPage() {
             </button>
           </div>
 
-          {/* About Stripe Connect */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-              gap: 12,
-            }}
-          >
+          {/* Info blocks */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
             {INFO_BLOCKS.map((block) => {
               const Icon = block.icon;
               return (
                 <div key={block.title} className="card" style={{ padding: 16, textAlign: "center" }}>
                   <div
                     className="flex items-center justify-center"
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 10,
-                      background: "var(--color-cream-sunken)",
-                      margin: "0 auto 10px",
-                    }}
+                    style={{ width: 40, height: 40, borderRadius: 10, background: "var(--color-cream-sunken)", margin: "0 auto 10px" }}
                   >
                     <Icon size={20} style={{ color: "var(--color-brown-soft)" }} />
                   </div>
-                  <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{block.title}</div>
-                  <div style={{ fontSize: 12, lineHeight: 1.5, color: "var(--color-brown-soft)" }}>{block.desc}</div>
+                  <div className="heading-sm" style={{ fontSize: 14, marginBottom: 4 }}>{block.title}</div>
+                  <div className="caption" style={{ lineHeight: 1.5 }}>{block.desc}</div>
                 </div>
               );
             })}
           </div>
 
-          {/* FAQ */}
+          {/* FAQ accordion */}
           <div className="card" style={{ padding: 0 }}>
-            <div style={{ padding: "16px 20px 0", fontWeight: 600, fontSize: 15 }}>
-              Frequently Asked Questions
+            <div style={{ padding: "16px 24px 12px" }}>
+              <span className="heading-sm">Frequently Asked Questions</span>
             </div>
             {FAQ_ITEMS.map((item, i) => (
-              <div key={i} style={{ borderTop: i > 0 ? "1px solid var(--color-cream-sunken)" : undefined }}>
+              <div key={i}>
+                <div className="divider" />
                 <button
                   className="flex items-center justify-between w-full text-left"
                   style={{
-                    padding: "14px 20px",
+                    padding: "14px 24px",
                     background: "none",
                     border: "none",
                     fontSize: 14,
                     fontWeight: 500,
                     color: "var(--color-brown)",
                     cursor: "pointer",
-                    minHeight: 48,
-                    transition: "background 0.1s ease",
+                    transition: `background var(--t-fast)`,
                   }}
                   onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                 >
@@ -165,13 +145,13 @@ export default function PaymentsPage() {
                     style={{
                       color: "var(--color-brown-soft-2)",
                       transform: faqOpen === i ? "rotate(180deg)" : "none",
-                      transition: "transform 0.2s ease",
+                      transition: `transform var(--t-fast) var(--ease-spring)`,
                       flexShrink: 0,
                     }}
                   />
                 </button>
                 {faqOpen === i && (
-                  <div style={{ padding: "0 20px 14px", fontSize: 13, color: "var(--color-brown-soft)", lineHeight: 1.6 }}>
+                  <div className="body-sm" style={{ padding: "0 24px 14px", lineHeight: 1.6 }}>
                     {item.a}
                   </div>
                 )}
@@ -183,21 +163,14 @@ export default function PaymentsPage() {
 
       {/* State B: Needs more info */}
       {state === "B" && (
-        <div
-          style={{
-            background: "var(--color-orange-soft)",
-            borderRadius: 12,
-            padding: 20,
-            transition: "all 0.2s ease",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle size={20} style={{ color: "var(--color-orange-text)" }} />
-            <span style={{ fontWeight: 600, color: "var(--color-orange-text)", fontSize: 15 }}>
+        <div style={{ borderLeft: "3px solid var(--color-orange)", borderRadius: 8, padding: "14px 16px" }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
+            <AlertTriangle size={18} style={{ color: "var(--color-orange)" }} />
+            <span className="heading-sm" style={{ fontSize: 14, color: "var(--color-orange-text)" }}>
               Stripe needs more information
             </span>
           </div>
-          <p style={{ fontSize: 14, color: "var(--color-orange-text)", opacity: 0.85, marginBottom: 16 }}>
+          <p className="body-sm" style={{ marginBottom: 14 }}>
             Complete the following to start receiving payouts:
           </p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -206,41 +179,27 @@ export default function PaymentsPage() {
               "Add your bank account or debit card",
               "Confirm your business address",
             ].map((item, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2"
-                style={{
-                  padding: "8px 0",
-                  borderTop: i > 0 ? "1px solid rgba(122,74,14,0.12)" : undefined,
-                }}
-              >
-                <div
-                  className="flex items-center justify-center tnum"
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                    background: "rgba(122,74,14,0.15)",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: "var(--color-orange-text)",
-                    flexShrink: 0,
-                    marginTop: 1,
-                  }}
-                >
-                  {i + 1}
+              <li key={i}>
+                {i > 0 && <div className="divider" style={{ margin: "6px 0" }} />}
+                <div className="flex items-start gap-2" style={{ padding: "4px 0" }}>
+                  <div
+                    className="flex items-center justify-center tnum"
+                    style={{
+                      width: 20, height: 20, borderRadius: "50%",
+                      background: "rgba(252,157,53,0.15)", fontSize: 11,
+                      fontWeight: 700, color: "var(--color-orange-text)",
+                      flexShrink: 0, marginTop: 1,
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+                  <span className="body-sm">{item}</span>
                 </div>
-                <span style={{ fontSize: 14, color: "var(--color-orange-text)" }}>{item}</span>
               </li>
             ))}
           </ul>
-          <button
-            className="btn btn-amber btn-block"
-            style={{ marginTop: 16, minHeight: 44, transition: "all 0.15s ease" }}
-            onClick={() => setState("C")}
-          >
-            Continue Setup
-            <ArrowRight size={16} />
+          <button className="btn btn-dark btn-block" style={{ marginTop: 16 }} onClick={() => setState("C")}>
+            Continue Setup <ArrowRight size={16} />
           </button>
         </div>
       )}
@@ -249,123 +208,72 @@ export default function PaymentsPage() {
       {state === "C" && (
         <>
           <div className="card" style={{ textAlign: "center", padding: 24 }}>
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <CheckCircle size={20} style={{ color: "var(--color-sage)" }} />
+            <div className="flex items-center justify-center gap-2" style={{ marginBottom: 12 }}>
+              <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces" style={{ fontSize: 42, lineHeight: 1, margin: "16px 0 4px" }}>
+            <div className="fraunces" style={{ fontSize: 40, lineHeight: 1, margin: "12px 0 4px" }}>
               $2,184.50
             </div>
-            <div style={{ fontSize: 14, color: "var(--color-brown-soft)" }}>
-              Total earnings
-            </div>
+            <div className="body-sm">Total earnings</div>
           </div>
 
           <div className="card flex items-center justify-between">
             <div>
               <div className="eyebrow" style={{ marginBottom: 4 }}>Next Payout</div>
               <div className="fraunces tnum" style={{ fontSize: 22 }}>$342.00</div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 2 }}>
-                Arriving Friday, May 9
-              </div>
+              <div className="body-sm" style={{ marginTop: 2 }}>Arriving Friday, May 9</div>
             </div>
             <div
               className="flex items-center justify-center"
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
-                background: "var(--color-sage-soft)",
-              }}
+              style={{ width: 44, height: 44, borderRadius: 12, background: "var(--color-sage-soft)" }}
             >
-              <CreditCard size={22} style={{ color: "var(--color-sage-deep)" }} />
+              <CreditCard size={20} style={{ color: "var(--color-sage-deep)" }} />
             </div>
           </div>
 
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 15 }}>Bank Account</div>
-                <div className="mono" style={{ fontSize: 14, color: "var(--color-brown-soft)", marginTop: 2 }}>
-                  Chase ****4829
-                </div>
-              </div>
-              <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>
-                Manage
-              </button>
+          <div className="card flex items-center justify-between">
+            <div>
+              <div className="heading-sm" style={{ fontSize: 14 }}>Bank Account</div>
+              <div className="mono" style={{ color: "var(--color-brown-soft)", marginTop: 2 }}>Chase ****4829</div>
             </div>
+            <button className="btn btn-ghost btn-sm">Manage</button>
           </div>
 
           {/* Transaction history */}
           <div className="card" style={{ padding: 0 }}>
-            <div style={{ padding: "16px 20px", fontWeight: 600, fontSize: 15 }}>
-              Recent Transactions
+            <div style={{ padding: "16px 24px" }}>
+              <span className="heading-sm">Recent Transactions</span>
             </div>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-                <thead>
-                  <tr style={{ borderTop: "1px solid var(--color-cream-sunken)", borderBottom: "1px solid var(--color-cream-sunken)" }}>
-                    <th className="eyebrow" style={{ padding: "10px 20px", textAlign: "left", fontWeight: 600 }}>Date</th>
-                    <th className="eyebrow" style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Description</th>
-                    <th className="eyebrow" style={{ padding: "10px 20px", textAlign: "right", fontWeight: 600 }}>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {TRANSACTIONS.map((tx, i) => (
-                    <tr key={i} style={{ borderTop: i > 0 ? "1px solid var(--color-cream-sunken)" : undefined }}>
-                      <td className="tnum" style={{ padding: "12px 20px", color: "var(--color-brown-soft)", whiteSpace: "nowrap" }}>
-                        {tx.date}
-                      </td>
-                      <td style={{ padding: "12px 12px" }}>
-                        <div className="flex items-center gap-2">
-                          <span>{tx.desc}</span>
-                          <span
-                            className="pill"
-                            style={{
-                              fontSize: 10,
-                              padding: "2px 6px",
-                              background:
-                                tx.type === "order" ? "var(--color-sage-soft)" :
-                                tx.type === "payout" ? "var(--color-cream-sunken)" :
-                                "var(--color-orange-soft)",
-                              color:
-                                tx.type === "order" ? "var(--color-sage-deep)" :
-                                tx.type === "payout" ? "var(--color-brown-soft)" :
-                                "var(--color-orange-text)",
-                            }}
-                          >
-                            {tx.type}
-                          </span>
-                        </div>
-                      </td>
-                      <td
-                        className="tnum"
-                        style={{
-                          padding: "12px 20px",
-                          textAlign: "right",
-                          fontWeight: 600,
-                          color: tx.amount.startsWith("+") ? "var(--color-sage-deep)" : "var(--color-brown-soft)",
-                        }}
-                      >
-                        {tx.amount}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {TRANSACTIONS.map((tx, i) => (
+              <div key={i}>
+                <div className="divider" />
+                <div className="flex items-center gap-3" style={{ padding: "12px 24px" }}>
+                  <span className="tnum caption" style={{ minWidth: 90, whiteSpace: "nowrap" }}>{tx.date}</span>
+                  <div className="flex-1 flex items-center gap-2">
+                    <span className="body-sm" style={{ color: "var(--color-brown)" }}>{tx.desc}</span>
+                    <span className={`pill ${tx.type === "order" ? "pill-sage" : tx.type === "payout" ? "pill-mute" : "pill-orange"}`} style={{ fontSize: 10, padding: "2px 6px" }}>
+                      {tx.type}
+                    </span>
+                  </div>
+                  <span
+                    className="tnum body"
+                    style={{
+                      fontWeight: 600,
+                      color: tx.amount.startsWith("+") ? "var(--color-sage-deep)" : "var(--color-brown-soft)",
+                    }}
+                  >
+                    {tx.amount}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <a
-            href="#"
-            className="card flex items-center justify-between"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <a href="#" className="card card-hover flex items-center justify-between" style={{ textDecoration: "none", color: "inherit" }}>
             <div>
-              <div style={{ fontWeight: 600, fontSize: 15 }}>Stripe Dashboard</div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
-                View full transaction history and settings
-              </div>
+              <div className="heading-sm" style={{ fontSize: 14 }}>Stripe Dashboard</div>
+              <div className="body-sm">View full transaction history and settings</div>
             </div>
             <ExternalLink size={18} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
           </a>

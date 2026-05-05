@@ -39,32 +39,29 @@ export default function PackagingPage() {
   };
 
   return (
-    <div className="section-stack" style={{ maxWidth: 640 }}>
+    <div className="content-default section-stack">
       {/* Intro */}
       <div>
-        <div className="fraunces" style={{ fontSize: 22, marginBottom: 4 }}>
-          Packaging Supplies
-        </div>
-        <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: 0 }}>
+        <div className="heading-lg">Packaging Supplies</div>
+        <p className="body-sm" style={{ marginTop: 4 }}>
           Food-safe containers and packaging recommended for home kitchen chefs.
         </p>
       </div>
 
-      {/* Product cards */}
+      {/* Product grid - 2x2 */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-          gap: 12,
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 16,
         }}
       >
         {PRODUCTS.map((product) => (
           <div
             key={product.id}
             className="card card-hover flex flex-col"
-            style={{ minHeight: 56 }}
           >
-            {/* Placeholder image */}
+            {/* Placeholder image area - 120px */}
             <div
               className="placeholder-img"
               style={{
@@ -74,24 +71,17 @@ export default function PackagingPage() {
               }}
             />
             <div className="flex-1">
-              <div style={{ fontWeight: 600, fontSize: 15 }}>{product.name}</div>
-              <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4, lineHeight: 1.5 }}>
+              <div className="heading-sm">{product.name}</div>
+              <div className="body-sm" style={{ marginTop: 4, lineHeight: 1.5 }}>
                 {product.desc}
               </div>
             </div>
             <div className="flex items-center justify-between" style={{ marginTop: 14 }}>
-              <span className="tnum" style={{ fontWeight: 700, fontSize: 15 }}>
+              <span className="caption tnum" style={{ fontWeight: 700, fontSize: 14 }}>
                 {product.price}
               </span>
-              <a
-                href="#"
-                className="btn btn-ghost btn-sm"
-                style={{
-                  minHeight: 44,
-                  textDecoration: "none",
-                }}
-              >
-                Buy Now
+              <a href="#" className="btn btn-ghost btn-sm" style={{ textDecoration: "none" }}>
+                Shop Now
                 <ExternalLink size={12} />
               </a>
             </div>
@@ -100,35 +90,18 @@ export default function PackagingPage() {
       </div>
 
       {/* Branded packaging CTA */}
-      <div
-        className="card"
-        style={{
-          background: "linear-gradient(135deg, var(--color-cream-deep) 0%, var(--color-terracotta-soft) 100%)",
-          padding: 24,
-          textAlign: "center",
-        }}
-      >
-        <div className="fraunces" style={{ fontSize: 20, marginBottom: 6 }}>
+      <div className="card-sticker" style={{ textAlign: "center" }}>
+        <div className="heading-md" style={{ marginBottom: 6 }}>
           Want branded packaging?
         </div>
-        <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "0 auto 16px", maxWidth: 380 }}>
+        <p className="body-sm" style={{ maxWidth: 380, margin: "0 auto 20px" }}>
           Add your kitchen logo and colors to your containers. Minimum order of 100 units. Stand out and build your brand with every delivery.
         </p>
-        <button
-          className="btn btn-terracotta"
-          style={{ minHeight: 48 }}
-          onClick={handleBrandedRequest}
-        >
+        <button className="btn btn-dark" onClick={handleBrandedRequest}>
           {requestSent ? (
-            <>
-              <Check size={16} />
-              Request Sent
-            </>
+            <><Check size={16} /> Request Sent</>
           ) : (
-            <>
-              Learn More
-              <ArrowRight size={16} />
-            </>
+            <>Learn More <ArrowRight size={16} /></>
           )}
         </button>
       </div>
