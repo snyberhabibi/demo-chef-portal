@@ -150,11 +150,18 @@ export default function PaymentsPage() {
                     }}
                   />
                 </button>
-                {faqOpen === i && (
+                <div
+                  style={{
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease, opacity 0.3s ease",
+                    maxHeight: faqOpen === i ? 200 : 0,
+                    opacity: faqOpen === i ? 1 : 0,
+                  }}
+                >
                   <div className="body-sm" style={{ padding: "0 24px 14px", lineHeight: 1.6 }}>
                     {item.a}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

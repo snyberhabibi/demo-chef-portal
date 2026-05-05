@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Plus, Search, X, ClipboardList, Copy, MoreHorizontal } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -208,6 +208,9 @@ const TABS: { key: MenuTab; label: string }[] = [
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function MenuPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [activeTab, setActiveTab] = useState<MenuTab>("dishes");
 
   /* Dishes state */
@@ -283,6 +286,18 @@ export default function MenuPage() {
     setSections((prev) => [...prev, newSection]);
     toast("Section created");
   };
+
+  if (!loaded) {
+    return (
+      <div className="content-wide section-stack page-fade">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="skeleton" style={{ height: 180, borderRadius: 16 }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content-wide section-stack page-fade">
@@ -623,7 +638,7 @@ export default function MenuPage() {
                         <img
                           src={dish.image}
                           alt={dish.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-[1.03]"
                           style={{ borderRadius: "20px 20px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
                         />
                         <div

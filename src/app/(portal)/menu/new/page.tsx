@@ -246,7 +246,9 @@ export default function CreateDishPage() {
         }}
       >
         <h1 className="heading-md">Create New Dish</h1>
-        <span className="pill pill-orange" style={{ fontSize: 11 }}>Draft</span>
+        <span className={`pill ${status === "published" ? "pill-sage" : "pill-orange"}`} style={{ fontSize: 11, transition: "all 0.2s ease" }}>
+          {status === "published" ? "Published" : "Draft"}
+        </span>
         <div className="flex-1" />
         <button className="btn btn-ghost btn-sm" onClick={() => router.push("/menu")}>
           Discard

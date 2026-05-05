@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Camera, X, Upload, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -23,6 +23,18 @@ export default function ProfilePage() {
   const [experience, setExperience] = useState("5");
   const [cuisines, setCuisines] = useState(["Palestinian", "Lebanese", "Jordanian", "Iraqi"]);
   const [cuisineSearch, setCuisineSearch] = useState("");
+  const [cuisineDropdownOpen, setCuisineDropdownOpen] = useState(false);
+  const cuisineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (cuisineRef.current && !cuisineRef.current.contains(e.target as Node)) {
+        setCuisineDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Section collapse state
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -169,19 +181,20 @@ export default function ProfilePage() {
             ))}
           </div>
           {/* Add cuisine */}
-          <div style={{ position: "relative" }}>
+          <div style={{ position: "relative" }} ref={cuisineRef}>
             <input
               className="input"
               value={cuisineSearch}
-              onChange={(e) => setCuisineSearch(e.target.value)}
+              onChange={(e) => { setCuisineSearch(e.target.value); setCuisineDropdownOpen(true); }}
+              onFocus={() => setCuisineDropdownOpen(true)}
               placeholder="Search and add cuisines..."
             />
-            {cuisineSearch && filteredCuisines.length > 0 && (
+            {cuisineDropdownOpen && cuisineSearch && filteredCuisines.length > 0 && (
               <div className="card" style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 4, padding: 4, zIndex: 10 }}>
                 {filteredCuisines.slice(0, 5).map((c) => (
                   <button
                     key={c}
-                    onClick={() => addCuisine(c)}
+                    onClick={() => { addCuisine(c); setCuisineDropdownOpen(false); }}
                     style={{
                       display: "block", width: "100%", textAlign: "left",
                       padding: "8px 12px", fontSize: 14, color: "var(--color-brown)",
@@ -257,11 +270,18 @@ function SectionCard({
         </div>
         {open ? <ChevronUp size={18} style={{ color: "var(--color-brown-soft-2)" }} /> : <ChevronDown size={18} style={{ color: "var(--color-brown-soft-2)" }} />}
       </button>
-      {open && (
+      <div
+        style={{
+          overflow: "hidden",
+          transition: "max-height 0.3s ease, opacity 0.3s ease",
+          maxHeight: open ? 1000 : 0,
+          opacity: open ? 1 : 0,
+        }}
+      >
         <div style={{ padding: "0 20px 20px", borderTop: "1px solid rgba(51,31,46,0.04)" }}>
           <div style={{ paddingTop: 16 }}>{children}</div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

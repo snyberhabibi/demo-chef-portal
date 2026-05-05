@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -189,6 +189,25 @@ function getGreeting(): string {
 /* ------------------------------------------------------------------ */
 export default function DashboardPage() {
   const [mode, setMode] = useState<"A" | "B">("B");
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
+  if (!loaded) {
+    return (
+      <div className="section-stack">
+        {/* Skeleton: stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+          ))}
+        </div>
+        {/* Skeleton: order rows */}
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 60, borderRadius: 16 }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="section-stack">

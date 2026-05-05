@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -48,6 +49,7 @@ const desserts: Dish[] = [
 export default function StorePreviewPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [bioExpanded, setBioExpanded] = useState(false);
   return (
     <div className="content-default" style={{ margin: "-16px auto" }}>
       <style>{`
@@ -167,15 +169,17 @@ export default function StorePreviewPage() {
           <div className="card" style={{ padding: "20px 24px" }}>
             <p className="body-sm" style={{ margin: 0, lineHeight: 1.6 }}>
               Authentic Palestinian home cooking passed down through generations. Every dish is made fresh to order with love.
+              {bioExpanded && (
+                <span> I grew up watching my mother and grandmother cook for our family. Their recipes tell the story of our heritage — from the hills of Nablus to our kitchen in Dallas. Every spice, every fold of dough, carries a memory. We source local ingredients when possible, and our menu changes with the seasons to bring you the very best flavors.</span>
+              )}
             </p>
-            <a
-              href="#"
+            <button
               className="caption"
-              style={{ color: "var(--color-red)", fontWeight: 500, marginTop: 8, display: "inline-block" }}
-              onClick={(e) => e.preventDefault()}
+              style={{ color: "var(--color-red)", fontWeight: 500, marginTop: 8, display: "inline-block", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              onClick={() => setBioExpanded(!bioExpanded)}
             >
-              Read more
-            </a>
+              {bioExpanded ? "Show less" : "Read more"}
+            </button>
           </div>
 
           {/* Popular Dishes */}

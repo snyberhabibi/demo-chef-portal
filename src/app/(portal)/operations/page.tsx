@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar } from "lucide-react";
+import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar, Copy, Ban } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 
 type StoreState = "pending" | "approved-off" | "live" | "rejected";
@@ -356,8 +356,29 @@ export default function OperationsPage() {
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         <div className="flex items-center justify-between" style={{ padding: "16px 20px", borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
           <div className="heading-sm">Weekly Hours</div>
-          <button className="btn btn-ghost btn-sm" onClick={copyMondayToWeekdays} style={{ fontSize: 12 }}>
-            Copy Monday to all weekdays
+          <button
+            onClick={() => {
+              const today = new Date();
+              const formatted = today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: formatted, endDate: formatted, days: 1, note: "Blocked today", autoPause: true }]);
+              toast("Today blocked \u2014 no new orders");
+            }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 14px",
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+              background: "rgba(229,65,65,0.08)",
+              color: "var(--color-red-deep)",
+              transition: "background var(--t-fast)",
+            }}
+          >
+            <Ban size={14} /> Block Today
           </button>
         </div>
 
@@ -368,8 +389,29 @@ export default function OperationsPage() {
               {di > 0 && <div className="divider" style={{ margin: "0 20px" }} />}
               <div style={{ padding: "12px 20px", display: "flex", alignItems: "flex-start", gap: 12 }}>
                 {/* Day name */}
-                <span style={{ width: 80, flexShrink: 0, fontSize: 14, fontWeight: 600, paddingTop: 4 }}>
+                <span style={{ width: 80, flexShrink: 0, fontSize: 14, fontWeight: 600, paddingTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
                   {day}
+                  {day === "Monday" && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); copyMondayToWeekdays(); toast("Monday hours copied to weekdays"); }}
+                      title="Copy Monday to all weekdays"
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 6,
+                        border: "none",
+                        background: "var(--color-cream-sunken)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        color: "var(--color-brown-soft-2)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Copy size={12} />
+                    </button>
+                  )}
                 </span>
 
                 {/* Toggle */}

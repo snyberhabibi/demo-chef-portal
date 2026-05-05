@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Search, Truck, ShoppingBag, Clock, Package, ChevronRight } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -313,11 +313,15 @@ function urgencyBorderColor(u: Urgency): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function OrdersPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const { toast } = useToast();
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, OrderStatus>>({});
 
   const activeFilter = filterTabs.find((f) => f.label === activeTab)!;
 
@@ -350,6 +354,34 @@ export default function OrdersPage() {
   const paginated = filtered.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const showingStart = filtered.length === 0 ? 0 : (page - 1) * rowsPerPage + 1;
   const showingEnd = Math.min(page * rowsPerPage, filtered.length);
+
+  const getEffectiveStatus = (order: Order): OrderStatus => {
+    return statusOverrides[order.hash] || order.status;
+  };
+
+  const advanceStatus = (hash: string, currentStatus: OrderStatus) => {
+    const nextMap: Partial<Record<OrderStatus, OrderStatus>> = {
+      paid: "confirmed",
+      confirmed: "preparing",
+      preparing: "ready",
+      ready: "delivered",
+      readyForPickup: "pickedUp",
+    };
+    const next = nextMap[currentStatus];
+    if (next) {
+      setStatusOverrides((prev) => ({ ...prev, [hash]: next }));
+    }
+  };
+
+  if (!loaded) {
+    return (
+      <div className="content-default section-stack">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="content-default section-stack">
@@ -524,9 +556,10 @@ export default function OrdersPage() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {paginated.map((order) => {
-            const label = actionLabel(order.status);
+            const effectiveStatus = getEffectiveStatus(order);
+            const label = actionLabel(effectiveStatus);
             const itemSummary = order.items.map((i) => (i.qty > 1 ? `${i.qty}x ${i.name}` : i.name)).join(", ");
-            const isStruck = order.status === "cancelled" || order.status === "rejected";
+            const isStruck = effectiveStatus === "cancelled" || effectiveStatus === "rejected";
             const dateTime = order.time ? `${order.date} · ${order.time}` : order.date;
 
             return (
@@ -546,14 +579,14 @@ export default function OrdersPage() {
                   {/* Row 1: Name + Status + Chevron */}
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     {/* Status dot */}
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(order.status), flexShrink: 0 }} />
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
                     {/* Customer name */}
                     <span style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
                       {order.customer}
                     </span>
                     {/* Status pill */}
-                    <span className={`pill ${order.status === "paid" || order.status === "confirmed" || order.status === "rescheduling" ? "pill-orange" : order.status === "cancelled" || order.status === "rejected" ? "pill-red" : "pill-sage"}`}>
-                      {statusLabel(order.status)}
+                    <span className={`pill ${effectiveStatus === "paid" || effectiveStatus === "confirmed" || effectiveStatus === "rescheduling" ? "pill-orange" : effectiveStatus === "cancelled" || effectiveStatus === "rejected" ? "pill-red" : "pill-sage"}`}>
+                      {statusLabel(effectiveStatus)}
                     </span>
                     {/* Chevron arrow */}
                     <ChevronRight size={16} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
@@ -596,12 +629,13 @@ export default function OrdersPage() {
                     </div>
                     {label && (
                       <button
-                        className={`btn btn-sm ${actionBtnClass(order.status)}`}
-                        style={{ minWidth: 80 }}
+                        className={`btn btn-sm ${actionBtnClass(effectiveStatus)}`}
+                        style={{ minWidth: 80, transition: "all 0.2s ease" }}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          toast(actionToastMsg(order.hash, order.status));
+                          toast(actionToastMsg(order.hash, effectiveStatus));
+                          advanceStatus(order.hash, effectiveStatus);
                         }}
                       >
                         {label}
