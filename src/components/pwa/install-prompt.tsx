@@ -159,7 +159,7 @@ export function InstallPrompt() {
               color: "var(--color-brown)",
             }}
           >
-            Add Yalla Bites to Home Screen
+            Add Yalla Bites Chef Portal to Home Screen
           </div>
           <div
             style={{
