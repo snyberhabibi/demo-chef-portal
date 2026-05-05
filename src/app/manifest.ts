@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Yalla Bites — Chef Portal",
-    short_name: "Yalla Bites",
+    short_name: "Chef Portal",
     description:
       "Manage your kitchen, menu, orders, and flash sales — all in one place.",
     start_url: "/dashboard",

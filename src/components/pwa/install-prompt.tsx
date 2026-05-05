@@ -79,7 +79,7 @@ export function InstallPrompt() {
       // Show a test notification
       if ("serviceWorker" in navigator) {
         const reg = await navigator.serviceWorker.ready;
-        await reg.showNotification("Yalla Bites", {
+        await reg.showNotification("Yalla Bites Chef Portal", {
           body: "Notifications are enabled! You'll get alerts for new orders.",
           icon: "/icons/icon-192.png",
           badge: "/icons/icon-128.png",
@@ -148,7 +148,7 @@ export function InstallPrompt() {
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <img
           src="/icons/icon-128.png"
-          alt="Yalla Bites"
+          alt="Yalla Bites Chef Portal"
           style={{ width: 48, height: 48, borderRadius: 12 }}
         />
         <div>

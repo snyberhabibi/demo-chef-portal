@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Yalla Bites",
+    title: "Yalla Bites Chef Portal",
     startupImage: "/icons/icon-512.png",
   },
   icons: {

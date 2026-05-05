@@ -64,7 +64,7 @@ self.addEventListener("fetch", (event) => {
 
 // Push notifications
 self.addEventListener("push", (event) => {
-  let data = { title: "Yalla Bites", body: "You have a new notification" };
+  let data = { title: "Yalla Bites Chef Portal", body: "You have a new notification" };
 
   if (event.data) {
     try {
