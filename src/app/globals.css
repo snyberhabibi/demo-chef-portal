@@ -765,6 +765,99 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
   .bottom-sheet { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 
+/* ========================================================================
+   MICRO-INTERACTIONS — Premium hover/press feedback
+   ======================================================================== */
+
+/* Card interactive states — apply to clickable cards */
+.card-interactive {
+  transition: transform var(--t-fast) var(--ease-spring), box-shadow var(--t-fast);
+  cursor: pointer;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(51,31,46,0.04),
+    0 4px 8px rgba(51,31,46,0.06),
+    0 12px 32px rgba(51,31,46,0.06);
+}
+.card-interactive:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-interactive:hover,
+  .card-interactive:active {
+    transform: none;
+  }
+}
+
+/* Page enter animation — smooth content reveal after skeleton */
+.page-enter {
+  animation: pageEnter 0.3s ease-out;
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; }
+}
+
 /* Prevent horizontal overflow globally */
 html, body { overflow-x: hidden; }
 main { overflow-x: hidden; }
+
+/* ========================================================================
+   PAGE-SPECIFIC OVERRIDES (moved from inline <style> tags)
+   ======================================================================== */
+
+/* Portal layout — responsive main padding */
+@media (min-width: 640px) {
+  main.portal-main { padding: 20px !important; }
+}
+@media (min-width: 1024px) {
+  main.portal-main { padding: 32px !important; }
+}
+
+/* Dashboard — mode toggle responsive */
+@media (max-width: 640px) {
+  .mode-toggle-wrap { width: 100%; }
+  .mode-toggle-wrap button { flex: 1; }
+}
+
+/* Dashboard — pulse dot for flash sale cards */
+@keyframes dashPulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.dash-pulse-dot {
+  animation: dashPulseDot 2s ease-in-out infinite;
+}
+
+/* Orders — filter tab sizing */
+@media (max-width: 640px) {
+  .order-filter-tabs button { height: 28px !important; font-size: 11px !important; }
+}
+
+/* Orders — audio alert pulse */
+@keyframes audioAlertPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(121,173,99,0.3); }
+  50% { box-shadow: 0 0 0 5px rgba(121,173,99,0); }
+}
+.audio-alert-on { animation: audioAlertPulse 2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .audio-alert-on { animation: none; } }
+
+/* Orders / Flash Sales — scrollbar hiding for pipeline & filter tabs */
+.pipeline-scroll::-webkit-scrollbar { display: none; }
+.pipeline-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.order-filter-tabs::-webkit-scrollbar { display: none; }
+
+/* Flash Sales — pulse dot */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.flash-pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}

@@ -23,6 +23,7 @@ import {
   type Order,
   type OrderStatus,
 } from "@/lib/mock-data";
+import { statusDotColor } from "@/lib/utils/status-helpers";
 
 /* ------------------------------------------------------------------ */
 /*  Seed data                                                         */
@@ -136,27 +137,6 @@ const onboardingPhases: Phase[] = [
 ];
 
 /* Derive dashboard-friendly recent orders from centralized data */
-function statusDotColor(s: OrderStatus): string {
-  switch (s) {
-    case "paid":
-    case "confirmed":
-      return "var(--color-orange)";
-    case "preparing":
-      return "#e8a832";
-    case "ready":
-    case "readyForPickup":
-    case "delivered":
-    case "pickedUp":
-    case "outForDelivery":
-      return "var(--color-sage)";
-    case "cancelled":
-    case "rejected":
-      return "var(--color-red)";
-    default:
-      return "var(--color-brown-soft-2)";
-  }
-}
-
 function statusLabel(s: OrderStatus): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -360,7 +340,7 @@ function ModeA() {
       {/* Header with progress bar */}
       <div>
         <h1 className="heading-lg" style={{ marginBottom: 6 }}>
-          Welcome back, Amira
+          Welcome back, {chefProfile.name}
         </h1>
         <p className="body-sm" style={{ marginBottom: 12 }}>
           {remaining} {remaining === 1 ? "step" : "steps"} remaining to go
@@ -737,14 +717,7 @@ function ModeB() {
   }, [dashSearch]);
 
   return (
-    <div className="content-wide section-stack line-reveal">
-      <style>{`
-        @media (max-width: 640px) {
-          .mode-toggle-wrap { width: 100%; }
-          .mode-toggle-wrap button { flex: 1; }
-        }
-      `}</style>
-
+    <div className="content-wide section-stack line-reveal page-enter">
       {/* Greeting */}
       <h1 className="heading-lg" style={{ margin: "0 0 8px 0" }}>
         {greeting}, {chefProfile.name}{" "}
@@ -759,7 +732,7 @@ function ModeB() {
       </h1>
 
       {/* Search bar */}
-      <div style={{ position: "relative", width: "100%" }}>
+      <form role="search" onSubmit={(e) => e.preventDefault()} style={{ position: "relative", width: "100%" }}>
         <Search
           size={16}
           strokeWidth={2}
@@ -775,6 +748,7 @@ function ModeB() {
         <input
           type="text"
           placeholder="Search recent orders..."
+          aria-label="Search dashboard"
           value={dashSearch}
           onChange={(e) => setDashSearch(e.target.value)}
           className="text-sm sm:text-sm"
@@ -789,12 +763,12 @@ function ModeB() {
             color: "var(--color-brown)",
           }}
         />
-      </div>
+      </form>
 
       {/* Stat cards — clean 2x2 / 4-across grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, i) => (
-          <div key={i} className="card" style={{ padding: "20px" }}>
+          <div key={i} className="card card-interactive" style={{ padding: "20px" }}>
             <div className="eyebrow" style={{ marginBottom: 8 }}>
               {stat.label}
             </div>
@@ -813,15 +787,6 @@ function ModeB() {
 
       {/* Flash Sales section */}
       <div>
-        <style>{`
-          @keyframes dashPulseDot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-          }
-          .dash-pulse-dot {
-            animation: dashPulseDot 2s ease-in-out infinite;
-          }
-        `}</style>
         <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
           <span className="eyebrow">FLASH SALES</span>
           <Link
@@ -843,7 +808,7 @@ function ModeB() {
           {liveSale && (
             <Link
               href="/flash-sales"
-              className="card card-hover"
+              className="card card-interactive"
               style={{
                 display: "block",
                 textDecoration: "none",
@@ -883,7 +848,7 @@ function ModeB() {
           {upcomingSale && (
             <Link
               href="/flash-sales"
-              className="card card-hover"
+              className="card card-interactive"
               style={{
                 display: "block",
                 textDecoration: "none",
@@ -941,7 +906,7 @@ function ModeB() {
             <Link
               key={order.hashId}
               href={`/orders/${order.hashId.replace("#", "")}`}
-              className="card card-hover"
+              className="card card-interactive"
               style={{
                 display: "block",
                 textDecoration: "none",

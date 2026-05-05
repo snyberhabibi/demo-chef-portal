@@ -23,6 +23,8 @@ import {
   type FlashSale,
   type SaleStatus,
 } from "@/lib/mock-data";
+import { useToast } from "@/components/ui/toast-provider";
+import { saleStatusDotColor } from "@/lib/utils/status-helpers";
 
 /* ------------------------------------------------------------------ */
 /*  Tab config                                                         */
@@ -33,22 +35,6 @@ const tabs: { key: SaleStatus; label: string }[] = [
   { key: "draft", label: "Drafts" },
   { key: "past", label: "Past" },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-function statusDotColor(s: SaleStatus): string {
-  switch (s) {
-    case "live":
-      return "var(--color-sage)";
-    case "upcoming":
-      return "var(--color-orange)";
-    case "draft":
-      return "var(--color-brown-soft-2)";
-    case "past":
-      return "var(--color-brown-soft-2)";
-  }
-}
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -85,16 +71,6 @@ export default function FlashSalesPage() {
 
   return (
     <div className="content-default section-stack">
-      <style>{`
-        @keyframes pulseDot {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        .flash-pulse-dot {
-          animation: pulseDot 2s ease-in-out infinite;
-        }
-      `}</style>
-
       {/* -------- Header -------- */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="heading-lg">Flash Sales</h1>
@@ -230,7 +206,8 @@ const stockData: Record<string, { claimed: number; total: number }> = {
 };
 
 function FlashSaleCard({ sale }: { sale: FlashSale }) {
-  const dotColor = statusDotColor(sale.status);
+  const { toast } = useToast();
+  const dotColor = saleStatusDotColor(sale.status);
   const isLive = sale.status === "live";
   const isPast = sale.status === "past";
   const isDraft = sale.status === "draft";
@@ -477,6 +454,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Close Early -- coming soon")}
             >
               <Ban size={12} />
               Close Early
@@ -488,6 +466,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Edit -- coming soon")}
             >
               <Pencil size={12} />
               Edit
@@ -495,6 +474,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Cancel -- coming soon")}
             >
               <X size={12} />
               Cancel
@@ -506,6 +486,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Continue Editing -- coming soon")}
             >
               <Pencil size={12} />
               Continue Editing
@@ -513,6 +494,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Delete -- coming soon")}
             >
               <Trash2 size={12} />
               Delete
@@ -524,6 +506,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("View Summary -- coming soon")}
             >
               <BarChart3 size={12} />
               View Summary
@@ -531,6 +514,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+              onClick={() => toast("Duplicate -- coming soon")}
             >
               <Copy size={12} />
               Duplicate
@@ -639,6 +623,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
         <span className="heading-sm">Create Flash Sale</span>
         <button
           onClick={onClose}
+          aria-label="Close create flash sale panel"
           style={{
             display: "flex",
             alignItems: "center",
@@ -818,6 +803,9 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                   </span>
                   <button
                     type="button"
+                    role="switch"
+                    aria-checked={pickupEnabled}
+                    aria-label="Enable pickup"
                     onClick={() => setPickupEnabled(!pickupEnabled)}
                     style={{
                       width: 36,
@@ -913,6 +901,9 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                   </span>
                   <button
                     type="button"
+                    role="switch"
+                    aria-checked={deliveryEnabled}
+                    aria-label="Enable delivery"
                     onClick={() => setDeliveryEnabled(!deliveryEnabled)}
                     style={{
                       width: 36,
@@ -1372,6 +1363,9 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={showInventory}
+                aria-label="Show inventory on storefront"
                 onClick={() => setShowInventory(!showInventory)}
                 style={{
                   width: 36,

@@ -15,6 +15,7 @@ import {
   type Bundle,
   type MenuSection,
 } from "@/lib/mock-data";
+import { dishStatusBadge } from "@/lib/utils/status-helpers";
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -24,35 +25,11 @@ type MenuTab = "dishes" | "bundles" | "sections";
 
 /* dishes, categories, BUNDLES, INITIAL_SECTIONS imported from @/lib/mock-data */
 
-function dishStatusBadge(status: DishStatus) {
-  switch (status) {
-    case "published":
-      return { dot: "var(--color-sage)", bg: "rgba(121,173,99,0.15)", color: "var(--color-sage-deep)", label: "Published" };
-    case "draft":
-      return { dot: "var(--color-orange)", bg: "rgba(252,157,53,0.15)", color: "var(--color-orange-text)", label: "Draft" };
-    case "archived":
-      return { dot: "var(--color-brown-soft-2)", bg: "rgba(138,120,132,0.15)", color: "var(--color-brown-soft)", label: "Archived" };
-  }
-}
-
-/* ── Bundles data — imported from @/lib/mock-data ── */
-type BundleStatus = "published" | "draft" | "archived";
-
-function bundleStatusBadge(status: BundleStatus) {
-  switch (status) {
-    case "published":
-      return { dot: "var(--color-sage)", bg: "rgba(121,173,99,0.15)", color: "var(--color-sage-deep)", label: "Published" };
-    case "draft":
-      return { dot: "var(--color-orange)", bg: "rgba(252,157,53,0.15)", color: "var(--color-orange-text)", label: "Draft" };
-    case "archived":
-      return { dot: "var(--color-brown-soft-2)", bg: "rgba(138,120,132,0.15)", color: "var(--color-brown-soft)", label: "Archived" };
-  }
-}
+/* bundleStatusBadge is identical to dishStatusBadge — reuse from shared helpers */
+const bundleStatusBadge = dishStatusBadge;
 
 /* ── Sections data — imported from @/lib/mock-data ── */
 type Section = MenuSection;
-
-let nextSectionId = 5;
 
 /* ── Tab definitions ── */
 const TABS: { key: MenuTab; label: string }[] = [
@@ -87,6 +64,7 @@ export default function MenuPage() {
 
   const { toast } = useToast();
   const menuPageRef = useRef<HTMLDivElement>(null);
+  const nextSectionIdRef = useRef(5);
 
   /* Click-outside to close dish card and section row dropdown menus */
   useEffect(() => {
@@ -156,7 +134,7 @@ export default function MenuPage() {
   /* ── Sections handlers ── */
   const handleCreateSection = () => {
     const newSection: Section = {
-      id: nextSectionId++,
+      id: nextSectionIdRef.current++,
       name: `New Section ${sections.length + 1}`,
       dishCount: 0,
       active: true,
@@ -178,7 +156,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="content-wide section-stack page-fade">
+    <div className="content-wide section-stack page-fade page-enter">
       {/* ── Create Dish Modal ── */}
       {showCreateModal && (
         <div
@@ -501,7 +479,7 @@ export default function MenuPage() {
                 return (
                   <div
                     key={dish.id}
-                    className="card-photo group overflow-hidden rounded-[16px] relative"
+                    className="card-photo card-interactive group overflow-hidden rounded-[16px] relative"
                     style={{
                       padding: 0,
                       opacity: dish.status === "archived" ? 0.6 : 1,

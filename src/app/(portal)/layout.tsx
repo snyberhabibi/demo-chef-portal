@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
@@ -104,6 +104,7 @@ export default function PortalLayout({
 }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   // Try two-segment match first (e.g. menu/new), then single segment
   const segments = pathname.split("/").filter(Boolean);
@@ -139,24 +140,17 @@ export default function PortalLayout({
           title={config.title}
           breadcrumbs={config.breadcrumbs}
           onMobileMenuToggle={() => setDrawerOpen(true)}
+          hamburgerRef={hamburgerRef}
         />
         <main
-          className="flex-1 page-fade"
+          className="flex-1 page-fade portal-main"
           style={{ padding: "16px", overflowX: "hidden" }}
         >
-          <style>{`
-            @media (min-width: 640px) {
-              main { padding: 20px !important; }
-            }
-            @media (min-width: 1024px) {
-              main { padding: 32px !important; }
-            }
-          `}</style>
           <div className="pb-16 lg:pb-0">{children}</div>
         </main>
       </div>
       <BottomTabBar activePath={activePath} />
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} activePath={activePath} />
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} activePath={activePath} triggerRef={hamburgerRef} />
     </div>
   );
 }

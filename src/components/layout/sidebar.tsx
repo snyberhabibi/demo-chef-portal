@@ -200,16 +200,16 @@ export function Sidebar({ activePath }: SidebarProps) {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed((prev) => !prev)}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         className="flex items-center justify-center"
         style={{
           height: 40,
-          borderTop: "1px solid rgba(51,31,46,0.06)",
           color: "var(--color-brown-soft-2)",
           background: "transparent",
-          border: "none",
-          borderTopStyle: "solid",
-          borderTopWidth: 1,
-          borderTopColor: "rgba(51,31,46,0.06)",
+          borderTop: "1px solid rgba(51,31,46,0.06)",
+          borderRight: "none",
+          borderBottom: "none",
+          borderLeft: "none",
           cursor: "pointer",
           transition: `all var(--t-fast) var(--ease-spring)`,
         }}

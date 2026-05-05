@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Search, Truck, ShoppingBag, Package, ChevronRight, MessageSquare, ExternalLink, ClipboardList, LayoutGrid, List, Volume2, VolumeX, X } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { orders, type Order, type OrderStatus, type Urgency } from "@/lib/mock-data";
+import { statusDotColor } from "@/lib/utils/status-helpers";
 
 /* ------------------------------------------------------------------ */
 /*  Filter tabs                                                        */
@@ -31,17 +32,6 @@ const pipelineColumns: { key: string; label: string; color: string; match: (s: O
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
-function statusDotColor(s: OrderStatus): string {
-  switch (s) {
-    case "paid": case "confirmed": return "var(--color-orange)";
-    case "preparing": return "#e8a832";
-    case "ready": case "readyForPickup": case "delivered": case "pickedUp": case "outForDelivery": return "var(--color-sage)";
-    case "cancelled": case "rejected": return "var(--color-red)";
-    case "rescheduling": return "var(--color-orange)";
-    default: return "var(--color-brown-soft-2)";
-  }
-}
-
 function actionLabel(s: OrderStatus): string | null {
   switch (s) {
     case "paid": return "Confirm";
@@ -103,7 +93,15 @@ export default function OrdersPage() {
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const { toast } = useToast();
-  const [statusOverrides, setStatusOverrides] = useState<Record<string, OrderStatus>>({});
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, OrderStatus>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("order-status-overrides");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "pipeline">("list");
   const [audioAlerts, setAudioAlerts] = useState(false);
@@ -116,6 +114,10 @@ export default function OrdersPage() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("order-status-overrides", JSON.stringify(statusOverrides));
+  }, [statusOverrides]);
 
   const activeFilter = filterTabs.find((f) => f.label === activeTab)!;
   const tabCounts = useMemo(() => {
@@ -165,21 +167,11 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="content-default section-stack">
-      <style>{`
-        @media (max-width: 640px) { .order-filter-tabs button { height: 28px !important; font-size: 11px !important; } }
-        @keyframes audioAlertPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(121,173,99,0.3); } 50% { box-shadow: 0 0 0 5px rgba(121,173,99,0); } }
-        .audio-alert-on { animation: audioAlertPulse 2s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce) { .audio-alert-on { animation: none; } }
-        .pipeline-scroll::-webkit-scrollbar { display: none; }
-        .pipeline-scroll { scrollbar-width: none; -ms-overflow-style: none; }
-      `}</style>
-
+    <div className="content-default section-stack page-enter">
       {/* Filter bar + controls */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex-1 min-w-0" style={{ overflow: "hidden" }}>
           <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none", paddingBottom: 2 }}>
-            <style>{`.order-filter-tabs::-webkit-scrollbar { display: none; }`}</style>
             <div className="order-filter-tabs" style={{ display: "flex", gap: 4 }}>
               {filterTabs.map((tab) => {
                 const isActive = tab.label === activeTab && !showPrepList;
@@ -205,24 +197,24 @@ export default function OrdersPage() {
         {/* View toggle + Audio toggle */}
         <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
           <div style={{ display: "inline-flex", background: "var(--color-cream-sunken)", borderRadius: 8, padding: 2, gap: 1 }}>
-            <button title="List view" onClick={() => setViewMode("list")} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 28, borderRadius: 6, border: "none", cursor: "pointer", background: viewMode === "list" ? "#fff" : "transparent", color: viewMode === "list" ? "var(--color-brown)" : "var(--color-brown-soft-2)", boxShadow: viewMode === "list" ? "0 1px 3px rgba(51,31,46,0.08)" : "none", transition: "all var(--t-fast) var(--ease-spring)" }}><List size={15} strokeWidth={2} /></button>
-            <button title="Pipeline view" onClick={() => setViewMode("pipeline")} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 28, borderRadius: 6, border: "none", cursor: "pointer", background: viewMode === "pipeline" ? "#fff" : "transparent", color: viewMode === "pipeline" ? "var(--color-brown)" : "var(--color-brown-soft-2)", boxShadow: viewMode === "pipeline" ? "0 1px 3px rgba(51,31,46,0.08)" : "none", transition: "all var(--t-fast) var(--ease-spring)" }}><LayoutGrid size={15} strokeWidth={2} /></button>
+            <button title="List view" aria-label="Switch to list view" onClick={() => setViewMode("list")} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 28, borderRadius: 6, border: "none", cursor: "pointer", background: viewMode === "list" ? "#fff" : "transparent", color: viewMode === "list" ? "var(--color-brown)" : "var(--color-brown-soft-2)", boxShadow: viewMode === "list" ? "0 1px 3px rgba(51,31,46,0.08)" : "none", transition: "all var(--t-fast) var(--ease-spring)" }}><List size={15} strokeWidth={2} /></button>
+            <button title="Pipeline view" aria-label="Switch to pipeline view" onClick={() => setViewMode("pipeline")} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 28, borderRadius: 6, border: "none", cursor: "pointer", background: viewMode === "pipeline" ? "#fff" : "transparent", color: viewMode === "pipeline" ? "var(--color-brown)" : "var(--color-brown-soft-2)", boxShadow: viewMode === "pipeline" ? "0 1px 3px rgba(51,31,46,0.08)" : "none", transition: "all var(--t-fast) var(--ease-spring)" }}><LayoutGrid size={15} strokeWidth={2} /></button>
           </div>
-          <button title={audioAlerts ? "Mute order alerts" : "Enable order alerts"} className={audioAlerts ? "audio-alert-on" : ""} onClick={() => { setAudioAlerts(!audioAlerts); toast(audioAlerts ? "Order alerts muted" : "Order alerts on"); }} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 32, borderRadius: 8, border: "1px solid rgba(51,31,46,0.1)", cursor: "pointer", background: audioAlerts ? "rgba(121,173,99,0.08)" : "#fff", color: audioAlerts ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)", transition: "all var(--t-fast) var(--ease-spring)" }}>
+          <button title={audioAlerts ? "Mute order alerts" : "Enable order alerts"} aria-label={audioAlerts ? "Mute order alerts" : "Enable order alerts"} className={audioAlerts ? "audio-alert-on" : ""} onClick={() => { setAudioAlerts(!audioAlerts); toast(audioAlerts ? "Order alerts muted" : "Order alerts on"); }} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 32, borderRadius: 8, border: "1px solid rgba(51,31,46,0.1)", cursor: "pointer", background: audioAlerts ? "rgba(121,173,99,0.08)" : "#fff", color: audioAlerts ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)", transition: "all var(--t-fast) var(--ease-spring)" }}>
             {audioAlerts ? <Volume2 size={16} strokeWidth={2} /> : <VolumeX size={16} strokeWidth={2} />}
           </button>
         </div>
 
-        <div className="hidden lg:block" style={{ position: "relative", width: 280, flexShrink: 0 }}>
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="hidden lg:block" style={{ position: "relative", width: 280, flexShrink: 0 }}>
           <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-          <input type="text" placeholder="Search orders..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
-        </div>
+          <input type="text" placeholder="Search orders..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+        </form>
       </div>
 
-      <div className="lg:hidden" style={{ position: "relative", marginTop: -8 }}>
+      <form role="search" onSubmit={(e) => e.preventDefault()} className="lg:hidden" style={{ position: "relative", marginTop: -8 }}>
         <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-        <input type="text" placeholder="Search by order ID, customer, or dish..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
-      </div>
+        <input type="text" placeholder="Search by order ID, customer, or dish..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+      </form>
 
       {showPrepList && <PrepListView orders={orders} />}
 
@@ -246,7 +238,7 @@ export default function OrdersPage() {
             const bg = urgencyBackground(order.urgency ?? null);
             const isExpanded = expandedOrder === order.hash;
             return (
-              <div key={order.hash} className="card card-hover" style={{ display: "block", padding: 0, opacity: isTerminal ? 0.5 : 1, background: bg || "#fff" }}>
+              <div key={order.hash} className="card card-interactive" style={{ display: "block", padding: 0, opacity: isTerminal ? 0.5 : 1, background: bg || "#fff" }}>
                 <button type="button" onClick={() => setExpandedOrder(isExpanded ? null : order.hash)} style={{ display: "block", width: "100%", padding: "14px 16px", border: "none", background: "transparent", cursor: "pointer", textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
