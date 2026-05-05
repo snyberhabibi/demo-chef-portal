@@ -89,10 +89,10 @@ export default function WelcomePage() {
           />
         </div>
 
-        {/* Celebration emoji — 72px circle, cream-deep bg, no shadow */}
+        {/* Celebration emoji — 72px circle, cream-deep bg, glow */}
         <div className="flex justify-center" style={{ marginBottom: 24 }}>
           <div
-            className="flex items-center justify-center"
+            className="flex items-center justify-center glow-orange"
             style={{
               width: 72,
               height: 72,
@@ -124,11 +124,14 @@ export default function WelcomePage() {
           style={{
             marginTop: 16,
             color: "var(--color-brown-soft)",
-            marginBottom: 32,
+            marginBottom: 0,
           }}
         >
           Let&apos;s set up your kitchen. Takes about 5 minutes.
         </p>
+        <div className="flex justify-center" style={{ marginBottom: 32 }}>
+          <span className="accent-line" />
+        </div>
 
         {/* Step cards — 56px height, 8px gap */}
         <div className="flex flex-col line-reveal" style={{ gap: 8, marginBottom: 32 }}>
@@ -138,7 +141,7 @@ export default function WelcomePage() {
               <Link
                 key={step.num}
                 href={step.href}
-                className="card card-hover"
+                className="card-gradient-border card-hover"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -200,10 +203,10 @@ export default function WelcomePage() {
           })}
         </div>
 
-        {/* CTA — btn-red btn-block btn-lg */}
+        {/* CTA — btn-gradient btn-block btn-lg */}
         <Link
           href="/dashboard"
-          className="btn btn-red btn-lg btn-block"
+          className="btn btn-gradient btn-lg btn-block"
           style={{
             display: "flex",
             alignItems: "center",

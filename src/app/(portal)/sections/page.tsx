@@ -27,6 +27,7 @@ export default function SectionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="heading-lg">Custom Menu Sections</h1>
+          <div className="accent-line" style={{ marginTop: 8, marginBottom: 4 }} />
           <p className="body-sm" style={{ marginTop: 4 }}>
             Drag to reorder how sections appear on your store-front
           </p>

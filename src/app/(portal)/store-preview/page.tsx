@@ -55,13 +55,13 @@ export default function StorePreviewPage() {
       <div className="store-preview-wrap" style={{ margin: 0, background: "var(--color-cream)" }}>
         {/* Banner */}
         <div style={{ position: "relative" }}>
-          <div style={{ height: 240, overflow: "hidden", borderRadius: "0 0 16px 16px" }}>
+          <div className="grain" style={{ height: 240, overflow: "hidden", borderRadius: "0 0 16px 16px", position: "relative" }}>
             <img
               src={bannerImg}
               alt="Kitchen banner"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-            {/* Gradient overlay */}
+            {/* Gradient overlay — fades into hero-dark below */}
             <div
               style={{
                 position: "absolute",
@@ -69,7 +69,7 @@ export default function StorePreviewPage() {
                 left: 0,
                 right: 0,
                 height: 100,
-                background: "linear-gradient(to top, rgba(250,249,246,0.95), transparent)",
+                background: "linear-gradient(to top, rgba(51,31,46,0.85), transparent)",
               }}
             />
           </div>
@@ -94,7 +94,7 @@ export default function StorePreviewPage() {
 
           {/* Preview badge */}
           <div
-            className="pill pill-orange"
+            className="pill pill-orange glow-orange"
             style={{ position: "absolute", top: 16, right: 16, zIndex: 2, fontSize: 11 }}
           >
             Preview Mode
@@ -117,42 +117,46 @@ export default function StorePreviewPage() {
           </div>
         </div>
 
-        {/* Content */}
-        <div style={{ padding: "40px 24px 40px" }}>
+        {/* Kitchen info — hero-dark premium section */}
+        <div className="hero-dark" style={{ padding: "40px 24px 32px", borderRadius: "0 0 16px 16px", marginTop: -1 }}>
           {/* Kitchen name + tagline */}
-          <h1 className="heading-lg" style={{ fontSize: 24 }}>
+          <h1 className="heading-lg" style={{ fontSize: 24, color: "var(--color-cream)" }}>
             Yalla Kitchen by Amira
           </h1>
-          <p className="body-sm" style={{ marginTop: 4 }}>
+          <p className="body-sm" style={{ marginTop: 4, color: "rgba(250,249,246,0.7)" }}>
             Authentic Palestinian home cooking
           </p>
 
           {/* Status + rating row */}
           <div className="flex items-center gap-4 flex-wrap" style={{ marginTop: 12 }}>
-            <span className="flex items-center gap-1.5 body">
+            <span className="flex items-center gap-1.5 body" style={{ color: "var(--color-cream)" }}>
               <span className="dot dot-sage" />
               <span style={{ fontWeight: 600 }}>Open</span>
-              <span className="caption">&middot; Closes at 6:00 PM</span>
+              <span style={{ opacity: 0.6, fontSize: 12 }}>&middot; Closes at 6:00 PM</span>
             </span>
-            <span className="flex items-center gap-1 body" style={{ fontWeight: 600 }}>
+            <span className="flex items-center gap-1 body" style={{ fontWeight: 600, color: "var(--color-cream)" }}>
               4.0
               <Star size={14} fill="var(--color-sage)" color="var(--color-sage)" />
-              <span className="caption" style={{ fontWeight: 400 }}>(4 reviews)</span>
+              <span style={{ fontWeight: 400, opacity: 0.6, fontSize: 12 }}>(4 reviews)</span>
             </span>
           </div>
 
           {/* Quick info pills */}
           <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 12 }}>
-            <span className="pill pill-mute" style={{ gap: 4 }}>
+            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
               <Truck size={12} strokeWidth={2} /> Delivery
             </span>
-            <span className="pill pill-mute" style={{ gap: 4 }}>
+            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
               <MapPin size={12} strokeWidth={2} /> Pickup
             </span>
-            <span className="pill pill-mute" style={{ gap: 4 }}>
+            <span className="pill" style={{ gap: 4, background: "rgba(250,249,246,0.1)", color: "var(--color-cream)", border: "1px solid rgba(250,249,246,0.15)" }}>
               <Clock size={12} strokeWidth={2} /> 24h notice
             </span>
           </div>
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: "32px 24px 40px" }}>
 
           {/* Popular Dishes */}
           <div style={{ marginTop: 32 }}>
@@ -199,8 +203,8 @@ export default function StorePreviewPage() {
 /* ------------------------------------------------------------------ */
 function DishCard({ dish }: { dish: Dish }) {
   return (
-    <div className="card card-hover" style={{ padding: 0, overflow: "hidden" }}>
-      <div style={{ aspectRatio: "4/3", overflow: "hidden" }}>
+    <div className="card-photo" style={{ padding: 0 }}>
+      <div style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>
         <img
           src={dish.image}
           alt={dish.name}
@@ -208,24 +212,26 @@ function DishCard({ dish }: { dish: Dish }) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            transition: `transform 0.3s var(--ease-spring)`,
           }}
         />
-      </div>
-      <div style={{ padding: "12px 16px 16px" }}>
-        <div className="heading-sm" style={{ fontSize: 14 }}>{dish.name}</div>
-        <div className="flex items-center justify-between" style={{ marginTop: 8 }}>
-          <span className="fraunces" style={{ fontSize: 18, fontWeight: 600, color: "var(--color-brown)" }}>
-            {dish.price}
-          </span>
-          <button
-            className="btn btn-dark btn-sm"
-            style={{ fontSize: 12, gap: 4 }}
-            onClick={(e) => e.preventDefault()}
-          >
-            <ShoppingCart size={14} strokeWidth={2} />
-            Add
-          </button>
+        {/* Overlay with text on gradient at bottom */}
+        <div className="card-photo-overlay">
+          <div className="flex items-end justify-between w-full" style={{ gap: 8 }}>
+            <div>
+              <div className="heading-sm" style={{ fontSize: 14, color: "#fff" }}>{dish.name}</div>
+              <span className="fraunces" style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+                {dish.price}
+              </span>
+            </div>
+            <button
+              className="btn-gradient"
+              style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999 }}
+              onClick={(e) => e.preventDefault()}
+            >
+              <ShoppingCart size={12} strokeWidth={2} />
+              Add
+            </button>
+          </div>
         </div>
       </div>
     </div>

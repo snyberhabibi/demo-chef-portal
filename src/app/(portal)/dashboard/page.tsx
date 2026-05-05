@@ -127,7 +127,7 @@ const onboardingPhases: Phase[] = [
 
 const urgentCards = [
   {
-    border: "var(--color-red)",
+    urgencyClass: "urgency-red",
     icon: AlertCircle,
     text: "2 orders need confirmation",
     pillClass: "pill-red",
@@ -135,7 +135,7 @@ const urgentCards = [
     href: "/orders",
   },
   {
-    border: "var(--color-orange)",
+    urgencyClass: "urgency-amber",
     icon: MessageSquare,
     text: "New review from Sarah K.",
     pillClass: "pill-orange",
@@ -143,7 +143,7 @@ const urgentCards = [
     href: "/reviews",
   },
   {
-    border: "var(--color-sage)",
+    urgencyClass: "urgency-sage",
     icon: Radio,
     text: "Store is live \u2014 47 views today",
     pillClass: "pill-sage",
@@ -416,22 +416,24 @@ function ModeA() {
           >
             {/* Phase header inside card */}
             <div
-              className="flex items-center gap-3"
               style={{
                 padding: "16px 20px",
                 borderBottom: "1px solid rgba(51,31,46,0.06)",
               }}
             >
-              <span className="eyebrow">{phase.eyebrow}</span>
-              <span className="heading-sm">{phase.label}</span>
-              {phaseAllDone && (
-                <span
-                  className="pill pill-sage"
-                  style={{ marginLeft: "auto" }}
-                >
-                  <Check size={12} strokeWidth={3} /> Complete
-                </span>
-              )}
+              <div className="flex items-center gap-3">
+                <span className="eyebrow">{phase.eyebrow}</span>
+                <span className="heading-sm">{phase.label}</span>
+                {phaseAllDone && (
+                  <span
+                    className="pill pill-sage"
+                    style={{ marginLeft: "auto" }}
+                  >
+                    <Check size={12} strokeWidth={3} /> Complete
+                  </span>
+                )}
+              </div>
+              <span className="accent-line-sm" />
             </div>
 
             {/* Step rows */}
@@ -519,7 +521,7 @@ function ModeA() {
                       </span>
 
                       {isCurrent && !isExpanded && (
-                        <span className="btn btn-red btn-sm shrink-0">
+                        <span className="btn btn-gradient btn-sm shrink-0">
                           Continue <ChevronRight size={14} />
                         </span>
                       )}
@@ -590,7 +592,7 @@ function ModeA() {
                       </span>
 
                       {isCurrent && (
-                        <span className="btn btn-red btn-sm shrink-0">
+                        <span className="btn btn-gradient btn-sm shrink-0">
                           Continue <ChevronRight size={14} />
                         </span>
                       )}
@@ -716,7 +718,7 @@ function ModeA() {
 
       {/* Motivational sticker */}
       <div
-        className="card-sticker"
+        className="card-sticker grain"
         style={{ transform: "rotate(-1deg)", maxWidth: 340 }}
       >
         <div className="eyebrow" style={{ marginBottom: 8 }}>
@@ -778,47 +780,50 @@ function ModeB() {
       {/* Stat cards — 4 across, Stripe-dense */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat, i) => (
-          <div key={i} className="card" style={{ padding: 20 }}>
-            <div className="eyebrow" style={{ marginBottom: 8 }}>
-              {stat.label}
-            </div>
-            <div
-              className="fraunces tnum"
-              style={{ fontSize: 36, lineHeight: 1 }}
-            >
-              {stat.value}
-            </div>
-            <Sparkline points={stat.sparkline} />
-            {stat.delta === "stars" ? (
-              <div className="flex items-center gap-0.5 mt-2">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star
-                    key={s}
-                    size={13}
-                    fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
-                    color="var(--color-sage)"
-                    strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
-                  />
-                ))}
+          <div key={i} className="stat-card-premium">
+            <div className="stat-accent" />
+            <div className="stat-body">
+              <div className="eyebrow" style={{ marginBottom: 8 }}>
+                {stat.label}
               </div>
-            ) : (
-              <div className="flex items-center gap-1.5 mt-2">
-                {stat.positive !== null && (
-                  <span
-                    style={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: stat.positive
-                        ? "var(--color-sage)"
-                        : "var(--color-red)",
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-                <span className="caption">{stat.delta}</span>
+              <div
+                className="fraunces tnum"
+                style={{ fontSize: 36, lineHeight: 1 }}
+              >
+                {stat.value}
               </div>
-            )}
+              <Sparkline points={stat.sparkline} />
+              {stat.delta === "stars" ? (
+                <div className="flex items-center gap-0.5 mt-2">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      size={13}
+                      fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
+                      color="var(--color-sage)"
+                      strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 mt-2">
+                  {stat.positive !== null && (
+                    <span
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: stat.positive
+                          ? "var(--color-sage)"
+                          : "var(--color-red)",
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                  <span className="caption">{stat.delta}</span>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -834,10 +839,9 @@ function ModeB() {
             <Link
               key={i}
               href={card.href}
-              className="shrink-0 card card-hover"
+              className={`shrink-0 card card-hover ${card.urgencyClass}`}
               style={{
                 padding: "12px 16px",
-                borderLeft: `3px solid ${card.border}`,
                 minWidth: 220,
                 textDecoration: "none",
                 color: "inherit",
@@ -883,19 +887,15 @@ function ModeB() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Link
           href="/menu/new"
-          className="card card-hover flex items-center gap-3"
+          className="btn btn-gradient card-hover flex items-center gap-3"
           style={{
             height: 72,
-            background: "var(--color-red)",
-            color: "#fff8f3",
             textDecoration: "none",
             padding: "0 20px",
-            boxShadow:
-              "0 0 0 1px rgba(229,65,65,0.1), 0 4px 12px rgba(229,65,65,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
           }}
         >
           <Plus size={20} strokeWidth={2.5} />
-          <span style={{ fontSize: 14, fontWeight: 600 }}>Create Dish</span>
+          <span style={{ fontSize: 14, fontWeight: 700 }}>Create Dish</span>
         </Link>
         <Link
           href="/store-preview"
@@ -928,7 +928,10 @@ function ModeB() {
       {/* Recent orders — Stripe transactions style */}
       <div>
         <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-          <span className="eyebrow">RECENT ORDERS</span>
+          <div>
+            <span className="eyebrow">RECENT ORDERS</span>
+            <span className="accent-line" />
+          </div>
           <Link
             href="/orders"
             className="caption"

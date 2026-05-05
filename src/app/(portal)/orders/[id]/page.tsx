@@ -281,7 +281,7 @@ export default function OrderDetailPage() {
 
         {/* ======== ETA card ======== */}
         <div
-          className="card-cream"
+          className="card-gradient-border"
           style={{ textAlign: "center", padding: "16px 24px" }}
         >
           <div className="eyebrow">READY BY</div>
@@ -574,32 +574,16 @@ export default function OrderDetailPage() {
               </div>
               <div className="card" style={{ padding: "16px 20px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {/* Line items with dotted leaders */}
+                  {/* Line items with receipt pattern */}
                   {[
                     { label: "Subtotal", amount: "$46.00" },
                     { label: "Platform fee", amount: "$4.60" },
                     { label: "Delivery", amount: "$4.99" },
                   ].map((row) => (
-                    <div
-                      key={row.label}
-                      className="tnum"
-                      style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: 6,
-                        fontSize: 13,
-                        color: "var(--color-brown-soft)",
-                      }}
-                    >
-                      <span style={{ flexShrink: 0 }}>{row.label}</span>
-                      <span
-                        style={{
-                          flex: 1,
-                          borderBottom: "1px dotted rgba(51,31,46,0.15)",
-                          minWidth: 20,
-                        }}
-                      />
-                      <span style={{ flexShrink: 0 }}>{row.amount}</span>
+                    <div key={row.label} className="receipt-row tnum">
+                      <span className="receipt-label">{row.label}</span>
+                      <span className="receipt-dots" />
+                      <span className="receipt-value">{row.amount}</span>
                     </div>
                   ))}
 
@@ -611,18 +595,10 @@ export default function OrderDetailPage() {
                       marginTop: 4,
                     }}
                   >
-                    <div
-                      className="tnum"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "var(--color-brown)",
-                      }}
-                    >
-                      <span>Total</span>
-                      <span>$55.59</span>
+                    <div className="receipt-row tnum" style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)" }}>
+                      <span className="receipt-label" style={{ fontWeight: 600 }}>Total</span>
+                      <span className="receipt-dots" />
+                      <span className="receipt-value" style={{ fontWeight: 600 }}>$55.59</span>
                     </div>
                   </div>
                 </div>
@@ -630,6 +606,7 @@ export default function OrderDetailPage() {
 
               {/* Payout highlight */}
               <div
+                className="glow-sage"
                 style={{
                   marginTop: 8,
                   padding: "12px 16px",
@@ -769,7 +746,7 @@ export default function OrderDetailPage() {
         }}
       >
         <button
-          className={`btn btn-block ${actionBtnClass(orderStatus)}`}
+          className="btn btn-block btn-gradient"
           style={{ minHeight: 48, borderRadius: 12, fontSize: 15 }}
           onClick={() => toast(`Order ${orderHash} updated`)}
         >

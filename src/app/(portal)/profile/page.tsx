@@ -161,15 +161,18 @@ export default function ProfilePage() {
                   >
                     {s.num}
                   </div>
-                  <span
-                    className="body"
-                    style={{
-                      fontWeight: isCurrent ? 600 : 400,
-                      color: isCurrent ? "var(--color-brown)" : "var(--color-brown-soft)",
-                    }}
-                  >
-                    {s.label}
-                  </span>
+                  <div>
+                    <span
+                      className="body"
+                      style={{
+                        fontWeight: isCurrent ? 600 : 400,
+                        color: isCurrent ? "var(--color-brown)" : "var(--color-brown-soft)",
+                      }}
+                    >
+                      {s.label}
+                    </span>
+                    {isCurrent && <div className="accent-line-sm" style={{ marginTop: 4 }} />}
+                  </div>
                 </button>
               );
             })}
@@ -427,7 +430,7 @@ export default function ProfilePage() {
             </div>
 
             <button
-              className="btn btn-dark"
+              className="btn btn-gradient"
               onClick={goNext}
               disabled={step >= 5}
               style={{ opacity: step >= 5 ? 0.5 : 1 }}

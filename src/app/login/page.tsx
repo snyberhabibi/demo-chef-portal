@@ -12,7 +12,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen overflow-hidden px-5"
+      className="relative flex items-center justify-center min-h-screen overflow-hidden px-5 grain"
       style={{ background: "var(--color-cream)" }}
     >
       {/* Decorative blobs — 2 only, more subtle */}
@@ -59,8 +59,9 @@ export default function LoginPage() {
           className="heading-xl text-center"
           style={{ marginBottom: 32 }}
         >
-          Welcome to your kitchen.
+          Welcome to <span className="text-gradient">your kitchen</span>.
         </h1>
+        <span className="accent-line" style={{ margin: '12px auto 0' }} />
 
         {/* Email input — 48px, rounded-xl (14px) */}
         <div className="flex flex-col" style={{ gap: 12 }}>
@@ -77,10 +78,10 @@ export default function LoginPage() {
             }}
           />
 
-          {/* CTA — btn-red btn-block btn-lg, 52px */}
+          {/* CTA — btn-gradient btn-block btn-lg, 52px */}
           <button
-            className="btn btn-red btn-lg btn-block"
-            style={{ minHeight: 52, borderRadius: 14 }}
+            className="btn btn-gradient btn-lg btn-block"
+            style={{ minHeight: 52 }}
             onClick={() => router.push("/welcome")}
           >
             Send me a login link

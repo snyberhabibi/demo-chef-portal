@@ -483,3 +483,229 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
   .btn { min-height: 48px; font-size: 15px; }
   .btn-sm { min-height: 40px; }
 }
+
+/* ========================================================================
+   SUPERDESIGN PREMIUM LAYER — The billion-dollar polish
+   From: Yalla Bites superdesign system + Stripe + Airbnb
+   ======================================================================== */
+
+/* Gradient CTA — the signature energetic button */
+.btn-gradient {
+  background: linear-gradient(135deg, #fc9d35 0%, #e54141 100%);
+  color: #fff; border: none;
+  box-shadow: 0 4px 16px rgba(229,65,65,0.3), 0 2px 4px rgba(252,157,53,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+  border-radius: 9999px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.btn-gradient:hover {
+  box-shadow: 0 6px 24px rgba(229,65,65,0.4), 0 2px 8px rgba(252,157,53,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+  filter: brightness(1.05);
+}
+
+/* Pill-shaped primary CTA (full rounded, Yalla Bites brand) */
+.btn-pill { border-radius: 9999px; }
+.btn-red { border-radius: 9999px; }
+
+/* Accent line — 4px bar under headlines */
+.accent-line {
+  display: block; width: 48px; height: 4px; border-radius: 2px;
+  background: linear-gradient(135deg, #fc9d35, #e54141);
+  margin-top: 12px;
+}
+.accent-line-sm { width: 32px; height: 3px; margin-top: 8px; }
+.accent-line-cream { background: var(--color-cream); }
+
+/* Glow effect — subtle bloom on key elements */
+.glow-red {
+  box-shadow: 0 0 20px rgba(229,65,65,0.15), 0 0 40px rgba(229,65,65,0.08);
+}
+.glow-orange {
+  box-shadow: 0 0 20px rgba(252,157,53,0.15), 0 0 40px rgba(252,157,53,0.08);
+}
+.glow-sage {
+  box-shadow: 0 0 20px rgba(121,173,99,0.15), 0 0 40px rgba(121,173,99,0.08);
+}
+
+/* Gradient border card — Stripe-style subtle shimmer border */
+.card-gradient-border {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.card-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 21px;
+  background: linear-gradient(135deg, rgba(252,157,53,0.15), rgba(229,65,65,0.1), rgba(121,173,99,0.1));
+  z-index: -1;
+}
+
+/* Airbnb photo-forward card — image IS the card */
+.card-photo {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-cream-deep);
+  transition: transform var(--t-base) var(--ease-spring), box-shadow var(--t-base) var(--ease-spring);
+}
+.card-photo:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(51,31,46,0.12), 0 4px 12px rgba(51,31,46,0.06);
+}
+.card-photo img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  transition: transform 0.4s var(--ease-spring);
+}
+.card-photo:hover img {
+  transform: scale(1.03);
+}
+.card-photo-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(51,31,46,0.7) 0%, transparent 100%);
+  padding: 20px 16px 16px;
+  color: #fff;
+}
+
+/* Dark hero section — moody, inviting */
+.hero-dark {
+  background: var(--color-brown);
+  color: var(--color-cream);
+  border-radius: 24px;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(252,157,53,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(229,65,65,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Film grain overlay — editorial feel */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Stat card with gradient accent top */
+.stat-card-premium {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(51,31,46,0.04);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(51,31,46,0.03), 0 1px 3px rgba(51,31,46,0.04), 0 4px 12px rgba(51,31,46,0.03);
+  transition: transform var(--t-base) var(--ease-spring), box-shadow var(--t-base) var(--ease-spring);
+}
+.stat-card-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(51,31,46,0.04), 0 4px 8px rgba(51,31,46,0.06), 0 12px 32px rgba(51,31,46,0.06);
+}
+.stat-card-premium .stat-accent {
+  height: 3px;
+  background: linear-gradient(90deg, #fc9d35, #e54141);
+}
+.stat-card-premium .stat-body {
+  padding: 20px 24px;
+}
+
+/* Bottom sheet — mobile pattern from Airbnb */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  z-index: 60;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 8px 20px 32px;
+  animation: slideUp 0.32s var(--ease-spring);
+  box-shadow: 0 -8px 32px rgba(51,31,46,0.12);
+}
+.bottom-sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--color-brown-soft-2);
+  border-radius: 2px;
+  margin: 8px auto 20px;
+  opacity: 0.4;
+}
+.bottom-sheet-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(51,31,46,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 59;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Progress ring — SVG-based circular progress */
+.progress-ring circle {
+  transition: stroke-dashoffset 0.5s var(--ease-spring);
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Notification dot — animated */
+.notification-dot {
+  width: 8px; height: 8px;
+  background: var(--color-red);
+  border-radius: 50%;
+  position: absolute;
+  top: -2px; right: -2px;
+  border: 2px solid var(--color-cream);
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+/* Order urgency stripe — refined */
+.urgency-amber { border-left: 3px solid var(--color-orange); }
+.urgency-red { border-left: 3px solid var(--color-red); }
+.urgency-sage { border-left: 3px solid var(--color-sage); }
+
+/* Gradient text — for hero moments */
+.text-gradient {
+  background: linear-gradient(135deg, #fc9d35, #e54141);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stripe-style receipt row */
+.receipt-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.receipt-row .receipt-label {
+  font-size: 13px;
+  color: var(--color-brown-soft);
+}
+.receipt-row .receipt-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(51,31,46,0.15);
+  margin-bottom: 3px;
+}
+.receipt-row .receipt-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-brown);
+  font-variant-numeric: tabular-nums;
+}

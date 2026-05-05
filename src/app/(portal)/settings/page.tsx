@@ -41,12 +41,14 @@ export default function SettingsPage() {
       <div className="section-stack" style={{ gap: 0 }}>
         {/* Avatar + Name */}
         <div className="flex items-center gap-4">
-          <img
-            src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
-            alt="Profile"
-            className="rounded-full object-cover"
-            style={{ width: 64, height: 64 }}
-          />
+          <div className="glow-orange" style={{ borderRadius: '50%' }}>
+            <img
+              src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
+              alt="Profile"
+              className="rounded-full object-cover"
+              style={{ width: 64, height: 64 }}
+            />
+          </div>
           <div>
             <button className="btn btn-ghost btn-sm">Change photo</button>
           </div>
@@ -230,6 +232,7 @@ export default function SettingsPage() {
 
       {/* Danger zone - minimal, caption red text, no separate card */}
       <div>
+        <div className="accent-line" style={{ marginBottom: 16 }} />
         <div className="caption" style={{ color: "var(--color-red)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
           Danger Zone
         </div>

@@ -91,6 +91,7 @@ export default function TutorialsPage() {
           <span className="body" style={{ fontWeight: 600 }}>Your progress</span>
           <span className="tnum caption">{completedCount} / {totalCount}</span>
         </div>
+        <div className="accent-line" style={{ marginBottom: 8 }} />
         <div style={{ height: 3, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
           <div
             style={{
@@ -161,8 +162,8 @@ export default function TutorialsPage() {
                 )}
 
                 <span
-                  className="caption flex items-center gap-1"
-                  style={{ fontWeight: 600, color: "var(--color-red)" }}
+                  className="caption flex items-center gap-1 text-gradient"
+                  style={{ fontWeight: 600 }}
                 >
                   {t.completed ? "Run again" : "Start"}
                   <ArrowRight size={12} />

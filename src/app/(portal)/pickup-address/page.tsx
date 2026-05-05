@@ -46,7 +46,7 @@ export default function PickupAddressPage() {
         {/* Pin marker */}
         <div className="flex flex-col items-center" style={{ position: "relative", zIndex: 1 }}>
           <div
-            className="flex items-center justify-center"
+            className="flex items-center justify-center glow-red"
             style={{
               width: 40,
               height: 40,

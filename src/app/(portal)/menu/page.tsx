@@ -296,10 +296,16 @@ export default function MenuPage() {
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between">
-        <h1 className="heading-lg">Dishes</h1>
+        <div>
+          <h1 className="heading-lg">Dishes</h1>
+          <span className="accent-line" />
+        </div>
         <button
           onClick={() => setShowCreateModal(true)}
           className="btn btn-dark"
+          style={{ transition: "box-shadow var(--t-fast)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 0 20px rgba(51,31,46,0.25)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
         >
           <Plus size={16} strokeWidth={2.2} />
           Create Dish
@@ -410,6 +416,7 @@ export default function MenuPage() {
           />
         </div>
       </div>
+      <span className="accent-line-sm" />
 
       {/* Mobile Search */}
       <div className="relative sm:hidden" style={{ marginTop: -8 }}>
@@ -466,22 +473,21 @@ export default function MenuPage() {
                 <Link
                   key={dish.id}
                   href="/menu/new"
-                  className="card card-hover group"
+                  className="card-photo group overflow-hidden rounded-[20px]"
                   style={{
                     padding: 0,
-                    overflow: "hidden",
                     opacity: dish.status === "archived" ? 0.6 : 1,
                     textDecoration: "none",
                     color: "inherit",
                   }}
                 >
                   {/* Image */}
-                  <div className="relative" style={{ aspectRatio: "4/3" }}>
+                  <div className="relative" style={{ aspectRatio: "4/3", overflow: "hidden" }}>
                     <img
                       src={dish.image}
                       alt={dish.name}
                       className="w-full h-full object-cover"
-                      style={{ borderRadius: "12px 12px 0 0" }}
+                      style={{ borderRadius: "20px 20px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
                     />
 
                     {/* Status pill overlay */}

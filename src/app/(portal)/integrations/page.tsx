@@ -164,7 +164,7 @@ export default function IntegrationsPage() {
       {/* Test button - centered at bottom */}
       <div className="flex justify-center" style={{ paddingTop: 8 }}>
         <button
-          className="btn btn-dark"
+          className="btn btn-gradient btn-lg"
           style={{ minWidth: 200 }}
           onClick={handleTestOrder}
           disabled={testSending}

@@ -64,7 +64,7 @@ export default function PortalGuidePage() {
           >
             {/* Play button - 48px white circle with red triangle */}
             <div
-              className="flex items-center justify-center"
+              className="flex items-center justify-center glow-red"
               style={{
                 width: 48,
                 height: 48,
@@ -115,9 +115,9 @@ export default function PortalGuidePage() {
                 <div className="caption" style={{ marginTop: 2 }}>18 pages</div>
               </div>
             </div>
-            <button className="btn btn-dark btn-sm">
+            <button className="btn btn-gradient btn-sm">
               <Download size={14} />
-              Download PDF
+              View Full Playbook PDF
             </button>
           </div>
         </div>

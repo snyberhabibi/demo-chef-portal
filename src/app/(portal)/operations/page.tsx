@@ -122,7 +122,7 @@ export default function OperationsPage() {
 
       {state === "live" && (
         <div
-          className="flex items-center justify-between gap-4"
+          className="flex items-center justify-between gap-4 glow-sage"
           style={{
             borderLeft: "3px solid var(--color-sage)",
             borderRadius: 8,
@@ -137,7 +137,7 @@ export default function OperationsPage() {
             </div>
           </div>
           <button
-            className="toggle toggle-lg is-on toggle-glow"
+            className="toggle toggle-lg is-on toggle-glow glow-sage"
             onClick={() => {
               setStoreToggle(false);
               setState("approved-off");

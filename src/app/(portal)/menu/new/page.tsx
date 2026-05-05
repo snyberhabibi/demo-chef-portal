@@ -129,7 +129,7 @@ export default function CreateDishPage() {
         <button className="btn btn-ghost btn-sm" onClick={() => router.push("/menu")}>
           Discard
         </button>
-        <button className="btn btn-dark btn-sm" onClick={() => router.push("/menu")}>
+        <button className="btn btn-gradient btn-sm" onClick={() => router.push("/menu")}>
           Save Dish
         </button>
       </div>
@@ -211,6 +211,7 @@ export default function CreateDishPage() {
                     >
                       {step.label}
                     </div>
+                    {isCurrent && <div className="accent-line-sm" style={{ marginTop: 4 }} />}
                     <div
                       style={{
                         fontSize: 11,
@@ -256,7 +257,7 @@ export default function CreateDishPage() {
 
           {/* Preview card */}
           <div
-            className="card"
+            className="card-gradient-border"
             style={{
               padding: 0,
               overflow: "hidden",
@@ -926,7 +927,7 @@ export default function CreateDishPage() {
         </div>
 
         <button
-          className="btn btn-dark btn-sm"
+          className={`btn btn-sm ${currentStep === 5 ? "btn-gradient" : "btn-dark"}`}
           onClick={() => {
             if (currentStep < 5) setCurrentStep(currentStep + 1);
             else router.push("/menu");

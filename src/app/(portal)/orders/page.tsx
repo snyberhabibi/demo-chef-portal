@@ -430,6 +430,7 @@ export default function OrdersPage() {
               })}
             </div>
           </div>
+          <span className="accent-line-sm" />
         </div>
 
         {/* Search — right side on desktop */}
@@ -563,6 +564,13 @@ export default function OrdersPage() {
                   style={{ textDecoration: "none" }}
                 >
                   <div
+                    className={
+                      order.urgency === "overdue"
+                        ? "urgency-red"
+                        : order.urgency === "due-soon"
+                          ? "urgency-amber"
+                          : ""
+                    }
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -573,9 +581,7 @@ export default function OrdersPage() {
                         idx < paginated.length - 1
                           ? "1px solid rgba(51,31,46,0.06)"
                           : "none",
-                      borderLeft: hasUrgency
-                        ? `3px solid ${urgencyBorderColor(order.urgency!)}`
-                        : "3px solid transparent",
+                      ...(!hasUrgency ? { borderLeft: "3px solid transparent" } : {}),
                       opacity: isStruck ? 0.55 : 1,
                       transition:
                         "background var(--t-fast) var(--ease-spring)",
@@ -636,7 +642,7 @@ export default function OrdersPage() {
                             {order.customer}
                           </span>
                           {order.urgency === "overdue" && (
-                            <span className="pill-red" style={{
+                            <span className="pill-red glow-red" style={{
                               display: "inline-flex",
                               alignItems: "center",
                               fontSize: 10,

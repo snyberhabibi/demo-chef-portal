@@ -91,6 +91,7 @@ export default function BundlesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="heading-lg">Bundles</h1>
+          <div className="accent-line" style={{ marginTop: 8, marginBottom: 4 }} />
           <p className="body-sm" style={{ marginTop: 4 }}>
             Create curated meal bundles to increase average order value
           </p>
@@ -202,7 +203,7 @@ export default function BundlesPage() {
             <Link
               key={bundle.id}
               href="/menu/new"
-              className="card card-hover group"
+              className="card card-photo card-hover group"
               style={{
                 padding: 0,
                 overflow: "hidden",

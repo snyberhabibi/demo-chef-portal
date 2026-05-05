@@ -90,18 +90,18 @@ export default function PackagingPage() {
       </div>
 
       {/* Branded packaging CTA */}
-      <div className="card-sticker" style={{ textAlign: "center" }}>
+      <div className="card-sticker grain" style={{ textAlign: "center" }}>
         <div className="heading-md" style={{ marginBottom: 6 }}>
           Want branded packaging?
         </div>
         <p className="body-sm" style={{ maxWidth: 380, margin: "0 auto 20px" }}>
           Add your kitchen logo and colors to your containers. Minimum order of 100 units. Stand out and build your brand with every delivery.
         </p>
-        <button className="btn btn-dark" onClick={handleBrandedRequest}>
+        <button className="btn btn-gradient btn-lg" onClick={handleBrandedRequest}>
           {requestSent ? (
             <><Check size={16} /> Request Sent</>
           ) : (
-            <>Learn More <ArrowRight size={16} /></>
+            <>Request Branded Packaging <ArrowRight size={16} /></>
           )}
         </button>
       </div>

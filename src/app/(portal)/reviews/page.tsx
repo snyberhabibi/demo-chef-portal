@@ -287,13 +287,15 @@ export default function ReviewsPage() {
         </div>
       </div>
 
+      <div className="accent-line" />
+
       {/* Chef Profile tab */}
       {activeTab === "Chef Profile" && (
         <>
           {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces" style={{ fontSize: 48, lineHeight: 1, color: "var(--color-brown)" }}>
+              <div className="fraunces text-gradient" style={{ fontSize: 48, lineHeight: 1 }}>
                 4.0
               </div>
               <div style={{ marginTop: 8 }}>
@@ -410,7 +412,7 @@ export default function ReviewsPage() {
                           Cancel
                         </button>
                         <button
-                          className="btn btn-dark btn-sm"
+                          className="btn btn-gradient btn-sm"
                           onClick={() => postReply(review.id)}
                           disabled={review.composerText.trim().length === 0}
                         >
