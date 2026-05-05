@@ -370,7 +370,7 @@ function CreateDishPageInner() {
         <button
           className="btn btn-ghost btn-sm"
           onClick={() => {
-            toast("Changes discarded");
+            toast("Changes discarded", "info");
             router.push("/menu");
           }}
         >

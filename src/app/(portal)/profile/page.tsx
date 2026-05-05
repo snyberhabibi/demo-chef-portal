@@ -253,7 +253,7 @@ export default function ProfilePage() {
 
       {/* Bottom save */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>
-        <button className="btn btn-ghost" onClick={() => toast("Changes discarded")}>Discard</button>
+        <button className="btn btn-ghost" onClick={() => toast("Changes discarded", "info")}>Discard</button>
         <button className="btn btn-dark" onClick={() => toast("Profile saved")}>Save Changes</button>
       </div>
     </div>

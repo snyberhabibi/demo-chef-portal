@@ -486,7 +486,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Continue Editing -- coming soon")}
+              onClick={() => toast("Continue Editing -- coming soon", "info")}
             >
               <Pencil size={12} />
               Continue Editing
@@ -494,7 +494,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Delete -- coming soon")}
+              onClick={() => toast("Delete -- coming soon", "info")}
             >
               <Trash2 size={12} />
               Delete
@@ -506,7 +506,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("View Summary -- coming soon")}
+              onClick={() => toast("View Summary -- coming soon", "info")}
             >
               <BarChart3 size={12} />
               View Summary
@@ -514,7 +514,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Duplicate -- coming soon")}
+              onClick={() => toast("Duplicate -- coming soon", "info")}
             >
               <Copy size={12} />
               Duplicate

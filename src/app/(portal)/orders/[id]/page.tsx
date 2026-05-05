@@ -962,7 +962,7 @@ export default function OrderDetailPage() {
                       className="btn btn-sm"
                       style={{ background: "var(--color-red-deep)", color: "#fff", border: "none" }}
                       onClick={() => {
-                        toast("Order cancelled");
+                        toast("Order cancelled", "warning");
                         setCancelConfirm(false);
                       }}
                     >
