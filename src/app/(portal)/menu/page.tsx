@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Plus, Search, X, ClipboardList, Copy, MoreHorizontal } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { QuantityBundleDemo } from "@/components/quantity-bundle-selector";
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -942,6 +943,15 @@ export default function MenuPage() {
                 </Link>
               );
             })}
+          </div>
+
+          {/* Customer View Preview — QuantityBundleDemo */}
+          <div style={{ marginTop: 32 }}>
+            <div className="eyebrow" style={{ marginBottom: 4, letterSpacing: "0.08em" }}>CUSTOMER VIEW PREVIEW</div>
+            <p className="body-sm" style={{ marginBottom: 16, color: "var(--color-brown-soft)" }}>
+              This is how customers will select items in a quantity bundle.
+            </p>
+            <QuantityBundleDemo />
           </div>
         </>
       )}

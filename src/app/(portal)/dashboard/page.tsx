@@ -762,6 +762,7 @@ function ModeA() {
 /* ------------------------------------------------------------------ */
 function ModeB() {
   const greeting = useMemo(() => getGreeting(), []);
+  const [statsPeriod, setStatsPeriod] = useState<"7d" | "30d" | "90d">("30d");
 
   return (
     <div className="content-wide section-stack line-reveal">
@@ -772,70 +773,48 @@ function ModeB() {
           .urgent-card-link { min-width: 240px !important; padding: 12px !important; }
           .mode-toggle-wrap { width: 100%; }
           .mode-toggle-wrap button { flex: 1; }
+          .order-row { gap: 10px !important; padding: 12px 14px !important; }
+          .order-items-col { display: none !important; }
+          .order-customer-col { flex: 1 !important; width: auto !important; }
         }
       `}</style>
-      {/* Greeting */}
-      <h1 className="heading-lg">
-        {greeting}, Amira{" "}
-        <span
-          role="img"
-          aria-label="wave"
-          className="animate-wave"
-          style={{ display: "inline-block" }}
-        >
-          👋
-        </span>
-      </h1>
 
-      {/* Stat cards — 4 across, Stripe-dense */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-        {stats.map((stat, i) => (
-          <div key={i} className="stat-card-premium">
-            <div className="stat-accent" />
-            <div className="stat-body">
-              <div className="eyebrow" style={{ marginBottom: 8 }}>
-                {stat.label}
-              </div>
-              <div
-                className="fraunces tnum"
-                style={{ fontSize: "clamp(24px, 6vw, 36px)", lineHeight: 1 }}
-              >
-                {stat.value}
-              </div>
-              <Sparkline points={stat.sparkline} />
-              {stat.delta === "stars" ? (
-                <div className="flex items-center gap-0.5 mt-2">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      size={13}
-                      fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
-                      color="var(--color-sage)"
-                      strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 mt-2">
-                  {stat.positive !== null && (
-                    <span
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: "50%",
-                        background: stat.positive
-                          ? "var(--color-sage)"
-                          : "var(--color-red)",
-                        flexShrink: 0,
-                      }}
-                    />
-                  )}
-                  <span className="caption">{stat.delta}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+      {/* Greeting + Today summary — Airbnb "Today" tab pattern: put the most important info above the fold */}
+      <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-3">
+        <h1 className="heading-lg" style={{ margin: 0 }}>
+          {greeting}, Amira{" "}
+          <span
+            role="img"
+            aria-label="wave"
+            className="animate-wave"
+            style={{ display: "inline-block" }}
+          >
+            👋
+          </span>
+        </h1>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: "var(--color-cream-deep)",
+            borderRadius: 10,
+            padding: "8px 14px",
+          }}
+        >
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "var(--color-sage)",
+              flexShrink: 0,
+            }}
+          />
+          <span className="body-sm" style={{ fontWeight: 600, color: "var(--color-brown)", whiteSpace: "nowrap" }}>
+            Today: 4 orders &middot; $186 &middot; 2 pending
+          </span>
+        </div>
       </div>
 
       {/* Urgent strip — horizontal scroll */}
@@ -893,6 +872,89 @@ function ModeB() {
         })}
       </div>
 
+      {/* Stat cards — Stripe-style period selector + 4 cards */}
+      <div>
+        <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+          <span className="eyebrow">PERFORMANCE</span>
+          <div style={{ display: "inline-flex", gap: 2, background: "var(--color-cream-sunken)", borderRadius: 8, padding: 2 }}>
+            {([
+              { key: "7d" as const, label: "7D" },
+              { key: "30d" as const, label: "30D" },
+              { key: "90d" as const, label: "90D" },
+            ]).map((p) => (
+              <button
+                key={p.key}
+                onClick={() => setStatsPeriod(p.key)}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  borderRadius: 6,
+                  border: "none",
+                  background: statsPeriod === p.key ? "#fff" : "transparent",
+                  color: statsPeriod === p.key ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+                  cursor: "pointer",
+                  boxShadow: statsPeriod === p.key ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+          {stats.map((stat, i) => (
+            <div key={i} className="stat-card-premium">
+              <div className="stat-accent" />
+              <div className="stat-body">
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  {stat.label}
+                </div>
+                <div
+                  className="fraunces tnum"
+                  style={{ fontSize: "clamp(24px, 6vw, 36px)", lineHeight: 1 }}
+                >
+                  {stat.value}
+                </div>
+                <Sparkline points={stat.sparkline} />
+                {stat.delta === "stars" ? (
+                  <div className="flex items-center gap-0.5 mt-2">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <Star
+                        key={s}
+                        size={13}
+                        fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
+                        color="var(--color-sage)"
+                        strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    {stat.positive !== null && (
+                      <span
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: stat.positive
+                            ? "var(--color-sage)"
+                            : "var(--color-red)",
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
+                    <span className="caption">{stat.delta}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Quick actions — 3 cards in a row, 72px height */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Link
@@ -935,7 +997,7 @@ function ModeB() {
         </Link>
       </div>
 
-      {/* Recent orders — Stripe transactions style */}
+      {/* Recent orders — Stripe transactions style with improved mobile layout */}
       <div>
         <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
           <div>
@@ -961,6 +1023,7 @@ function ModeB() {
             <Link
               key={order.hashId}
               href={`/orders/${order.hashId.replace("#", "")}`}
+              className="order-row"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -997,6 +1060,7 @@ function ModeB() {
 
               {/* Customer */}
               <span
+                className="order-customer-col"
                 style={{
                   fontSize: 14,
                   fontWeight: 600,
@@ -1008,9 +1072,9 @@ function ModeB() {
                 {order.customer}
               </span>
 
-              {/* Items */}
+              {/* Items — hidden on mobile for cleaner layout */}
               <span
-                className="flex-1 min-w-0"
+                className="flex-1 min-w-0 order-items-col"
                 style={{
                   fontSize: 13,
                   color: "var(--color-brown-soft-2)",
@@ -1062,20 +1126,6 @@ function ModeB() {
             </Link>
           ))}
         </div>
-      </div>
-
-      {/* Today summary — subtle cream banner */}
-      <div
-        style={{
-          background: "var(--color-cream-deep)",
-          borderRadius: 12,
-          padding: "14px 20px",
-          textAlign: "center",
-        }}
-      >
-        <span className="body-sm sm:body" style={{ fontWeight: 600, color: "var(--color-brown)", fontSize: "clamp(12px, 3vw, 14px)" }}>
-          Today: 4 orders &middot; $186 revenue &middot; 2 pending
-        </span>
       </div>
     </div>
   );

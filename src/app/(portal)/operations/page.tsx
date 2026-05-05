@@ -3,27 +3,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Clock, AlertTriangle, CheckCircle, XCircle, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { Clock, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { AvailabilityCalendar } from "@/components/availability-calendar";
 
 type StoreState = "pending" | "approved-off" | "live" | "rejected";
-
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-const defaultSchedule = DAYS.map((day, i) => ({
-  day,
-  enabled: i < 5,
-  open: "10:00 AM",
-  close: "6:00 PM",
-}));
 
 export default function OperationsPage() {
   const [state, setState] = useState<StoreState>("live");
   const [storeToggle, setStoreToggle] = useState(state === "live");
   const [autoAccept, setAutoAccept] = useState(true);
   const [timezone, setTimezone] = useState("America/Chicago");
-  const [schedule, setSchedule] = useState(defaultSchedule);
-  const [expandedDay, setExpandedDay] = useState<number | null>(null);
-  const [copyFeedback, setCopyFeedback] = useState(false);
   const [showTurnOffConfirm, setShowTurnOffConfirm] = useState(false);
 
   const stateButtons: { key: StoreState; label: string }[] = [
@@ -32,19 +21,6 @@ export default function OperationsPage() {
     { key: "live", label: "Live" },
     { key: "rejected", label: "Rejected" },
   ];
-
-  const handleCopyToWeekdays = () => {
-    const monday = schedule[0];
-    const next = schedule.map((row, i) => {
-      if (i > 0 && i < 5) {
-        return { ...row, enabled: monday.enabled, open: monday.open, close: monday.close };
-      }
-      return row;
-    });
-    setSchedule(next);
-    setCopyFeedback(true);
-    setTimeout(() => setCopyFeedback(false), 2000);
-  };
 
   return (
     <div className="content-narrow section-stack">
@@ -250,104 +226,9 @@ export default function OperationsPage() {
         </select>
       </div>
 
-      {/* Weekly schedule */}
-      <div className="card" style={{ padding: 0 }}>
-        <div className="flex items-center justify-between" style={{ padding: "16px 24px 12px" }}>
-          <div>
-            <div className="heading-sm">Weekly Schedule</div>
-            <div className="body-sm" style={{ marginTop: 2 }}>Set your available hours for each day</div>
-          </div>
-          <button className="btn btn-ghost btn-sm" onClick={handleCopyToWeekdays}>
-            {copyFeedback ? (
-              <><Check size={14} style={{ color: "var(--color-sage)" }} /> Copied</>
-            ) : (
-              <><Copy size={14} /> Copy to all weekdays</>
-            )}
-          </button>
-        </div>
-
-        {schedule.map((row, i) => (
-          <div key={row.day}>
-            <div className="divider" />
-            <div
-              className="flex items-center gap-3"
-              style={{ padding: "12px 24px", cursor: "pointer" }}
-              onClick={() => setExpandedDay(expandedDay === i ? null : i)}
-            >
-              <button
-                className={`toggle ${row.enabled ? "is-on" : ""}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const next = [...schedule];
-                  next[i] = { ...next[i], enabled: !next[i].enabled };
-                  setSchedule(next);
-                }}
-              >
-                <span className="toggle-thumb" />
-              </button>
-              <span
-                className="body"
-                style={{
-                  flex: 1,
-                  fontWeight: 500,
-                  color: row.enabled ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-                }}
-              >
-                {row.day}
-              </span>
-              {row.enabled ? (
-                <span className="tnum body-sm">{row.open} &ndash; {row.close}</span>
-              ) : (
-                <span className="body-sm" style={{ color: "var(--color-brown-soft-2)" }}>Closed</span>
-              )}
-              {expandedDay === i ? (
-                <ChevronUp size={16} style={{ color: "var(--color-brown-soft-2)", transition: `transform var(--t-fast) var(--ease-spring)` }} />
-              ) : (
-                <ChevronDown size={16} style={{ color: "var(--color-brown-soft-2)", transition: `transform var(--t-fast) var(--ease-spring)` }} />
-              )}
-            </div>
-
-            {expandedDay === i && row.enabled && (
-              <div className="flex items-center gap-3" style={{ padding: "0 24px 16px 68px" }}>
-                <div>
-                  <label className="field-label" style={{ fontSize: 12 }}>Open</label>
-                  <select
-                    className="select"
-                    style={{ width: 130 }}
-                    value={row.open}
-                    onChange={(e) => {
-                      const next = [...schedule];
-                      next[i] = { ...next[i], open: e.target.value };
-                      setSchedule(next);
-                    }}
-                  >
-                    {["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM"].map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-                <span style={{ marginTop: 20, color: "var(--color-brown-soft-2)" }}>&ndash;</span>
-                <div>
-                  <label className="field-label" style={{ fontSize: 12 }}>Close</label>
-                  <select
-                    className="select"
-                    style={{ width: 130 }}
-                    value={row.close}
-                    onChange={(e) => {
-                      const next = [...schedule];
-                      next[i] = { ...next[i], close: e.target.value };
-                      setSchedule(next);
-                    }}
-                  >
-                    {["4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"].map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+      {/* Weekly schedule — Calendly-style availability calendar */}
+      <div className="card">
+        <AvailabilityCalendar />
       </div>
     </div>
   );

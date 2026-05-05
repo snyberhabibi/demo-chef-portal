@@ -149,10 +149,9 @@ export function AvailabilityCalendar() {
       >
         {/* Time labels + slots */}
         {TIME_SLOTS.map((time, si) => (
-          <>
+          <div key={`row-${si}`} style={{ display: "contents" }}>
             {/* Time label */}
             <div
-              key={`label-${si}`}
               style={{
                 fontSize: 10,
                 color: "var(--color-brown-soft-2)",
@@ -193,7 +192,7 @@ export function AvailabilityCalendar() {
                 />
               );
             })}
-          </>
+          </div>
         ))}
       </div>
 
