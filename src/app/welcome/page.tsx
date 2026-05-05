@@ -104,7 +104,9 @@ export default function WelcomePage() {
               fontSize: 40,
             }}
           >
-            <span role="img" aria-label="celebration">🎉</span>
+            <span role="img" aria-label="celebration">
+              🎉
+            </span>
           </div>
         </div>
 
@@ -132,21 +134,26 @@ export default function WelcomePage() {
           Let&apos;s get your kitchen set up. This takes about 5 minutes.
         </p>
 
-        {/* Step cards */}
-        <div className="flex flex-col gap-3 mb-8">
+        {/* Step cards — staggered entrance */}
+        <div className="flex flex-col gap-3 mb-8 line-reveal">
           {steps.map((step) => {
             const Icon = step.icon;
             return (
               <Link
                 key={step.num}
                 href={step.href}
-                className="card-cream flex items-center gap-3"
+                className="card-hover"
                 style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
                   padding: "14px 16px",
                   cursor: "pointer",
                   textDecoration: "none",
                   color: "inherit",
                   minHeight: 44,
+                  background: "var(--color-cream-deep)",
+                  borderRadius: 16,
                 }}
               >
                 {/* Number circle */}
@@ -168,7 +175,10 @@ export default function WelcomePage() {
                 <Icon
                   size={20}
                   strokeWidth={1.8}
-                  style={{ color: "var(--color-brown-soft)", flexShrink: 0 }}
+                  style={{
+                    color: "var(--color-brown-soft)",
+                    flexShrink: 0,
+                  }}
                 />
 
                 {/* Text */}
@@ -196,7 +206,10 @@ export default function WelcomePage() {
                 {/* Chevron */}
                 <ChevronRight
                   size={18}
-                  style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }}
+                  style={{
+                    color: "var(--color-brown-soft-2)",
+                    flexShrink: 0,
+                  }}
                 />
               </Link>
             );
@@ -207,7 +220,12 @@ export default function WelcomePage() {
         <Link
           href="/dashboard"
           className="btn btn-red btn-lg btn-block"
-          style={{ minHeight: 44, display: "flex", alignItems: "center", justifyContent: "center" }}
+          style={{
+            minHeight: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           Let&apos;s go
         </Link>

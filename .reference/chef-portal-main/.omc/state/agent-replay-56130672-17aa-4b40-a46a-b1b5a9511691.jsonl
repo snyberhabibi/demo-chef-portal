@@ -1,0 +1,4 @@
+{"t":0,"agent":"adc1588","agent_type":"explore","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"adc1588","agent_type":"explore","event":"agent_stop","success":true,"duration_ms":37837}
+{"t":0,"agent":"a424766","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a8a63e8","agent_type":"unknown","event":"agent_stop","success":true}

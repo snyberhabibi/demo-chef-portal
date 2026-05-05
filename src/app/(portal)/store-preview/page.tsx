@@ -5,12 +5,24 @@ import Link from "next/link";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  Seed data                                                          */
+/*  Verified working Unsplash URLs                                     */
 /* ------------------------------------------------------------------ */
 const bannerImg =
   "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=1600&h=600&fit=crop";
 const chefAvatar =
   "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop";
+
+/* Dish images — all verified working */
+const mansafImg =
+  "https://images.unsplash.com/photo-1547424850-28ac9f1cd013?w=600&h=400&fit=crop";
+const hummusImg =
+  "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=400&fit=crop";
+const shawarmaImg =
+  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=400&fit=crop";
+const knafehImg =
+  "https://images.unsplash.com/photo-1579888944880-d98341245702?w=600&h=400&fit=crop";
+const baklavaImg =
+  "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=400&fit=crop";
 
 interface Dish {
   name: string;
@@ -19,39 +31,14 @@ interface Dish {
 }
 
 const popularDishes: Dish[] = [
-  {
-    name: "Grandma\u2019s Mansaf",
-    price: "$22.00",
-    image:
-      "https://images.unsplash.com/photo-1547424850-28ac9f1cd013?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Falafel Plate",
-    price: "$14.00",
-    image:
-      "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Shawarma Bowl",
-    price: "$16.00",
-    image:
-      "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=400&fit=crop",
-  },
+  { name: "Grandma\u2019s Mansaf", price: "$22.00", image: mansafImg },
+  { name: "Falafel Plate", price: "$14.00", image: hummusImg },
+  { name: "Shawarma Bowl", price: "$16.00", image: shawarmaImg },
 ];
 
 const desserts: Dish[] = [
-  {
-    name: "Knafeh",
-    price: "$18.00",
-    image:
-      "https://images.unsplash.com/photo-1579888944880-d98341245702?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Baklava Box",
-    price: "$12.00",
-    image:
-      "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=400&fit=crop",
-  },
+  { name: "Knafeh", price: "$18.00", image: knafehImg },
+  { name: "Baklava Box", price: "$12.00", image: baklavaImg },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -212,7 +199,7 @@ export default function StorePreviewPage() {
                 color: "var(--color-brown)",
               }}
             >
-              4.8
+              4.0
               <Star
                 size={14}
                 fill="var(--color-sage)"
@@ -224,7 +211,7 @@ export default function StorePreviewPage() {
                   color: "var(--color-brown-soft-2)",
                 }}
               >
-                (24 reviews)
+                (4 reviews)
               </span>
             </span>
           </div>

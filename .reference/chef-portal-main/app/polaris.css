@@ -1,0 +1,622 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-polaris-sans);
+  --font-mono: var(--font-polaris-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Custom Breakpoints */
+  --breakpoint-xs: 490px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1040px;
+  --breakpoint-desktop: 1280px;
+  --breakpoint-wide: 1440px;
+  --breakpoint-3xl: 1920px;
+}
+
+/* Custom Breakpoint Variants */
+@custom-variant xs (@media (min-width: 490px));
+@custom-variant max-xs (@media (max-width: 489px));
+@custom-variant tablet (@media (min-width: 768px));
+@custom-variant max-tablet (@media (max-width: 767px));
+@custom-variant laptop (@media (min-width: 1040px));
+@custom-variant desktop (@media (min-width: 1280px));
+@custom-variant wide (@media (min-width: 1440px));
+@custom-variant 3xl (@media (min-width: 1920px));
+
+/* =============================================================================
+   POLARIS LIGHT THEME
+   Maps Shopify Polaris design tokens into shadcn's CSS variable system.
+   Source: @shopify/polaris-tokens v9.4.2
+   ============================================================================= */
+
+:root {
+  /* --- shadcn semantic variables mapped to Polaris --- */
+  --radius: 0.5rem; /* 8px - Polaris border-radius-200 */
+
+  --background: rgba(241, 241, 241, 1);          /* Polaris color-bg (gray-6) */
+  --foreground: rgba(48, 48, 48, 1);             /* Polaris color-text (gray-15) */
+
+  --card: rgba(255, 255, 255, 1);                /* Polaris color-bg-surface (gray-1) */
+  --card-foreground: rgba(48, 48, 48, 1);        /* Polaris color-text */
+
+  --popover: rgba(255, 255, 255, 1);             /* Polaris color-bg-surface */
+  --popover-foreground: rgba(48, 48, 48, 1);     /* Polaris color-text */
+
+  --primary: rgba(48, 48, 48, 1);                /* Polaris color-bg-fill-brand (gray-15) */
+  --primary-foreground: rgba(255, 255, 255, 1);  /* Polaris color-text-brand-on-bg-fill */
+
+  --secondary: rgba(241, 241, 241, 1);           /* Polaris color-bg-fill-secondary (gray-6) */
+  --secondary-foreground: rgba(48, 48, 48, 1);   /* Polaris color-text */
+
+  --muted: rgba(247, 247, 247, 1);               /* Polaris color-bg-surface-secondary (gray-4) */
+  --muted-foreground: rgba(97, 97, 97, 1);       /* Polaris color-text-secondary (gray-13) */
+
+  --accent: rgba(247, 247, 247, 1);              /* Polaris color-bg-surface-secondary */
+  --accent-foreground: rgba(48, 48, 48, 1);      /* Polaris color-text */
+
+  --destructive: rgba(199, 10, 36, 1);           /* Polaris color-bg-fill-critical (red-12) */
+
+  --border: rgba(227, 227, 227, 1);              /* Polaris color-border (gray-8) */
+  --input: rgba(138, 138, 138, 1);               /* Polaris color-input-border (gray-12) */
+  --ring: rgba(0, 91, 211, 1);                   /* Polaris color-border-focus (blue-13) */
+
+  /* Charts - Polaris semantic colors */
+  --chart-1: rgba(0, 91, 211, 1);                /* blue-13 (emphasis) */
+  --chart-2: rgba(4, 123, 93, 1);                /* green-12 (success) */
+  --chart-3: rgba(255, 184, 0, 1);               /* orange-9 (warning) */
+  --chart-4: rgba(128, 81, 255, 1);              /* purple-12 (magic) */
+  --chart-5: rgba(199, 10, 36, 1);               /* red-12 (critical) */
+
+  /* Sidebar - Polaris navigation */
+  --sidebar: rgba(247, 247, 247, 1);             /* Polaris gray-4 */
+  --sidebar-foreground: rgba(48, 48, 48, 1);     /* Polaris color-text */
+  --sidebar-primary: rgba(48, 48, 48, 1);        /* Polaris color-bg-fill-brand */
+  --sidebar-primary-foreground: rgba(255, 255, 255, 1);
+  --sidebar-accent: rgba(241, 241, 241, 1);      /* Polaris gray-6 */
+  --sidebar-accent-foreground: rgba(48, 48, 48, 1);
+  --sidebar-border: rgba(227, 227, 227, 1);      /* Polaris color-border */
+  --sidebar-ring: rgba(0, 91, 211, 1);           /* Polaris color-border-focus */
+
+  /* --- Polaris Font Families --- */
+  --font-polaris-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-polaris-mono: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* ==========================================================================
+     POLARIS NATIVE TOKENS (--p-* namespace)
+     Use these directly in components for Polaris-specific styling.
+     ========================================================================== */
+
+  /* --- Colors: Background --- */
+  --p-color-bg: rgba(241, 241, 241, 1);
+  --p-color-bg-inverse: rgba(26, 26, 26, 1);
+  --p-color-bg-surface: rgba(255, 255, 255, 1);
+  --p-color-bg-surface-hover: rgba(247, 247, 247, 1);
+  --p-color-bg-surface-active: rgba(243, 243, 243, 1);
+  --p-color-bg-surface-selected: rgba(241, 241, 241, 1);
+  --p-color-bg-surface-disabled: rgba(0, 0, 0, 0.05);
+  --p-color-bg-surface-secondary: rgba(247, 247, 247, 1);
+  --p-color-bg-surface-secondary-hover: rgba(241, 241, 241, 1);
+  --p-color-bg-surface-secondary-active: rgba(235, 235, 235, 1);
+  --p-color-bg-surface-tertiary: rgba(243, 243, 243, 1);
+  --p-color-bg-surface-tertiary-hover: rgba(235, 235, 235, 1);
+  --p-color-bg-surface-tertiary-active: rgba(227, 227, 227, 1);
+  --p-color-bg-surface-brand: rgba(227, 227, 227, 1);
+  --p-color-bg-surface-info: rgba(234, 244, 255, 1);
+  --p-color-bg-surface-success: rgba(205, 254, 212, 1);
+  --p-color-bg-surface-caution: rgba(255, 248, 219, 1);
+  --p-color-bg-surface-warning: rgba(255, 241, 227, 1);
+  --p-color-bg-surface-critical: rgba(254, 232, 235, 1);
+  --p-color-bg-surface-emphasis: rgba(240, 242, 255, 1);
+  --p-color-bg-surface-magic: rgba(248, 247, 255, 1);
+  --p-color-bg-surface-inverse: rgba(48, 48, 48, 1);
+  --p-color-bg-surface-transparent: rgba(0, 0, 0, 0);
+
+  /* --- Colors: Background Fill --- */
+  --p-color-bg-fill: rgba(255, 255, 255, 1);
+  --p-color-bg-fill-hover: rgba(250, 250, 250, 1);
+  --p-color-bg-fill-active: rgba(247, 247, 247, 1);
+  --p-color-bg-fill-selected: rgba(204, 204, 204, 1);
+  --p-color-bg-fill-disabled: rgba(0, 0, 0, 0.05);
+  --p-color-bg-fill-secondary: rgba(241, 241, 241, 1);
+  --p-color-bg-fill-tertiary: rgba(227, 227, 227, 1);
+  --p-color-bg-fill-brand: rgba(48, 48, 48, 1);
+  --p-color-bg-fill-brand-hover: rgba(26, 26, 26, 1);
+  --p-color-bg-fill-brand-active: rgba(26, 26, 26, 1);
+  --p-color-bg-fill-brand-disabled: rgba(0, 0, 0, 0.17);
+  --p-color-bg-fill-info: rgba(145, 208, 255, 1);
+  --p-color-bg-fill-success: rgba(4, 123, 93, 1);
+  --p-color-bg-fill-warning: rgba(255, 184, 0, 1);
+  --p-color-bg-fill-caution: rgba(255, 230, 0, 1);
+  --p-color-bg-fill-critical: rgba(199, 10, 36, 1);
+  --p-color-bg-fill-emphasis: rgba(0, 91, 211, 1);
+  --p-color-bg-fill-magic: rgba(128, 81, 255, 1);
+  --p-color-bg-fill-inverse: rgba(48, 48, 48, 1);
+  --p-color-bg-fill-transparent: rgba(0, 0, 0, 0.02);
+  --p-color-bg-fill-transparent-hover: rgba(0, 0, 0, 0.05);
+  --p-color-bg-fill-transparent-active: rgba(0, 0, 0, 0.08);
+  --p-color-bg-fill-transparent-selected: rgba(0, 0, 0, 0.08);
+  --p-color-bg-fill-transparent-secondary: rgba(0, 0, 0, 0.06);
+
+  /* --- Colors: Text --- */
+  --p-color-text: rgba(48, 48, 48, 1);
+  --p-color-text-secondary: rgba(97, 97, 97, 1);
+  --p-color-text-disabled: rgba(181, 181, 181, 1);
+  --p-color-text-link: rgba(0, 91, 211, 1);
+  --p-color-text-link-hover: rgba(0, 66, 153, 1);
+  --p-color-text-link-active: rgba(0, 46, 106, 1);
+  --p-color-text-brand: rgba(74, 74, 74, 1);
+  --p-color-text-brand-on-bg-fill: rgba(255, 255, 255, 1);
+  --p-color-text-info: rgba(0, 58, 90, 1);
+  --p-color-text-success: rgba(1, 75, 64, 1);
+  --p-color-text-caution: rgba(79, 71, 0, 1);
+  --p-color-text-warning: rgba(94, 66, 0, 1);
+  --p-color-text-critical: rgba(142, 11, 33, 1);
+  --p-color-text-emphasis: rgba(0, 91, 211, 1);
+  --p-color-text-magic: rgba(87, 0, 209, 1);
+  --p-color-text-inverse: rgba(227, 227, 227, 1);
+  --p-color-text-inverse-secondary: rgba(181, 181, 181, 1);
+
+  /* --- Colors: Border --- */
+  --p-color-border: rgba(227, 227, 227, 1);
+  --p-color-border-hover: rgba(204, 204, 204, 1);
+  --p-color-border-disabled: rgba(235, 235, 235, 1);
+  --p-color-border-secondary: rgba(235, 235, 235, 1);
+  --p-color-border-tertiary: rgba(204, 204, 204, 1);
+  --p-color-border-focus: rgba(0, 91, 211, 1);
+  --p-color-border-brand: rgba(227, 227, 227, 1);
+  --p-color-border-info: rgba(168, 216, 255, 1);
+  --p-color-border-success: rgba(146, 252, 172, 1);
+  --p-color-border-caution: rgba(255, 235, 120, 1);
+  --p-color-border-warning: rgba(255, 200, 121, 1);
+  --p-color-border-critical: rgba(254, 193, 199, 1);
+  --p-color-border-emphasis: rgba(0, 91, 211, 1);
+  --p-color-border-magic: rgba(228, 222, 255, 1);
+  --p-color-border-inverse: rgba(97, 97, 97, 1);
+
+  /* --- Colors: Icon --- */
+  --p-color-icon: rgba(74, 74, 74, 1);
+  --p-color-icon-hover: rgba(48, 48, 48, 1);
+  --p-color-icon-active: rgba(26, 26, 26, 1);
+  --p-color-icon-disabled: rgba(204, 204, 204, 1);
+  --p-color-icon-secondary: rgba(138, 138, 138, 1);
+  --p-color-icon-brand: rgba(26, 26, 26, 1);
+  --p-color-icon-info: rgba(0, 148, 213, 1);
+  --p-color-icon-success: rgba(4, 123, 93, 1);
+  --p-color-icon-caution: rgba(153, 138, 0, 1);
+  --p-color-icon-warning: rgba(178, 132, 0, 1);
+  --p-color-icon-critical: rgba(226, 44, 56, 1);
+  --p-color-icon-emphasis: rgba(0, 91, 211, 1);
+  --p-color-icon-magic: rgba(128, 81, 255, 1);
+  --p-color-icon-inverse: rgba(227, 227, 227, 1);
+
+  /* --- Colors: Input --- */
+  --p-color-input-bg-surface: rgba(253, 253, 253, 1);
+  --p-color-input-bg-surface-hover: rgba(250, 250, 250, 1);
+  --p-color-input-bg-surface-active: rgba(247, 247, 247, 1);
+  --p-color-input-border: rgba(138, 138, 138, 1);
+  --p-color-input-border-hover: rgba(97, 97, 97, 1);
+  --p-color-input-border-active: rgba(26, 26, 26, 1);
+
+  /* --- Custom: Control border (single place to tweak input/select default border) --- */
+  --p-color-control-border: rgba(138, 138, 138, 1);
+  --p-color-control-border-focus: rgba(26, 26, 26, 1);
+
+  /* --- Colors: Checkbox --- */
+  --p-color-checkbox-bg-surface-disabled: rgba(0, 0, 0, 0.08);
+  --p-color-checkbox-icon-disabled: rgba(255, 255, 255, 1);
+
+  /* --- Colors: Radio --- */
+  --p-color-radio-button-bg-surface-disabled: rgba(0, 0, 0, 0.08);
+  --p-color-radio-button-icon-disabled: rgba(255, 255, 255, 1);
+
+  /* --- Colors: Button --- */
+  --p-color-button-gradient-bg-fill: linear-gradient(180deg, rgba(48, 48, 48, 0) 63.53%, rgba(255, 255, 255, 0.15) 100%);
+
+  /* --- Colors: Backdrop & Nav --- */
+  --p-color-backdrop-bg: rgba(0, 0, 0, 0.71);
+  --p-color-nav-bg: rgba(235, 235, 235, 1);
+
+  /* --- Typography (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --p-font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --p-font-size-275: 0.6875rem;
+  --p-font-size-300: 0.75rem;
+  --p-font-size-325: 0.8125rem;
+  --p-font-size-350: 0.875rem;
+  --p-font-size-400: 1rem;
+  --p-font-size-450: 1.125rem;
+  --p-font-size-500: 1.25rem;
+  --p-font-size-550: 1.375rem;
+  --p-font-size-600: 1.5rem;
+  --p-font-size-750: 1.875rem;
+  --p-font-size-800: 2rem;
+  --p-font-size-900: 2.25rem;
+  --p-font-size-1000: 2.5rem;
+
+  --p-font-weight-regular: 450;
+  --p-font-weight-medium: 550;
+  --p-font-weight-semibold: 650;
+  --p-font-weight-bold: 700;
+
+  --p-font-line-height-300: 0.75rem;
+  --p-font-line-height-400: 1rem;
+  --p-font-line-height-500: 1.25rem;
+  --p-font-line-height-600: 1.5rem;
+  --p-font-line-height-700: 1.75rem;
+  --p-font-line-height-800: 2rem;
+  --p-font-line-height-1000: 2.5rem;
+  --p-font-line-height-1200: 3rem;
+
+  --p-font-letter-spacing-densest: -0.03375rem;
+  --p-font-letter-spacing-denser: -0.01875rem;
+  --p-font-letter-spacing-dense: -0.0125rem;
+  --p-font-letter-spacing-normal: 0rem;
+
+  /* --- Spacing (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-space-0: 0rem;
+  --p-space-025: 0.0625rem;
+  --p-space-050: 0.125rem;
+  --p-space-100: 0.25rem;
+  --p-space-150: 0.375rem;
+  --p-space-200: 0.5rem;
+  --p-space-300: 0.75rem;
+  --p-space-400: 1rem;
+  --p-space-500: 1.25rem;
+  --p-space-600: 1.5rem;
+  --p-space-800: 2rem;
+  --p-space-1000: 2.5rem;
+  --p-space-1200: 3rem;
+  --p-space-1600: 4rem;
+  --p-space-2000: 5rem;
+  --p-space-2400: 6rem;
+  --p-space-2800: 7rem;
+  --p-space-3200: 8rem;
+  --p-space-button-group-gap: var(--p-space-200);
+  --p-space-card-gap: var(--p-space-400);
+  --p-space-card-padding: var(--p-space-400);
+  --p-space-table-cell-padding: var(--p-space-150);
+
+  /* --- Border Radius (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-border-radius-0: 0rem;
+  --p-border-radius-050: 0.125rem;
+  --p-border-radius-100: 0.25rem;
+  --p-border-radius-150: 0.375rem;
+  --p-border-radius-200: 0.5rem;
+  --p-border-radius-300: 0.75rem;
+  --p-border-radius-400: 1rem;
+  --p-border-radius-500: 1.25rem;
+  --p-border-radius-750: 1.875rem;
+  --p-border-radius-full: 624.9375rem;
+
+  /* --- Border Width (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-border-width-0: 0rem;
+  --p-border-width-0165: 0.04125rem;
+  --p-border-width-025: 0.0625rem;
+  --p-border-width-050: 0.125rem;
+  --p-border-width-100: 0.25rem;
+
+  /* --- Shadows (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-shadow-0: none;
+  --p-shadow-100: 0rem 0.0625rem 0rem 0rem rgba(26, 26, 26, 0.07);
+  --p-shadow-200: 0rem 0.1875rem 0.0625rem -0.0625rem rgba(26, 26, 26, 0.07);
+  --p-shadow-300: 0rem 0.25rem 0.375rem -0.125rem rgba(26, 26, 26, 0.20);
+  --p-shadow-400: 0rem 0.5rem 1rem -0.25rem rgba(26, 26, 26, 0.22);
+  --p-shadow-500: 0rem 0.75rem 1.25rem -0.5rem rgba(26, 26, 26, 0.24);
+  --p-shadow-600: 0rem 1.25rem 1.25rem -0.5rem rgba(26, 26, 26, 0.28);
+  --p-shadow-bevel-100: 0.0625rem 0rem 0rem 0rem rgba(0, 0, 0, 0.13) inset, -0.0625rem 0rem 0rem 0rem rgba(0, 0, 0, 0.13) inset, 0rem -0.0625rem 0rem 0rem rgba(0, 0, 0, 0.17) inset, 0rem 0.0625rem 0rem 0rem rgba(204, 204, 204, 0.5) inset;
+  --p-shadow-inset-100: 0rem 0.0625rem 0.125rem 0rem rgba(26, 26, 26, 0.15) inset, 0rem 0.0625rem 0.0625rem 0rem rgba(26, 26, 26, 0.15) inset;
+  --p-shadow-inset-200: 0rem 0.125rem 0.0625rem 0rem rgba(26, 26, 26, 0.20) inset, 0.0625rem 0rem 0.0625rem 0rem rgba(26, 26, 26, 0.12) inset, -0.0625rem 0rem 0.0625rem 0rem rgba(26, 26, 26, 0.12) inset;
+  --p-shadow-button: 0rem -0.0625rem 0rem 0rem #b5b5b5 inset, 0rem 0rem 0rem 0.0625rem rgba(0, 0, 0, 0.1) inset, 0rem 0.03125rem 0rem 0.09375rem #FFF inset;
+  --p-shadow-button-hover: 0rem 0.0625rem 0rem 0rem #EBEBEB inset, -0.0625rem 0rem 0rem 0rem #EBEBEB inset, 0.0625rem 0rem 0rem 0rem #EBEBEB inset, 0rem -0.0625rem 0rem 0rem #CCC inset;
+  --p-shadow-button-inset: -0.0625rem 0rem 0.0625rem 0rem rgba(26, 26, 26, 0.122) inset, 0.0625rem 0rem 0.0625rem 0rem rgba(26, 26, 26, 0.122) inset, 0rem 0.125rem 0.0625rem 0rem rgba(26, 26, 26, 0.2) inset;
+  --p-shadow-button-primary: 0rem -0.0625rem 0rem 0.0625rem rgba(0, 0, 0, 0.8) inset, 0rem 0rem 0rem 0.0625rem rgba(48, 48, 48, 1) inset, 0rem 0.03125rem 0rem 0.09375rem rgba(255, 255, 255, 0.25) inset;
+  --p-shadow-button-primary-hover: 0rem 0.0625rem 0rem 0rem rgba(255, 255, 255, 0.24) inset, 0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, -0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, 0rem -0.0625rem 0rem 0rem #000 inset, 0rem -0.0625rem 0rem 0.0625rem #1A1A1A;
+  --p-shadow-button-primary-inset: 0rem 0.1875rem 0rem 0rem rgb(0, 0, 0) inset;
+  --p-shadow-button-primary-critical: 0rem -0.0625rem 0rem 0.0625rem rgba(142, 31, 11, 0.8) inset, 0rem 0rem 0rem 0.0625rem rgba(181, 38, 11, 0.8) inset, 0rem 0.03125rem 0rem 0.09375rem rgba(255, 255, 255, 0.349) inset;
+  --p-shadow-button-primary-critical-hover: 0rem 0.0625rem 0rem 0rem rgba(255, 255, 255, 0.48) inset, 0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, -0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, 0rem -0.09375rem 0rem 0rem rgba(0, 0, 0, 0.25) inset;
+  --p-shadow-button-primary-critical-inset: -0.0625rem 0rem 0.0625rem 0rem rgba(0, 0, 0, 0.2) inset, 0.0625rem 0rem 0.0625rem 0rem rgba(0, 0, 0, 0.2) inset, 0rem 0.125rem 0rem 0rem rgba(0, 0, 0, 0.6) inset;
+  --p-shadow-button-primary-success: 0rem -0.0625rem 0rem 0.0625rem rgba(12, 81, 50, 0.8) inset, 0rem 0rem 0rem 0.0625rem rgba(19, 111, 69, 0.8) inset, 0rem 0.03125rem 0rem 0.09375rem rgba(255, 255, 255, 0.251) inset;
+  --p-shadow-button-primary-success-hover: 0rem 0.0625rem 0rem 0rem rgba(255, 255, 255, 0.48) inset, 0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, -0.0625rem 0rem 0rem 0rem rgba(255, 255, 255, 0.20) inset, 0rem -0.09375rem 0rem 0rem rgba(0, 0, 0, 0.25) inset;
+  --p-shadow-button-primary-success-inset: -0.0625rem 0rem 0.0625rem 0rem rgba(0, 0, 0, 0.2) inset, 0.0625rem 0rem 0.0625rem 0rem rgba(0, 0, 0, 0.2) inset, 0rem 0.125rem 0rem 0rem rgba(0, 0, 0, 0.6) inset;
+  --p-shadow-border-inset: 0rem 0rem 0rem 0.0625rem rgba(0, 0, 0, 0.08) inset;
+
+  /* --- Height (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-height-0: 0rem;
+  --p-height-600: 1.5rem;
+  --p-height-700: 1.75rem;
+  --p-height-800: 2rem;
+  --p-height-900: 2.25rem;
+  --p-height-1000: 2.5rem;
+  --p-height-1200: 3rem;
+
+  /* --- Width (exact from @shopify/polaris-tokens v9.4.2) --- */
+  --p-width-0: 0rem;
+  --p-width-600: 1.5rem;
+  --p-width-700: 1.75rem;
+  --p-width-800: 2rem;
+  --p-width-900: 2.25rem;
+  --p-width-1000: 2.5rem;
+  --p-width-1200: 3rem;
+
+  /* --- Z-Index --- */
+  --p-z-index-1: 100;
+  --p-z-index-2: 400;
+  --p-z-index-3: 510;
+  --p-z-index-4: 512;
+  --p-z-index-5: 513;
+  --p-z-index-6: 514;
+  --p-z-index-7: 515;
+  --p-z-index-8: 516;
+  --p-z-index-9: 517;
+  --p-z-index-10: 518;
+  --p-z-index-11: 519;
+  --p-z-index-12: 520;
+
+  /* --- Motion --- */
+  --p-motion-duration-0: 0ms;
+  --p-motion-duration-50: 50ms;
+  --p-motion-duration-100: 100ms;
+  --p-motion-duration-150: 150ms;
+  --p-motion-duration-200: 200ms;
+  --p-motion-duration-250: 250ms;
+  --p-motion-duration-300: 300ms;
+  --p-motion-duration-350: 350ms;
+  --p-motion-duration-400: 400ms;
+  --p-motion-duration-500: 500ms;
+
+  --p-motion-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --p-motion-ease-in: cubic-bezier(0.42, 0, 1, 1);
+  --p-motion-ease-out: cubic-bezier(0.19, 0.91, 0.38, 1);
+  --p-motion-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --p-motion-linear: cubic-bezier(0, 0, 1, 1);
+}
+
+/* =============================================================================
+   POLARIS DARK THEME
+   ============================================================================= */
+
+.dark {
+  --background: rgba(26, 26, 26, 1);
+  --foreground: rgba(227, 227, 227, 1);
+
+  --card: rgba(48, 48, 48, 1);
+  --card-foreground: rgba(227, 227, 227, 1);
+
+  --popover: rgba(48, 48, 48, 1);
+  --popover-foreground: rgba(227, 227, 227, 1);
+
+  --primary: rgba(227, 227, 227, 1);
+  --primary-foreground: rgba(26, 26, 26, 1);
+
+  --secondary: rgba(74, 74, 74, 1);
+  --secondary-foreground: rgba(227, 227, 227, 1);
+
+  --muted: rgba(74, 74, 74, 1);
+  --muted-foreground: rgba(181, 181, 181, 1);
+
+  --accent: rgba(74, 74, 74, 1);
+  --accent-foreground: rgba(227, 227, 227, 1);
+
+  --destructive: rgba(226, 44, 56, 1);
+
+  --border: rgba(97, 97, 97, 1);
+  --input: rgba(97, 97, 97, 1);
+  --ring: rgba(65, 136, 255, 1);
+
+  --chart-1: rgba(65, 136, 255, 1);
+  --chart-2: rgba(82, 244, 144, 1);
+  --chart-3: rgba(255, 200, 121, 1);
+  --chart-4: rgba(170, 149, 255, 1);
+  --chart-5: rgba(247, 128, 134, 1);
+
+  --sidebar: rgba(48, 48, 48, 1);
+  --sidebar-foreground: rgba(227, 227, 227, 1);
+  --sidebar-primary: rgba(227, 227, 227, 1);
+  --sidebar-primary-foreground: rgba(26, 26, 26, 1);
+  --sidebar-accent: rgba(74, 74, 74, 1);
+  --sidebar-accent-foreground: rgba(227, 227, 227, 1);
+  --sidebar-border: rgba(97, 97, 97, 1);
+  --sidebar-ring: rgba(65, 136, 255, 1);
+
+  /* Polaris native dark overrides */
+  --p-color-bg: rgba(26, 26, 26, 1);
+  --p-color-bg-inverse: rgba(241, 241, 241, 1);
+  --p-color-bg-surface: rgba(48, 48, 48, 1);
+  --p-color-bg-surface-hover: rgba(74, 74, 74, 1);
+  --p-color-bg-surface-active: rgba(74, 74, 74, 1);
+  --p-color-bg-surface-selected: rgba(74, 74, 74, 1);
+  --p-color-bg-surface-secondary: rgba(74, 74, 74, 1);
+  --p-color-bg-surface-tertiary: rgba(97, 97, 97, 1);
+  --p-color-bg-surface-inverse: rgba(227, 227, 227, 1);
+  --p-color-bg-fill: rgba(48, 48, 48, 1);
+  --p-color-bg-fill-hover: rgba(74, 74, 74, 1);
+  --p-color-bg-fill-brand: rgba(227, 227, 227, 1);
+  --p-color-bg-fill-brand-hover: rgba(241, 241, 241, 1);
+  --p-color-bg-fill-secondary: rgba(74, 74, 74, 1);
+  --p-color-bg-fill-tertiary: rgba(97, 97, 97, 1);
+  --p-color-text: rgba(227, 227, 227, 1);
+  --p-color-text-secondary: rgba(181, 181, 181, 1);
+  --p-color-text-disabled: rgba(138, 138, 138, 1);
+  --p-color-text-link: rgba(197, 208, 255, 1);
+  --p-color-text-brand: rgba(204, 204, 204, 1);
+  --p-color-text-brand-on-bg-fill: rgba(26, 26, 26, 1);
+  --p-color-text-inverse: rgba(48, 48, 48, 1);
+  --p-color-border: rgba(97, 97, 97, 1);
+  --p-color-border-hover: rgba(138, 138, 138, 1);
+  --p-color-border-secondary: rgba(74, 74, 74, 1);
+  --p-color-border-focus: rgba(65, 136, 255, 1);
+  --p-color-icon: rgba(204, 204, 204, 1);
+  --p-color-icon-hover: rgba(227, 227, 227, 1);
+  --p-color-icon-secondary: rgba(138, 138, 138, 1);
+  --p-color-input-bg-surface: rgba(74, 74, 74, 1);
+  --p-color-input-border: rgba(138, 138, 138, 1);
+  --p-color-input-border-hover: rgba(181, 181, 181, 1);
+  --p-color-input-border-active: rgba(227, 227, 227, 1);
+  --p-color-backdrop-bg: rgba(0, 0, 0, 0.71);
+  --p-color-nav-bg: rgba(48, 48, 48, 1);
+
+  --p-shadow-100: 0px 1px 0px 0px rgba(255, 255, 255, 0.07);
+  --p-shadow-200: 0px 3px 1px -1px rgba(0, 0, 0, 0.20);
+  --p-shadow-300: 0px 4px 6px -2px rgba(0, 0, 0, 0.30);
+  --p-shadow-400: 0px 8px 16px -4px rgba(0, 0, 0, 0.34);
+  --p-shadow-500: 0px 12px 20px -8px rgba(0, 0, 0, 0.36);
+  --p-shadow-600: 0px 20px 20px -8px rgba(0, 0, 0, 0.40);
+}
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--p-font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* =============================================================================
+   TOAST / SONNER STYLES (same as globals.css)
+   ============================================================================= */
+
+[data-sonner-toaster] {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+[data-sonner-toaster] [data-close-button] {
+  display: none !important;
+}
+
+@media (min-width: 640px) {
+  [data-sonner-toaster][data-position='top-center'] > [data-sonner-toast] {
+    max-width: min(560px, calc(100vw - 32px)) !important;
+    min-width: 360px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-sonner-toaster][data-position='top-center'] > [data-sonner-toast] {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Driver.js tutorial popover theming - Polaris styled */
+.driver-popover.tutorial-popover {
+  border-radius: var(--p-border-radius-300);
+  padding: var(--p-space-500) var(--p-space-600);
+  max-width: 380px;
+}
+
+.driver-popover.tutorial-popover .driver-popover-title {
+  font-size: var(--p-font-size-400);
+  font-weight: var(--p-font-weight-semibold);
+  color: var(--p-color-text);
+}
+
+.driver-popover.tutorial-popover .driver-popover-description {
+  font-size: var(--p-font-size-350);
+  color: var(--p-color-text-secondary);
+  line-height: var(--p-font-line-height-500);
+}
+
+.driver-popover.tutorial-popover .driver-popover-progress-text {
+  font-size: var(--p-font-size-275);
+  color: var(--p-color-text-disabled);
+  font-weight: var(--p-font-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.driver-popover.tutorial-popover .driver-popover-navigation-btns button {
+  border-radius: var(--p-border-radius-200);
+  font-size: var(--p-font-size-325);
+  font-weight: var(--p-font-weight-semibold);
+  padding: var(--p-space-200) var(--p-space-400);
+}
+
+.driver-popover.tutorial-popover .driver-popover-next-btn {
+  background-color: var(--p-color-bg-fill-brand);
+  color: var(--p-color-text-brand-on-bg-fill);
+  text-shadow: none;
+}
+
+.driver-popover.tutorial-popover .driver-popover-next-btn:hover {
+  background-color: var(--p-color-bg-fill-brand-hover);
+}
+
+.driver-popover.tutorial-popover .driver-popover-prev-btn {
+  color: var(--p-color-text-secondary);
+}

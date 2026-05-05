@@ -1,0 +1,363 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1770827834318,
+  "projectRoot": "/Users/abusalamehstudio/Desktop/Projects/Frontend/chef-portal",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.0.7",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.0",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "pnpm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "pnpm build",
+    "testCommand": null,
+    "lintCommand": "pnpm lint",
+    "devCommand": "pnpm dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "eslint",
+      "install:cursor-plugin": "bash scripts/install-cursor-plugin.sh",
+      "install:cursor-plugin:auto": "bash scripts/install-cursor-plugin-auto.sh"
+    }
+  },
+  "conventions": {
+    "namingStyle": "camelCase/PascalCase",
+    "importStyle": "ES modules",
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": true,
+    "workspaces": [],
+    "mainDirectories": [
+      "app",
+      "components",
+      "docs",
+      "lib",
+      "public",
+      "scripts"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "actions": {
+      "path": "actions",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1770827834307,
+      "keyFiles": []
+    },
+    "app": {
+      "path": "app",
+      "purpose": "Application code",
+      "fileCount": 4,
+      "lastAccessed": 1770827834307,
+      "keyFiles": [
+        "favicon.ico",
+        "globals.css",
+        "layout.tsx",
+        "page.tsx"
+      ]
+    },
+    "components": {
+      "path": "components",
+      "purpose": "UI components",
+      "fileCount": 1,
+      "lastAccessed": 1770827834310,
+      "keyFiles": [
+        "README.md"
+      ]
+    },
+    "config": {
+      "path": "config",
+      "purpose": "Configuration files",
+      "fileCount": 2,
+      "lastAccessed": 1770827834310,
+      "keyFiles": [
+        "README.md",
+        "endpoints.ts"
+      ]
+    },
+    "contexts": {
+      "path": "contexts",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1770827834310,
+      "keyFiles": [
+        "loading-context.tsx"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 3,
+      "lastAccessed": 1770827834310,
+      "keyFiles": [
+        "ORDER_MANAGEMENT_FLOW_DIAGRAM.md",
+        "ORDER_MANAGEMENT_USE_CASES.md",
+        "ORDER_STATUS_HISTORY.md"
+      ]
+    },
+    "hooks": {
+      "path": "hooks",
+      "purpose": null,
+      "fileCount": 22,
+      "lastAccessed": 1770827834310,
+      "keyFiles": [
+        "use-addresses.ts",
+        "use-allergens.ts",
+        "use-analytics.ts",
+        "use-bundles.ts",
+        "use-categories.ts"
+      ]
+    },
+    "lib": {
+      "path": "lib",
+      "purpose": "Library code",
+      "fileCount": 10,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "dish-utils.ts",
+        "errors.ts",
+        "form-errors.ts",
+        "google-maps-loader.ts",
+        "http-client.ts"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 5,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "file.svg",
+        "globe.svg",
+        "next.svg",
+        "vercel.svg",
+        "window.svg"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 4,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "README.md",
+        "cursor-plugin-commands.txt",
+        "install-cursor-plugin-auto.sh",
+        "install-cursor-plugin.sh"
+      ]
+    },
+    "services": {
+      "path": "services",
+      "purpose": "Business logic services",
+      "fileCount": 18,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "addresses.service.ts",
+        "allergens.service.ts",
+        "auth.service.ts",
+        "bundles.service.ts",
+        "categories.service.ts"
+      ]
+    },
+    "templates": {
+      "path": "templates",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "order-label.html"
+      ]
+    },
+    "types": {
+      "path": "types",
+      "purpose": "Type definitions",
+      "fileCount": 9,
+      "lastAccessed": 1770827834311,
+      "keyFiles": [
+        "addresses.types.ts",
+        "auth.types.ts",
+        "bundles.types.ts",
+        "chef-profile.types.ts",
+        "cuisines.types.ts"
+      ]
+    },
+    "app/api": {
+      "path": "app/api",
+      "purpose": "API routes",
+      "fileCount": 0,
+      "lastAccessed": 1770827834311,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "",
+      "accessCount": 9,
+      "lastAccessed": 1770831681564,
+      "type": "directory"
+    },
+    {
+      "path": "types/bundles.types.ts",
+      "accessCount": 8,
+      "lastAccessed": 1770831960500,
+      "type": "file"
+    },
+    {
+      "path": "app/dashboard/bundles/[id]/edit/page.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1770831948341,
+      "type": "file"
+    },
+    {
+      "path": "services/bundles.service.ts",
+      "accessCount": 3,
+      "lastAccessed": 1770831921494,
+      "type": "file"
+    },
+    {
+      "path": "app/dashboard/bundles/new/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770831929926,
+      "type": "file"
+    },
+    {
+      "path": "hooks/use-bundles.ts",
+      "accessCount": 2,
+      "lastAccessed": 1770831657005,
+      "type": "file"
+    },
+    {
+      "path": "config/endpoints.ts",
+      "accessCount": 2,
+      "lastAccessed": 1770831657518,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-details-section.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1770831673504,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-availability-section.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1770831674011,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-specs-section.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1770831674545,
+      "type": "file"
+    },
+    {
+      "path": "types/orders.types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1770830374859,
+      "type": "file"
+    },
+    {
+      "path": "services/orders.service.ts",
+      "accessCount": 1,
+      "lastAccessed": 1770830375018,
+      "type": "file"
+    },
+    {
+      "path": "app/dashboard/bundles/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831606025,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-card.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831611367,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-dishes-section.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831612439,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundle-customizations-section.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831613495,
+      "type": "file"
+    },
+    {
+      "path": "components/features/bundles/bundles-empty-state.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831614622,
+      "type": "file"
+    },
+    {
+      "path": "types",
+      "accessCount": 1,
+      "lastAccessed": 1770831665949,
+      "type": "directory"
+    },
+    {
+      "path": "services/dishes.service.ts",
+      "accessCount": 1,
+      "lastAccessed": 1770831855814,
+      "type": "directory"
+    },
+    {
+      "path": "types/dishes.types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1770831856489,
+      "type": "directory"
+    },
+    {
+      "path": "app/dashboard/dishes/new/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770831857406,
+      "type": "directory"
+    }
+  ],
+  "userDirectives": []
+}

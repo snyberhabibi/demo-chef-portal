@@ -11,7 +11,7 @@ const tabs = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/orders", label: "Orders", icon: Receipt, badge: 2 },
   { href: "/menu", label: "Menu", icon: UtensilsCrossed },
-  { href: "/profile", label: "Profile", icon: User, dot: true },
+  { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "More", icon: MoreHorizontal },
 ];
 
@@ -25,6 +25,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         borderTop: "1px solid rgba(51,31,46,0.08)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       {tabs.map((tab) => {
@@ -64,19 +65,6 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
                   {tab.badge}
                 </span>
               )}
-              {"dot" in tab && tab.dot && (
-                <span
-                  className="absolute"
-                  style={{
-                    top: -2,
-                    right: -4,
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "var(--color-orange)",
-                  }}
-                />
-              )}
             </span>
             <span
               style={{
@@ -86,6 +74,19 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
             >
               {tab.label}
             </span>
+            {/* Active indicator dot */}
+            {isActive && (
+              <span
+                style={{
+                  position: "absolute",
+                  bottom: 4,
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: "var(--color-red)",
+                }}
+              />
+            )}
           </Link>
         );
       })}

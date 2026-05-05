@@ -28,8 +28,8 @@ export default function PickupAddressPage() {
         style={{
           height: 220,
           borderRadius: 16,
-          background: "var(--color-cream-sunken)",
-          border: "1px solid var(--color-cream-deep)",
+          background: "var(--color-cream-deep)",
+          border: "1px solid var(--color-cream-sunken)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -72,19 +72,22 @@ export default function PickupAddressPage() {
       </div>
 
       {/* Address card */}
-      <div className="card" style={{ transition: "box-shadow 0.2s ease" }}>
-        <div className="eyebrow" style={{ marginBottom: 10 }}>Pickup Address</div>
+      <div className="card">
+        <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+          <div className="eyebrow">Pickup Address</div>
+          <span className="pill pill-sage" style={{ fontSize: 11 }}>Primary</span>
+        </div>
         {editingAddress ? (
           <div>
             <input
               className="input"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              style={{ minHeight: 44, transition: "border-color 0.15s ease", marginBottom: 10 }}
+              style={{ minHeight: 44, marginBottom: 10 }}
             />
             <button
               className="btn btn-red btn-sm"
-              style={{ minHeight: 44, transition: "all 0.15s ease" }}
+              style={{ minHeight: 44 }}
               onClick={() => setEditingAddress(false)}
             >
               <Check size={14} />
@@ -99,7 +102,7 @@ export default function PickupAddressPage() {
             <div className="flex gap-2" style={{ marginTop: 14 }}>
               <button
                 className="btn btn-ghost btn-sm"
-                style={{ minHeight: 44, transition: "all 0.15s ease" }}
+                style={{ minHeight: 44 }}
                 onClick={handleCopy}
               >
                 {copied ? <Check size={14} style={{ color: "var(--color-sage)" }} /> : <Copy size={14} />}
@@ -107,11 +110,11 @@ export default function PickupAddressPage() {
               </button>
               <button
                 className="btn btn-ghost btn-sm"
-                style={{ minHeight: 44, transition: "all 0.15s ease" }}
+                style={{ minHeight: 44 }}
                 onClick={() => setEditingAddress(true)}
               >
                 <Edit3 size={14} />
-                Edit
+                Edit Address
               </button>
             </div>
           </>
@@ -119,7 +122,7 @@ export default function PickupAddressPage() {
       </div>
 
       {/* Pickup instructions */}
-      <div className="card" style={{ transition: "box-shadow 0.2s ease" }}>
+      <div className="card">
         <div className="eyebrow" style={{ marginBottom: 10 }}>Pickup Instructions</div>
         {editingInstructions ? (
           <div>
@@ -128,11 +131,11 @@ export default function PickupAddressPage() {
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
-              style={{ minHeight: 100, transition: "border-color 0.15s ease", marginBottom: 10 }}
+              style={{ minHeight: 100, marginBottom: 10 }}
             />
             <button
               className="btn btn-red btn-sm"
-              style={{ minHeight: 44, transition: "all 0.15s ease" }}
+              style={{ minHeight: 44 }}
               onClick={() => setEditingInstructions(false)}
             >
               <Check size={14} />
@@ -146,7 +149,7 @@ export default function PickupAddressPage() {
             </p>
             <button
               className="btn btn-ghost btn-sm"
-              style={{ marginTop: 12, minHeight: 44, transition: "all 0.15s ease" }}
+              style={{ marginTop: 12, minHeight: 44 }}
               onClick={() => setEditingInstructions(true)}
             >
               <Edit3 size={14} />

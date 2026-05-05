@@ -15,7 +15,7 @@ export default function LoginPage() {
       className="relative flex items-center justify-center min-h-screen overflow-hidden px-5"
       style={{ background: "var(--color-cream)" }}
     >
-      {/* Decorative blobs */}
+      {/* Decorative blobs with drift animation */}
       <div
         className="blob"
         style={{
@@ -38,6 +38,18 @@ export default function LoginPage() {
           animationDelay: "-6s",
         }}
       />
+      <div
+        className="blob"
+        style={{
+          width: 200,
+          height: 200,
+          background: "var(--color-sage-soft)",
+          top: "40%",
+          left: "60%",
+          animationDelay: "-10s",
+          opacity: 0.25,
+        }}
+      />
 
       <div
         className="relative w-full page-fade"
@@ -56,16 +68,18 @@ export default function LoginPage() {
         <h1
           className="fraunces text-center"
           style={{
-            fontSize: "clamp(32px, 6vw, 56px)",
+            fontSize: "clamp(32px, 6vw, 52px)",
             lineHeight: 1.1,
             color: "var(--color-brown)",
             marginBottom: 32,
           }}
         >
-          Welcome to your kitchen.
+          Welcome to
+          <br />
+          your kitchen.
         </h1>
 
-        {/* Magic link form */}
+        {/* Magic link form — full width on mobile */}
         <div className="flex flex-col gap-3">
           <input
             type="email"
@@ -121,7 +135,12 @@ export default function LoginPage() {
           style={{ minHeight: 44 }}
           onClick={() => router.push("/welcome")}
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+          >
             <path
               d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z"
               fill="#4285F4"
@@ -142,7 +161,7 @@ export default function LoginPage() {
           Sign in with Google
         </button>
 
-        {/* Password collapsible */}
+        {/* Collapsible password section */}
         <div className="mt-4">
           <button
             onClick={() => setShowPassword(!showPassword)}
@@ -203,7 +222,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        {/* Help */}
+        {/* Help — mailto link */}
         <p
           className="text-center mt-8"
           style={{

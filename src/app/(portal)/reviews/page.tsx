@@ -2,74 +2,140 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Star, MessageSquare, ChevronDown } from "lucide-react";
+import { Star, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
 
-const FILTERS = ["All", "Chef Profile", "Dishes", "Bundles", "Awaiting Reply"];
-const SORT_OPTIONS = ["Newest First", "Oldest First", "Highest Rating", "Lowest Rating"];
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const TABS = ["Chef Profile", "Dishes", "Bundles"] as const;
+type Tab = (typeof TABS)[number];
+
+const SORT_OPTIONS = ["Newest", "Oldest", "Highest", "Lowest"];
 
 const breakdownData = [
-  { stars: 5, count: 16, pct: 67 },
-  { stars: 4, count: 5, pct: 21 },
-  { stars: 3, count: 2, pct: 8 },
-  { stars: 2, count: 1, pct: 4 },
-  { stars: 1, count: 0, pct: 0 },
+  { stars: 5, count: 3, pct: 75 },
+  { stars: 4, count: 0, pct: 0 },
+  { stars: 3, count: 0, pct: 0 },
+  { stars: 2, count: 0, pct: 0 },
+  { stars: 1, count: 1, pct: 25 },
 ];
 
-const INITIAL_REVIEWS = [
+const PROFILE_REVIEWS = [
   {
     id: 1,
-    initials: "SH",
-    name: "Sarah H.",
+    initials: "SK",
+    name: "Sarah K.",
     rating: 5,
-    date: "2 days ago",
-    text: "The mansaf was absolutely incredible. Perfectly seasoned, generous portion. Will be ordering again every week!",
-    dish: "Mansaf",
-    reply: {
-      name: "Yalla Kitchen by Amira",
-      text: "Thank you so much Sarah! We're so glad you loved the mansaf. See you next week!",
-      edited: true,
-    },
+    date: "3 days ago",
+    text: "Amira's mansaf is the best I've had outside of Jordan. The jameed sauce is perfectly tangy and the lamb falls right off the bone. Already planning my next order!",
+    reply: null,
     composerOpen: false,
     composerText: "",
   },
   {
     id: 2,
-    initials: "MK",
-    name: "Mike K.",
-    rating: 4,
-    date: "5 days ago",
-    text: "Great knafeh, but delivery was a bit late. Food quality is always top notch though.",
-    dish: "Knafeh",
+    initials: "MT",
+    name: "Marcus T.",
+    rating: 5,
+    date: "1 week ago",
+    text: "First time trying knafeh and now I'm hooked. The cheese pull was incredible, and that syrup was just the right amount of sweet. Outstanding.",
     reply: null,
     composerOpen: false,
     composerText: "",
   },
   {
     id: 3,
-    initials: "LR",
-    name: "Lisa R.",
+    initials: "PR",
+    name: "Priya R.",
     rating: 5,
-    date: "1 week ago",
-    text: "Best baklava in Dallas! My family can't get enough. The pistachio filling is so rich and fresh.",
-    dish: "Baklava",
+    date: "2 weeks ago",
+    text: "Loved everything but baklava was a bit dry compared to last time. Still delicious overall. Will keep ordering!",
     reply: null,
     composerOpen: true,
-    composerText: "Thank you Lisa! So happy your family loves the baklava. We use ",
+    composerText: "",
   },
   {
     id: 4,
-    initials: "DJ",
-    name: "David J.",
-    rating: 3,
-    date: "2 weeks ago",
-    text: "Food was good but packaging could be better. The rice got a little soggy. Flavors were still great though.",
-    dish: "Family Bundle",
-    reply: null,
+    initials: "JL",
+    name: "Jordan L.",
+    rating: 1,
+    date: "3 weeks ago",
+    text: "Picked up for family dinner, everyone went back for seconds. The hummus and shawarma were a huge hit. Thank you Amira!",
+    reply: {
+      name: "Yalla Kitchen by Amira",
+      text: "So glad your family enjoyed it!",
+      time: "2 weeks ago",
+    },
     composerOpen: false,
     composerText: "",
   },
 ];
 
+interface DishReviewItem {
+  name: string;
+  rating: number;
+  count: number;
+  reviews: { initials: string; name: string; rating: number; text: string; date: string }[];
+}
+
+const DISH_REVIEWS: DishReviewItem[] = [
+  {
+    name: "Grandma's Mansaf",
+    rating: 5.0,
+    count: 8,
+    reviews: [
+      { initials: "SK", name: "Sarah K.", rating: 5, text: "Best mansaf I've had outside of Jordan.", date: "3 days ago" },
+      { initials: "AW", name: "Alex W.", rating: 5, text: "Incredible lamb and the rice was perfectly spiced.", date: "1 week ago" },
+    ],
+  },
+  {
+    name: "Knafeh",
+    rating: 4.8,
+    count: 5,
+    reviews: [
+      { initials: "MT", name: "Marcus T.", rating: 5, text: "The cheese pull was incredible.", date: "1 week ago" },
+    ],
+  },
+  {
+    name: "Baklava Box",
+    rating: 4.2,
+    count: 4,
+    reviews: [
+      { initials: "PR", name: "Priya R.", rating: 4, text: "Loved everything but a bit dry this time.", date: "2 weeks ago" },
+    ],
+  },
+];
+
+interface BundleReviewItem {
+  name: string;
+  rating: number;
+  count: number;
+  reviews: { initials: string; name: string; rating: number; text: string; date: string }[];
+}
+
+const BUNDLE_REVIEWS: BundleReviewItem[] = [
+  {
+    name: "Family Feast Bundle",
+    rating: 4.9,
+    count: 6,
+    reviews: [
+      { initials: "JL", name: "Jordan L.", rating: 5, text: "Everyone went back for seconds.", date: "3 weeks ago" },
+    ],
+  },
+  {
+    name: "Date Night Bundle",
+    rating: 4.7,
+    count: 3,
+    reviews: [
+      { initials: "LM", name: "Lisa M.", rating: 5, text: "Perfect portion for two. Romantic dinner sorted!", date: "1 week ago" },
+    ],
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Star row                                                           */
+/* ------------------------------------------------------------------ */
 function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
   return (
     <span className="inline-flex gap-0.5">
@@ -86,11 +152,16 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 export default function ReviewsPage() {
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [sortBy, setSortBy] = useState("Newest First");
+  const [activeTab, setActiveTab] = useState<Tab>("Chef Profile");
+  const [sortBy, setSortBy] = useState("Newest");
   const [sortOpen, setSortOpen] = useState(false);
-  const [reviews, setReviews] = useState(INITIAL_REVIEWS);
+  const [reviews, setReviews] = useState(PROFILE_REVIEWS);
+  const [expandedDish, setExpandedDish] = useState<number | null>(null);
+  const [expandedBundle, setExpandedBundle] = useState<number | null>(null);
   const maxChars = 500;
 
   const toggleComposer = useCallback((id: number) => {
@@ -118,7 +189,7 @@ export default function ReviewsPage() {
           reply: {
             name: "Yalla Kitchen by Amira",
             text: r.composerText,
-            edited: false,
+            time: "Just now",
           },
           composerOpen: false,
           composerText: "",
@@ -137,69 +208,26 @@ export default function ReviewsPage() {
 
   return (
     <div className="section-stack" style={{ maxWidth: 680 }}>
-      {/* Rating summary */}
-      <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6" style={{ transition: "box-shadow 0.2s ease" }}>
-        <div className="text-center" style={{ minWidth: 100 }}>
-          <div className="fraunces" style={{ fontSize: 48, lineHeight: 1, color: "var(--color-brown)" }}>
-            4.8
-          </div>
-          <StarRow rating={5} size={16} />
-          <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
-            (24 reviews)
-          </div>
-        </div>
-        <div style={{ flex: 1, width: "100%" }}>
-          {breakdownData.map((row) => (
-            <div key={row.stars} className="flex items-center gap-2" style={{ marginBottom: 4 }}>
-              <span className="tnum" style={{ fontSize: 13, width: 16, textAlign: "right", color: "var(--color-brown-soft)" }}>
-                {row.stars}
-              </span>
-              <Star size={12} fill="var(--color-sage)" stroke="var(--color-sage)" />
-              <div
-                style={{
-                  flex: 1,
-                  height: 8,
-                  borderRadius: 4,
-                  background: "var(--color-cream-sunken)",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    width: `${row.pct}%`,
-                    height: "100%",
-                    borderRadius: 4,
-                    background: "var(--color-sage)",
-                    transition: "width 0.3s ease",
-                  }}
-                />
-              </div>
-              <span className="tnum" style={{ fontSize: 12, width: 20, color: "var(--color-brown-soft-2)" }}>
-                {row.count}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Filters + Sort */}
+      {/* Tabs + Sort */}
       <div className="flex flex-wrap items-center gap-2">
-        {FILTERS.map((f) => (
+        {TABS.map((t) => (
           <button
-            key={f}
-            className={`pill ${activeFilter === f ? "pill-brown" : ""}`}
+            key={t}
+            className={`pill ${activeTab === t ? "pill-brown" : ""}`}
             style={{
               cursor: "pointer",
               border: "none",
               minHeight: 44,
+              padding: "8px 16px",
+              fontSize: 13,
               transition: "all 0.15s ease",
             }}
-            onClick={() => setActiveFilter(f)}
+            onClick={() => setActiveTab(t)}
           >
-            {f === "Awaiting Reply" && <MessageSquare size={12} />}
-            {f}
+            {t}
           </button>
         ))}
+
         <div style={{ marginLeft: "auto", position: "relative" }}>
           <button
             className="btn btn-ghost btn-sm"
@@ -228,7 +256,7 @@ export default function ReviewsPage() {
                 border: "1px solid var(--color-cream-sunken)",
                 overflow: "hidden",
                 zIndex: 20,
-                minWidth: 180,
+                minWidth: 160,
               }}
             >
               {SORT_OPTIONS.map((opt) => (
@@ -261,136 +289,338 @@ export default function ReviewsPage() {
         </div>
       </div>
 
-      {/* Review cards */}
-      {reviews.map((review) => (
-        <div
-          key={review.id}
-          className="card"
-          style={{
-            padding: 0,
-            transition: "box-shadow 0.2s ease, transform 0.15s ease",
-          }}
-        >
-          <div style={{ padding: 20 }}>
-            {/* Header */}
-            <div className="flex items-start gap-3">
-              <div
-                className="flex items-center justify-center rounded-full"
-                style={{
-                  width: 40,
-                  height: 40,
-                  background: "var(--color-cream-sunken)",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--color-brown-soft)",
-                  flexShrink: 0,
-                }}
-              >
-                {review.initials}
+      {/* Chef Profile tab */}
+      {activeTab === "Chef Profile" && (
+        <>
+          {/* Rating summary */}
+          <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div className="text-center" style={{ minWidth: 100 }}>
+              <div className="fraunces" style={{ fontSize: 48, lineHeight: 1, color: "var(--color-brown)" }}>
+                4.0
               </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>{review.name}</span>
-                  <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{review.date}</span>
-                </div>
-                <StarRow rating={review.rating} />
+              <div style={{ marginTop: 6 }}>
+                <StarRow rating={4} size={16} />
+              </div>
+              <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
+                4 ratings
               </div>
             </div>
-
-            {/* Body */}
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--color-brown-soft)", margin: "12px 0 0" }}>
-              {review.text}
-            </p>
-
-            {/* Dish pill */}
-            <div style={{ marginTop: 10 }}>
-              <span className="pill pill-mute">{review.dish}</span>
+            <div style={{ flex: 1, width: "100%" }}>
+              {breakdownData.map((row) => (
+                <div key={row.stars} className="flex items-center gap-2" style={{ marginBottom: 4 }}>
+                  <span className="tnum" style={{ fontSize: 13, width: 24, textAlign: "right", color: "var(--color-brown-soft)" }}>
+                    {row.stars}.0
+                  </span>
+                  <Star size={12} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <div
+                    style={{
+                      flex: 1,
+                      height: 8,
+                      borderRadius: 4,
+                      background: "var(--color-cream-sunken)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${row.pct}%`,
+                        height: "100%",
+                        borderRadius: 4,
+                        background: "var(--color-sage)",
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+                  <span className="tnum" style={{ fontSize: 12, width: 20, color: "var(--color-brown-soft-2)" }}>
+                    {row.count}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Posted reply */}
-          {review.reply && (
+          {/* Review cards */}
+          {reviews.map((review) => (
             <div
-              style={{
-                margin: "0 20px 20px",
-                padding: 14,
-                borderRadius: 10,
-                background: "var(--color-cream-deep)",
-                borderLeft: "3px solid var(--color-sage)",
-              }}
+              key={review.id}
+              className="card"
+              style={{ padding: 0 }}
             >
-              <div className="flex items-center gap-1.5" style={{ marginBottom: 6 }}>
-                <span style={{ fontSize: 13, fontWeight: 600 }}>{review.reply.name}</span>
-                {review.reply.edited && (
-                  <span style={{ fontSize: 11, color: "var(--color-brown-soft-2)" }}>(edited)</span>
-                )}
-              </div>
-              <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0 }}>
-                {review.reply.text}
-              </p>
-            </div>
-          )}
+              <div style={{ padding: 20 }}>
+                {/* Header */}
+                <div className="flex items-start gap-3">
+                  <div
+                    className="flex items-center justify-center rounded-full"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      background: "var(--color-cream-sunken)",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "var(--color-brown-soft)",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {review.initials}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span style={{ fontWeight: 600, fontSize: 15 }}>{review.name}</span>
+                      <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{review.date}</span>
+                    </div>
+                    <StarRow rating={review.rating} />
+                  </div>
+                </div>
 
-          {/* Reply composer */}
-          {review.composerOpen && (
-            <div style={{ padding: "0 20px 20px" }}>
-              <div style={{ position: "relative" }}>
-                <textarea
-                  className="textarea"
-                  value={review.composerText}
-                  onChange={(e) => updateComposerText(review.id, e.target.value)}
-                  rows={3}
-                  placeholder="Write a reply..."
-                  style={{ minHeight: 80, transition: "border-color 0.15s ease" }}
-                />
-                <span
-                  className="tnum"
+                {/* Body */}
+                <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--color-brown-soft)", margin: "12px 0 0" }}>
+                  {review.text}
+                </p>
+              </div>
+
+              {/* Posted reply */}
+              {review.reply && (
+                <div
                   style={{
-                    position: "absolute",
-                    bottom: 10,
-                    right: 12,
-                    fontSize: 11,
-                    color: review.composerText.length > maxChars * 0.9 ? "var(--color-red)" : "var(--color-brown-soft-2)",
+                    margin: "0 20px 20px",
+                    padding: 14,
+                    borderRadius: 10,
+                    background: "var(--color-cream-deep)",
+                    borderLeft: "3px solid var(--color-sage)",
                   }}
                 >
-                  {review.composerText.length}/{maxChars}
-                </span>
-              </div>
-              <div className="flex justify-end gap-2" style={{ marginTop: 10 }}>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  style={{ minHeight: 44, transition: "all 0.15s ease" }}
-                  onClick={() => cancelReply(review.id)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-red btn-sm"
-                  style={{ minHeight: 44, transition: "all 0.15s ease" }}
-                  onClick={() => postReply(review.id)}
-                  disabled={review.composerText.trim().length === 0}
-                >
-                  Post Reply
-                </button>
-              </div>
-            </div>
-          )}
+                  <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>{review.reply.name}</span>
+                    <span style={{ fontSize: 11, color: "var(--color-brown-soft-2)" }}>{review.reply.time}</span>
+                  </div>
+                  <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0 }}>
+                    {review.reply.text}
+                  </p>
+                </div>
+              )}
 
-          {/* Reply button for cards without reply or composer */}
-          {!review.reply && !review.composerOpen && (
-            <div style={{ padding: "0 20px 16px" }}>
-              <button
-                className="btn btn-ghost btn-sm"
-                style={{ gap: 6, minHeight: 44, transition: "all 0.15s ease" }}
-                onClick={() => toggleComposer(review.id)}
-              >
-                <MessageSquare size={14} />
-                Reply
-              </button>
+              {/* Reply composer */}
+              {review.composerOpen && (
+                <div style={{ padding: "0 20px 20px" }}>
+                  <div style={{ position: "relative" }}>
+                    <textarea
+                      className="textarea"
+                      value={review.composerText}
+                      onChange={(e) => updateComposerText(review.id, e.target.value)}
+                      rows={4}
+                      placeholder="Write a reply..."
+                      style={{ fontSize: 13, minHeight: 120, transition: "border-color 0.15s ease" }}
+                    />
+                    <span
+                      className="tnum"
+                      style={{
+                        position: "absolute",
+                        bottom: 10,
+                        right: 12,
+                        fontSize: 11,
+                        color: review.composerText.length > maxChars * 0.9 ? "var(--color-red)" : "var(--color-brown-soft-2)",
+                      }}
+                    >
+                      {review.composerText.length}/{maxChars}
+                    </span>
+                  </div>
+                  <div className="flex justify-end gap-2" style={{ marginTop: 10 }}>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      style={{ minHeight: 44, transition: "all 0.15s ease" }}
+                      onClick={() => cancelReply(review.id)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="btn btn-red btn-sm"
+                      style={{ minHeight: 44, transition: "all 0.15s ease" }}
+                      onClick={() => postReply(review.id)}
+                      disabled={review.composerText.trim().length === 0}
+                    >
+                      Post Reply
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Reply button for cards without reply or composer */}
+              {!review.reply && !review.composerOpen && (
+                <div style={{ padding: "0 20px 16px" }}>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    style={{ gap: 6, minHeight: 44, transition: "all 0.15s ease" }}
+                    onClick={() => toggleComposer(review.id)}
+                  >
+                    <MessageSquare size={14} />
+                    Reply
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          ))}
+        </>
+      )}
+
+      {/* Dishes tab */}
+      {activeTab === "Dishes" && (
+        <div className="section-stack">
+          {DISH_REVIEWS.map((dish, idx) => (
+            <div key={idx} className="card" style={{ padding: 0 }}>
+              <button
+                className="flex items-center gap-3 w-full text-left"
+                style={{
+                  padding: "16px 20px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  minHeight: 56,
+                }}
+                onClick={() => setExpandedDish(expandedDish === idx ? null : idx)}
+              >
+                <div className="flex-1">
+                  <span style={{ fontWeight: 600, fontSize: 15 }}>{dish.name}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <span className="tnum" style={{ fontWeight: 600, fontSize: 14 }}>{dish.rating.toFixed(1)}</span>
+                </div>
+                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>
+                  {dish.count} reviews
+                </span>
+                <ChevronRight
+                  size={16}
+                  style={{
+                    color: "var(--color-brown-soft-2)",
+                    transform: expandedDish === idx ? "rotate(90deg)" : "none",
+                    transition: "transform 0.2s ease",
+                  }}
+                />
+              </button>
+              {expandedDish === idx && (
+                <div style={{ borderTop: "1px solid var(--color-cream-sunken)" }}>
+                  {dish.reviews.map((r, ri) => (
+                    <div
+                      key={ri}
+                      style={{
+                        padding: "14px 20px",
+                        borderTop: ri > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="flex items-center justify-center rounded-full"
+                          style={{
+                            width: 32,
+                            height: 32,
+                            background: "var(--color-cream-sunken)",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: "var(--color-brown-soft)",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {r.initials}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</span>
+                            <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{r.date}</span>
+                          </div>
+                          <StarRow rating={r.rating} size={12} />
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: "8px 0 0 44px" }}>
+                        {r.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
+
+      {/* Bundles tab */}
+      {activeTab === "Bundles" && (
+        <div className="section-stack">
+          {BUNDLE_REVIEWS.map((bundle, idx) => (
+            <div key={idx} className="card" style={{ padding: 0 }}>
+              <button
+                className="flex items-center gap-3 w-full text-left"
+                style={{
+                  padding: "16px 20px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  minHeight: 56,
+                }}
+                onClick={() => setExpandedBundle(expandedBundle === idx ? null : idx)}
+              >
+                <div className="flex-1">
+                  <span style={{ fontWeight: 600, fontSize: 15 }}>{bundle.name}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <span className="tnum" style={{ fontWeight: 600, fontSize: 14 }}>{bundle.rating.toFixed(1)}</span>
+                </div>
+                <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>
+                  {bundle.count} reviews
+                </span>
+                <ChevronRight
+                  size={16}
+                  style={{
+                    color: "var(--color-brown-soft-2)",
+                    transform: expandedBundle === idx ? "rotate(90deg)" : "none",
+                    transition: "transform 0.2s ease",
+                  }}
+                />
+              </button>
+              {expandedBundle === idx && (
+                <div style={{ borderTop: "1px solid var(--color-cream-sunken)" }}>
+                  {bundle.reviews.map((r, ri) => (
+                    <div
+                      key={ri}
+                      style={{
+                        padding: "14px 20px",
+                        borderTop: ri > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="flex items-center justify-center rounded-full"
+                          style={{
+                            width: 32,
+                            height: 32,
+                            background: "var(--color-cream-sunken)",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: "var(--color-brown-soft)",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {r.initials}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</span>
+                            <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>{r.date}</span>
+                          </div>
+                          <StarRow rating={r.rating} size={12} />
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: "8px 0 0 44px" }}>
+                        {r.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -24,6 +24,8 @@ interface ToastContextValue {
   toast: (message: string, undoAction?: () => void) => void;
 }
 
+const MAX_MESSAGE_LENGTH = 40;
+
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 /* ------------------------------------------------------------------ */
@@ -54,15 +56,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const toast = useCallback(
     (message: string, undoAction?: () => void) => {
       const id = nextId.current++;
+      const truncated =
+        message.length > MAX_MESSAGE_LENGTH
+          ? message.slice(0, MAX_MESSAGE_LENGTH - 1) + "\u2026"
+          : message;
+
       setToasts((prev) => {
-        const next = [...prev, { id, message, undoAction }];
+        const next = [...prev, { id, message: truncated, undoAction }];
         // Stack max 3
         if (next.length > 3) return next.slice(next.length - 3);
         return next;
       });
 
-      // Auto-dismiss after 3s
-      setTimeout(() => dismiss(id), 3000);
+      // Auto-dismiss: 6s for toasts with undo, 4s for success
+      const duration = undoAction ? 6000 : 4000;
+      setTimeout(() => dismiss(id), duration);
     },
     [dismiss]
   );
@@ -88,28 +96,26 @@ function ToastContainer({
   if (toasts.length === 0) return null;
 
   return (
-    <div
-      aria-live="polite"
-      style={{
-        position: "fixed",
-        top: 16,
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 9999,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "calc(100% - 32px)",
-        maxWidth: 420,
-        pointerEvents: "none",
-      }}
-    >
+    <>
       <style>{`
+        .toast-anchor {
+          position: fixed;
+          top: 16px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          width: calc(100% - 32px);
+          max-width: 420px;
+          pointer-events: none;
+        }
         @media (min-width: 1024px) {
-          .toast-container-pos {
-            left: auto !important;
-            right: 24px !important;
-            transform: none !important;
+          .toast-anchor {
+            left: auto;
+            right: 24px;
+            transform: none;
           }
         }
         @keyframes toastSlideIn {
@@ -121,27 +127,12 @@ function ToastContainer({
           to   { opacity: 0; transform: translateY(-12px); }
         }
       `}</style>
-      <div
-        className="toast-container-pos"
-        style={{
-          position: "fixed",
-          top: 16,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          width: "calc(100% - 32px)",
-          maxWidth: 420,
-          pointerEvents: "none",
-        }}
-      >
+      <div className="toast-anchor" aria-live="polite">
         {toasts.map((t) => (
           <ToastItem key={t.id} toast={t} onDismiss={onDismiss} />
         ))}
       </div>
-    </div>
+    </>
   );
 }
 

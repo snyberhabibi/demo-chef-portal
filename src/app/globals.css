@@ -164,7 +164,7 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 .textarea { resize: vertical; min-height: 96px; }
 
 /* Toggle */
-.toggle { width: 44px; height: 26px; background: var(--color-brown-soft-2); border-radius: 13px; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; border: none; padding: 0; }
+.toggle { width: 44px; height: 26px; background: #c4b8bf; border-radius: 13px; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; border: none; padding: 0; }
 .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
 .toggle.is-on { background: var(--color-sage); }
 .toggle.is-on .toggle-thumb { transform: translateX(18px); }
@@ -199,3 +199,23 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 .section-stack > * + * { margin-top: 20px; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--color-cream-sunken) 25%, var(--color-cream-deep) 37%, var(--color-cream-sunken) 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 8px;
+}
+
+/* Hover lift for cards */
+.card-hover { transition: transform 150ms ease, box-shadow 150ms ease; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(51,31,46,0.08), 0 2px 6px rgba(51,31,46,0.04); }
+
+/* Toggle off-state fix — warmer color */
+.toggle { background: #c4b8bf; }
+.toggle.is-on { background: var(--color-sage); }

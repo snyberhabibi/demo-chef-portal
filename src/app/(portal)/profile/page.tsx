@@ -3,295 +3,583 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Camera, ExternalLink, ChevronRight, ChevronLeft, Check } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
+  X,
+  Upload,
+  Lightbulb,
+  ExternalLink,
+} from "lucide-react";
 
+/* ------------------------------------------------------------------ */
+/*  Steps                                                              */
+/* ------------------------------------------------------------------ */
 const STEPS = [
-  { label: "Your Kitchen", num: 1 },
-  { label: "Menu Setup", num: 2 },
-  { label: "Pickup Details", num: 3 },
-  { label: "Go Live", num: 4 },
+  { num: 1, label: "Basic Info" },
+  { num: 2, label: "About You" },
+  { num: 3, label: "Cuisines" },
+  { num: 4, label: "Branding" },
+  { num: 5, label: "Operations" },
 ];
 
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const ALL_CUISINES = [
+  "Palestinian", "Lebanese", "Jordanian", "Iraqi", "Syrian", "Egyptian",
+  "Moroccan", "Turkish", "Persian", "Indian", "Mexican", "Italian",
+];
+
+const TIPS: Record<number, string> = {
+  1: "A great business name is memorable and tells customers what to expect.",
+  2: "Share your story! Customers love knowing the person behind the food.",
+  3: "Adding more cuisines helps customers find you when searching.",
+  4: "A professional banner image can increase your store views by 40%.",
+  5: "Setting accurate hours prevents missed orders and unhappy customers.",
+};
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 export default function ProfilePage() {
   const [step, setStep] = useState(1);
-  const [name, setName] = useState("Yalla Kitchen by Amira");
-  const [tagline, setTagline] = useState("Authentic Jordanian home cooking in DFW");
+
+  /* Step 1 */
+  const [businessName, setBusinessName] = useState("Yalla Kitchen");
+  const [yearsExp, setYearsExp] = useState("5");
+
+  /* Step 2 */
   const [bio, setBio] = useState("");
-  const [experience, setExperience] = useState("5+");
-  const [avatarHover, setAvatarHover] = useState(false);
+  const [story, setStory] = useState("");
+  const [inspires, setInspires] = useState("");
+
+  /* Step 3 */
+  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([
+    "Palestinian", "Lebanese", "Jordanian", "Iraqi",
+  ]);
+
+  /* Step 5 */
+  const [timezone, setTimezone] = useState("America/Chicago");
+  const [available, setAvailable] = useState(true);
+  const [autoAccept, setAutoAccept] = useState(true);
+  const [pickup, setPickup] = useState(true);
+  const [scheduleOpen, setScheduleOpen] = useState<number | null>(null);
+  const [schedule] = useState(
+    DAYS.map((day, i) => ({ day, enabled: i < 5, open: "10:00 AM", close: "6:00 PM" }))
+  );
+
+  const removeCuisine = (c: string) =>
+    setSelectedCuisines((prev) => prev.filter((x) => x !== c));
+  const addCuisine = (c: string) => {
+    if (!selectedCuisines.includes(c)) setSelectedCuisines((prev) => [...prev, c]);
+  };
+
+  const goNext = () => setStep(Math.min(step + 1, 5));
+  const goBack = () => setStep(Math.max(step - 1, 1));
+
+  const progressPct = ((step - 1) / (STEPS.length - 1)) * 100;
 
   return (
-    <div className="section-stack" style={{ maxWidth: 560 }}>
-      {/* Progress dots */}
-      <div className="flex items-center justify-center gap-0" style={{ padding: "8px 0" }}>
-        {STEPS.map((s, i) => {
-          const isCurrent = s.num === step;
-          const isDone = s.num < step;
-          const isFuture = s.num > step;
+    <div style={{ maxWidth: 900 }}>
+      {/* Top bar */}
+      <div className="flex items-center justify-between flex-wrap gap-3" style={{ marginBottom: 24 }}>
+        <div className="flex items-center gap-3">
+          <span className="fraunces" style={{ fontSize: 18 }}>{businessName || "Your Kitchen"}</span>
+          <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>Step {step} of 5</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>Discard</button>
+          <button className="btn btn-red btn-sm" style={{ minHeight: 44 }}>Save</button>
+        </div>
+      </div>
 
-          return (
-            <div key={s.num} className="flex items-center">
-              {/* Connector line */}
-              {i > 0 && (
-                <div
-                  style={{
-                    width: 40,
-                    height: 2,
-                    background: isDone || isCurrent ? "var(--color-sage)" : "var(--color-cream-sunken)",
-                    transition: "background 0.2s",
-                  }}
-                />
-              )}
-              {/* Dot */}
-              <div className="flex flex-col items-center" style={{ position: "relative" }}>
+      <div className="flex gap-6" style={{ alignItems: "flex-start" }}>
+        {/* Left sidebar */}
+        <div className="hidden md:block" style={{ width: 220, flexShrink: 0 }}>
+          <div className="card" style={{ padding: 16 }}>
+            {/* Progress bar */}
+            <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", marginBottom: 20 }}>
+              <div
+                style={{
+                  height: "100%",
+                  borderRadius: 2,
+                  background: "var(--color-sage)",
+                  width: `${progressPct}%`,
+                  transition: "width 0.3s ease",
+                }}
+              />
+            </div>
+
+            {STEPS.map((s, i) => {
+              const isCurrent = s.num === step;
+              const isDone = s.num < step;
+              return (
                 <button
-                  onClick={() => setStep(s.num)}
+                  key={s.num}
+                  className="flex items-center gap-3 w-full text-left"
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: isDone
-                      ? "var(--color-sage)"
-                      : isCurrent
-                      ? "var(--color-red)"
-                      : "var(--color-cream-sunken)",
-                    color: isDone || isCurrent ? "#fff" : "var(--color-brown-soft-2)",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    transition: "all 0.2s",
+                    padding: "10px 8px",
+                    background: isCurrent ? "var(--color-cream-sunken)" : "none",
                     border: "none",
+                    borderRadius: 8,
                     cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: 44,
                     minHeight: 44,
+                    transition: "background 0.15s ease",
+                    marginTop: i > 0 ? 2 : 0,
                   }}
+                  onClick={() => setStep(s.num)}
                 >
-                  {isDone ? <Check size={16} /> : s.num}
+                  <div
+                    className="flex items-center justify-center tnum"
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: isDone
+                        ? "var(--color-sage)"
+                        : isCurrent
+                        ? "var(--color-red)"
+                        : "var(--color-cream-sunken)",
+                      color: isDone || isCurrent ? "#fff" : "var(--color-brown-soft-2)",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      flexShrink: 0,
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {s.num}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: isCurrent ? 600 : 400,
+                      color: isCurrent ? "var(--color-brown)" : "var(--color-brown-soft)",
+                    }}
+                  >
+                    {s.label}
+                  </span>
                 </button>
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 38,
-                    fontSize: 11,
-                    fontWeight: isCurrent ? 600 : 500,
-                    color: isFuture ? "var(--color-brown-soft-2)" : "var(--color-brown)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {s.label}
+              );
+            })}
+
+            {/* Tip box */}
+            <div
+              style={{
+                marginTop: 16,
+                padding: 14,
+                borderRadius: 10,
+                background: "var(--color-cream-deep)",
+              }}
+            >
+              <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
+                <Lightbulb size={14} style={{ color: "var(--color-orange)" }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft)" }}>Tip</span>
+              </div>
+              <p style={{ fontSize: 12, lineHeight: 1.5, color: "var(--color-brown-soft)", margin: 0 }}>
+                {TIPS[step]}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Step 1: Basic Info */}
+          {step === 1 && (
+            <div className="card section-stack">
+              <div>
+                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Basic Info</h2>
+                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
+                  The essentials about your kitchen
+                </p>
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
+                  Business Name *
+                </label>
+                <input
+                  className="input"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  placeholder="Your kitchen name"
+                  style={{ minHeight: 44 }}
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
+                  Years of Experience
+                </label>
+                <input
+                  className="input"
+                  type="number"
+                  value={yearsExp}
+                  onChange={(e) => setYearsExp(e.target.value)}
+                  min={0}
+                  max={50}
+                  style={{ minHeight: 44, maxWidth: 120 }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: About You */}
+          {step === 2 && (
+            <div className="card section-stack">
+              <div>
+                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>About You</h2>
+                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
+                  Help customers connect with you
+                </p>
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>Bio</label>
+                <textarea
+                  className="textarea"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="A short bio for your profile (2-3 sentences)"
+                  rows={3}
+                  style={{ minHeight: 96 }}
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>Your Story</label>
+                <textarea
+                  className="textarea"
+                  value={story}
+                  onChange={(e) => setStory(e.target.value)}
+                  placeholder="How did you start cooking? What's your journey?"
+                  rows={4}
+                  style={{ minHeight: 120 }}
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>What Inspires You</label>
+                <textarea
+                  className="textarea"
+                  value={inspires}
+                  onChange={(e) => setInspires(e.target.value)}
+                  placeholder="What inspires your cooking? Family recipes, regional traditions, fusion experiments?"
+                  rows={3}
+                  style={{ minHeight: 96 }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Cuisines */}
+          {step === 3 && (
+            <div className="card section-stack">
+              <div>
+                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Cuisines</h2>
+                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
+                  Select the cuisines you specialize in
+                </p>
+              </div>
+
+              {/* Selected tags */}
+              <div className="flex flex-wrap gap-2">
+                {selectedCuisines.map((c) => (
+                  <span
+                    key={c}
+                    className="pill pill-sage flex items-center gap-1"
+                    style={{ padding: "6px 10px", fontSize: 13 }}
+                  >
+                    {c}
+                    <button
+                      onClick={() => removeCuisine(c)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                        color: "var(--color-sage-deep)",
+                        display: "flex",
+                        alignItems: "center",
+                        minWidth: 20,
+                        minHeight: 20,
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              {/* Available cuisines */}
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 8 }}>
+                  Add more cuisines
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {ALL_CUISINES.filter((c) => !selectedCuisines.includes(c)).map((c) => (
+                    <button
+                      key={c}
+                      className="pill"
+                      style={{
+                        cursor: "pointer",
+                        border: "1px dashed var(--color-brown-soft-2)",
+                        background: "transparent",
+                        minHeight: 36,
+                        transition: "all 0.15s ease",
+                      }}
+                      onClick={() => addCuisine(c)}
+                    >
+                      + {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Branding */}
+          {step === 4 && (
+            <div className="card section-stack">
+              <div>
+                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Branding</h2>
+                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
+                  Upload a banner image for your store page
+                </p>
+              </div>
+
+              <div
+                className="flex flex-col items-center justify-center"
+                style={{
+                  height: 200,
+                  borderRadius: 12,
+                  border: "2px dashed var(--color-brown-soft-2)",
+                  background: "var(--color-cream-deep)",
+                  cursor: "pointer",
+                  transition: "border-color 0.15s ease",
+                }}
+              >
+                <Upload size={32} style={{ color: "var(--color-brown-soft-2)", marginBottom: 12 }} />
+                <span style={{ fontWeight: 600, fontSize: 15, color: "var(--color-brown)" }}>
+                  Upload banner image
+                </span>
+                <span style={{ fontSize: 13, color: "var(--color-brown-soft)", marginTop: 4 }}>
+                  Recommended: 1920 x 600px
+                </span>
+                <span style={{ fontSize: 12, color: "var(--color-brown-soft-2)", marginTop: 2 }}>
+                  PNG, JPG up to 5MB
                 </span>
               </div>
             </div>
-          );
-        })}
-      </div>
+          )}
 
-      {/* Spacer for labels */}
-      <div style={{ height: 16 }} />
-
-      {/* Step 1: Your Kitchen */}
-      {step === 1 && (
-        <div className="card section-stack" style={{ transition: "box-shadow 0.2s ease" }}>
-          <div>
-            <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Your Kitchen</h2>
-            <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
-              Tell customers about your kitchen and cooking style
-            </p>
-          </div>
-
-          {/* Avatar upload */}
-          <div className="flex justify-center">
-            <div
-              style={{ position: "relative", cursor: "pointer" }}
-              onMouseEnter={() => setAvatarHover(true)}
-              onMouseLeave={() => setAvatarHover(false)}
-            >
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: "50%",
-                  background: avatarHover ? "var(--color-cream-deep)" : "var(--color-cream-sunken)",
-                  border: `3px dashed ${avatarHover ? "var(--color-red)" : "var(--color-brown-soft-2)"}`,
-                  transition: "all 0.2s ease",
-                }}
-              >
-                <Camera size={28} style={{ color: avatarHover ? "var(--color-red)" : "var(--color-brown-soft-2)", transition: "color 0.2s ease" }} />
+          {/* Step 5: Operations */}
+          {step === 5 && (
+            <div className="card section-stack">
+              <div>
+                <h2 className="fraunces" style={{ fontSize: 22, margin: 0 }}>Operations</h2>
+                <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
+                  Set your availability and preferences
+                </p>
               </div>
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: "var(--color-red)",
-                  color: "#fff",
-                  cursor: "pointer",
-                  transition: "transform 0.15s ease",
-                  transform: avatarHover ? "scale(1.1)" : "scale(1)",
-                }}
-              >
-                <Camera size={14} />
+
+              {/* Timezone */}
+              <div>
+                <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
+                  Timezone
+                </label>
+                <select
+                  className="select"
+                  value={timezone}
+                  onChange={(e) => setTimezone(e.target.value)}
+                  style={{ minHeight: 44 }}
+                >
+                  <option value="America/Chicago">Central Time (CT)</option>
+                  <option value="America/New_York">Eastern Time (ET)</option>
+                  <option value="America/Denver">Mountain Time (MT)</option>
+                  <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                </select>
+              </div>
+
+              {/* Toggles */}
+              <div className="flex items-center justify-between" style={{ padding: "8px 0" }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 15 }}>Available for orders</div>
+                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                    Show your store as open to customers
+                  </div>
+                </div>
+                <button
+                  className={`toggle ${available ? "is-on" : ""}`}
+                  onClick={() => setAvailable(!available)}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                >
+                  <span className="toggle-thumb" />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between" style={{ padding: "8px 0", borderTop: "1px solid var(--color-cream-sunken)" }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 15 }}>Auto-accept orders</div>
+                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                    Automatically confirm incoming orders
+                  </div>
+                </div>
+                <button
+                  className={`toggle ${autoAccept ? "is-on" : ""}`}
+                  onClick={() => setAutoAccept(!autoAccept)}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                >
+                  <span className="toggle-thumb" />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between" style={{ padding: "8px 0", borderTop: "1px solid var(--color-cream-sunken)" }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 15 }}>Pickup enabled</div>
+                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                    Allow customers to pick up orders
+                  </div>
+                </div>
+                <button
+                  className={`toggle ${pickup ? "is-on" : ""}`}
+                  onClick={() => setPickup(!pickup)}
+                  style={{ minWidth: 44, minHeight: 44 }}
+                >
+                  <span className="toggle-thumb" />
+                </button>
+              </div>
+
+              {/* Weekly schedule */}
+              <div style={{ borderTop: "1px solid var(--color-cream-sunken)", paddingTop: 16 }}>
+                <div className="eyebrow" style={{ marginBottom: 12 }}>Weekly Schedule</div>
+                {schedule.map((row, i) => (
+                  <div key={row.day}>
+                    <button
+                      className="flex items-center gap-3 w-full text-left"
+                      style={{
+                        padding: "10px 0",
+                        background: "none",
+                        border: "none",
+                        borderTop: i > 0 ? "1px solid var(--color-cream-sunken)" : undefined,
+                        cursor: "pointer",
+                        minHeight: 44,
+                      }}
+                      onClick={() => setScheduleOpen(scheduleOpen === i ? null : i)}
+                    >
+                      <span
+                        style={{
+                          flex: 1,
+                          fontWeight: 500,
+                          color: row.enabled ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+                        }}
+                      >
+                        {row.day}
+                      </span>
+                      {row.enabled ? (
+                        <span className="tnum" style={{ fontSize: 13, color: "var(--color-brown-soft)" }}>
+                          {row.open} &ndash; {row.close}
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: 13, color: "var(--color-brown-soft-2)" }}>Closed</span>
+                      )}
+                      {scheduleOpen === i ? (
+                        <ChevronUp size={16} style={{ color: "var(--color-brown-soft-2)" }} />
+                      ) : (
+                        <ChevronDown size={16} style={{ color: "var(--color-brown-soft-2)" }} />
+                      )}
+                    </button>
+                    {scheduleOpen === i && row.enabled && (
+                      <div className="flex items-center gap-3" style={{ padding: "0 0 12px 16px" }}>
+                        <div>
+                          <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>Open</label>
+                          <select className="select" defaultValue={row.open} style={{ width: 130, minHeight: 44 }}>
+                            {["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM"].map((t) => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <span style={{ marginTop: 20, color: "var(--color-brown-soft-2)" }}>&ndash;</span>
+                        <div>
+                          <label style={{ fontSize: 12, color: "var(--color-brown-soft)", display: "block", marginBottom: 4 }}>Close</label>
+                          <select className="select" defaultValue={row.close} style={{ width: 130, minHeight: 44 }}>
+                            {["4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"].map((t) => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Business name */}
-          <div>
-            <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-              Kitchen Name
-            </label>
-            <input
-              className="input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your kitchen name"
-              style={{ minHeight: 44, transition: "border-color 0.15s ease" }}
-            />
-          </div>
+          {/* Bottom navigation */}
+          <div className="flex items-center justify-between" style={{ marginTop: 20 }}>
+            <button
+              className="btn btn-ghost"
+              disabled={step <= 1}
+              onClick={goBack}
+              style={{ opacity: step <= 1 ? 0.4 : 1, minHeight: 44 }}
+            >
+              <ChevronLeft size={16} />
+              Back
+            </button>
 
-          {/* Tagline */}
-          <div>
-            <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-              Tagline
-            </label>
-            <input
-              className="input"
-              value={tagline}
-              onChange={(e) => setTagline(e.target.value.slice(0, 80))}
-              placeholder="A short description that appears on your store"
-              style={{ minHeight: 44, transition: "border-color 0.15s ease" }}
-            />
-            <div style={{ fontSize: 12, color: "var(--color-brown-soft-2)", marginTop: 4 }}>
-              {tagline.length}/80 characters
+            {/* Dots */}
+            <div className="flex items-center gap-2">
+              {STEPS.map((s) => (
+                <button
+                  key={s.num}
+                  onClick={() => setStep(s.num)}
+                  style={{
+                    width: s.num === step ? 20 : 8,
+                    height: 8,
+                    borderRadius: 4,
+                    background: s.num === step ? "var(--color-red)" : s.num < step ? "var(--color-sage)" : "var(--color-cream-sunken)",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    minWidth: 8,
+                    minHeight: 8,
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/store-preview"
+                className="flex items-center gap-1"
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--color-red)",
+                  textDecoration: "none",
+                  minHeight: 44,
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                <ExternalLink size={13} />
+                Preview My Store
+              </Link>
+              <button
+                className="btn btn-red"
+                onClick={goNext}
+                disabled={step >= 5}
+                style={{ minHeight: 44, opacity: step >= 5 ? 0.5 : 1 }}
+              >
+                Continue
+                <ChevronRight size={16} />
+              </button>
             </div>
           </div>
-
-          {/* Bio */}
-          <div>
-            <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-              Bio
-            </label>
-            <textarea
-              className="textarea"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell your story. What inspires your cooking? What makes your kitchen special?"
-              rows={4}
-              style={{ minHeight: 100, transition: "border-color 0.15s ease" }}
-            />
-          </div>
-
-          {/* Experience */}
-          <div>
-            <label className="eyebrow" style={{ display: "block", marginBottom: 6 }}>
-              Cooking Experience
-            </label>
-            <select
-              className="select"
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
-              style={{ minHeight: 44 }}
-            >
-              <option value="1">Less than 1 year</option>
-              <option value="1-3">1-3 years</option>
-              <option value="3-5">3-5 years</option>
-              <option value="5+">5+ years</option>
-              <option value="pro">Professional / Trained chef</option>
-            </select>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Menu Setup */}
-      {step === 2 && (
-        <div className="card section-stack" style={{ transition: "box-shadow 0.2s ease", textAlign: "center", padding: 32 }}>
-          <div className="fraunces" style={{ fontSize: 22 }}>Menu Setup</div>
-          <p style={{ fontSize: 14, color: "var(--color-brown-soft)" }}>
-            Add your dishes, set prices, and upload photos. You can manage your full menu from the menu page.
-          </p>
-          <Link href="/menu" className="btn btn-red" style={{ minHeight: 44 }}>
-            Go to Menu
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-      )}
-
-      {/* Step 3: Pickup Details */}
-      {step === 3 && (
-        <div className="card section-stack" style={{ transition: "box-shadow 0.2s ease", textAlign: "center", padding: 32 }}>
-          <div className="fraunces" style={{ fontSize: 22 }}>Pickup Details</div>
-          <p style={{ fontSize: 14, color: "var(--color-brown-soft)" }}>
-            Set your pickup address, instructions, and schedule so customers know where and when to pick up.
-          </p>
-          <Link href="/pickup-address" className="btn btn-red" style={{ minHeight: 44 }}>
-            Set Pickup Address
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-      )}
-
-      {/* Step 4: Go Live */}
-      {step === 4 && (
-        <div className="card section-stack" style={{ transition: "box-shadow 0.2s ease", textAlign: "center", padding: 32 }}>
-          <div className="fraunces" style={{ fontSize: 22 }}>Go Live</div>
-          <p style={{ fontSize: 14, color: "var(--color-brown-soft)" }}>
-            Your profile is ready. Head to Operations to toggle your store online and start receiving orders.
-          </p>
-          <Link href="/operations" className="btn btn-red" style={{ minHeight: 44 }}>
-            Go to Operations
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-      )}
-
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
-        <button
-          className="btn btn-ghost"
-          disabled={step <= 1}
-          onClick={() => setStep(step - 1)}
-          style={{ opacity: step <= 1 ? 0.4 : 1, minHeight: 44, transition: "all 0.15s ease" }}
-        >
-          <ChevronLeft size={16} />
-          Back
-        </button>
-
-        <Link
-          href="/menu"
-          className="flex items-center gap-1"
-          style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: "var(--color-red)",
-            textDecoration: "none",
-            minHeight: 44,
-            display: "inline-flex",
-            alignItems: "center",
-            transition: "opacity 0.15s ease",
-          }}
-        >
-          <ExternalLink size={13} />
-          Preview My Store
-        </Link>
-
-        <div className="flex gap-2">
-          <button className="btn btn-ghost" style={{ minHeight: 44, transition: "all 0.15s ease" }}>Save</button>
-          <button
-            className="btn btn-red"
-            onClick={() => setStep(Math.min(step + 1, 4))}
-            disabled={step >= 4}
-            style={{ minHeight: 44, opacity: step >= 4 ? 0.5 : 1, transition: "all 0.15s ease" }}
-          >
-            Next
-            <ChevronRight size={16} />
-          </button>
         </div>
       </div>
     </div>

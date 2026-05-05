@@ -15,7 +15,7 @@ const NOTIF_CATEGORIES = [
 const CHANNELS = ["Email", "Push", "SMS"];
 
 export default function SettingsPage() {
-  const [phone, setPhone] = useState("(214) 555-0198");
+  const [phone, setPhone] = useState("(469) 277-0767");
   const [phoneEditing, setPhoneEditing] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -38,7 +38,7 @@ export default function SettingsPage() {
   return (
     <div className="section-stack" style={{ maxWidth: 560 }}>
       {/* Avatar + Name + Email + Phone */}
-      <div className="card section-stack" style={{ transition: "box-shadow 0.2s ease" }}>
+      <div className="card section-stack">
         {/* Avatar */}
         <div className="flex items-center gap-4">
           <img
@@ -48,7 +48,7 @@ export default function SettingsPage() {
             style={{ width: 80, height: 80 }}
           />
           <div>
-            <button className="btn btn-ghost btn-sm" style={{ minHeight: 44, transition: "all 0.15s ease" }}>
+            <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>
               Change photo
             </button>
           </div>
@@ -62,7 +62,7 @@ export default function SettingsPage() {
           <input
             className="input"
             defaultValue="Amira Haddad"
-            style={{ minHeight: 44, transition: "border-color 0.15s ease" }}
+            style={{ minHeight: 44 }}
           />
         </div>
 
@@ -95,13 +95,12 @@ export default function SettingsPage() {
               readOnly={!phoneEditing}
               style={{
                 minHeight: 44,
-                transition: "border-color 0.15s ease",
                 background: phoneEditing ? "white" : "var(--color-cream-sunken)",
               }}
             />
             <button
               className="btn btn-ghost btn-sm"
-              style={{ flexShrink: 0, minHeight: 44, transition: "all 0.15s ease" }}
+              style={{ flexShrink: 0, minHeight: 44 }}
               onClick={() => setPhoneEditing(!phoneEditing)}
             >
               {phoneEditing ? (
@@ -118,7 +117,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Notifications */}
-      <div className="card" style={{ padding: 0, transition: "box-shadow 0.2s ease" }}>
+      <div className="card" style={{ padding: 0 }}>
         <div style={{ padding: "16px 20px" }}>
           <div style={{ fontWeight: 600, fontSize: 16 }}>Notifications</div>
           <p style={{ fontSize: 13, color: "var(--color-brown-soft)", margin: "4px 0 0" }}>
@@ -185,7 +184,6 @@ export default function SettingsPage() {
           border: "none",
           cursor: "pointer",
           minHeight: 44,
-          transition: "box-shadow 0.2s ease",
         }}
         onClick={() => setShowInvite(!showInvite)}
       >
@@ -218,7 +216,7 @@ export default function SettingsPage() {
         />
       </button>
       {showInvite && (
-        <div className="card" style={{ background: "var(--color-cream-deep)", transition: "all 0.2s ease" }}>
+        <div className="card" style={{ background: "var(--color-cream-deep)" }}>
           <p style={{ fontSize: 14, color: "var(--color-brown-soft)", margin: "0 0 12px" }}>
             Co-pilot invitations coming soon. You will be able to share store access with a trusted partner.
           </p>
@@ -229,7 +227,7 @@ export default function SettingsPage() {
       )}
 
       {/* Security */}
-      <div className="card section-stack" style={{ gap: 0, transition: "box-shadow 0.2s ease" }}>
+      <div className="card section-stack" style={{ gap: 0 }}>
         <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12 }}>Security</div>
 
         <button
@@ -241,7 +239,6 @@ export default function SettingsPage() {
             borderTop: "1px solid var(--color-cream-sunken)",
             cursor: "pointer",
             minHeight: 48,
-            transition: "opacity 0.15s ease",
           }}
           onClick={() => setPasswordOpen(!passwordOpen)}
         >
@@ -283,7 +280,7 @@ export default function SettingsPage() {
                 style={{ minHeight: 44 }}
               />
             </div>
-            <button className="btn btn-red btn-sm" style={{ minHeight: 44, transition: "all 0.15s ease" }}>
+            <button className="btn btn-red btn-sm" style={{ minHeight: 44 }}>
               Update Password
             </button>
           </div>
@@ -303,7 +300,7 @@ export default function SettingsPage() {
               <div style={{ fontSize: 12, color: "var(--color-brown-soft-2)" }}>Not enabled</div>
             </div>
           </div>
-          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44, transition: "all 0.15s ease" }}>
+          <button className="btn btn-ghost btn-sm" style={{ minHeight: 44 }}>
             Set up
           </button>
         </div>
@@ -327,7 +324,6 @@ export default function SettingsPage() {
               padding: "8px 0",
               textDecoration: "none",
               minHeight: 44,
-              transition: "color 0.15s ease",
             }}
           >
             <LogOut size={16} />
@@ -344,7 +340,6 @@ export default function SettingsPage() {
               padding: "8px 0",
               cursor: "pointer",
               minHeight: 44,
-              transition: "opacity 0.15s ease",
             }}
             onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
           >
@@ -357,7 +352,6 @@ export default function SettingsPage() {
                 background: "var(--color-red-soft)",
                 borderRadius: 10,
                 padding: 16,
-                transition: "all 0.2s ease",
               }}
             >
               <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
@@ -372,7 +366,7 @@ export default function SettingsPage() {
               <div className="flex gap-2">
                 <button
                   className="btn btn-ghost btn-sm"
-                  style={{ minHeight: 44, transition: "all 0.15s ease" }}
+                  style={{ minHeight: 44 }}
                   onClick={() => setShowDeleteConfirm(false)}
                 >
                   Cancel
@@ -386,7 +380,6 @@ export default function SettingsPage() {
                     border: "none",
                     opacity: 0.5,
                     cursor: "not-allowed",
-                    transition: "all 0.15s ease",
                   }}
                   disabled
                 >
