@@ -1156,13 +1156,39 @@ export default function CreateDishPage() {
                     </div>
                   )}
 
+                  {/* Column headers */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: group.selectionType === "quantity"
+                        ? "20px 1fr 100px 70px 32px"
+                        : "20px 1fr 100px 32px",
+                      gap: 8,
+                      padding: "0 8px",
+                      marginBottom: 6,
+                    }}
+                  >
+                    <div />
+                    <span className="caption" style={{ fontWeight: 600 }}>Option Name</span>
+                    <span className="caption" style={{ fontWeight: 600 }}>Price Adj.</span>
+                    {group.selectionType === "quantity" && (
+                      <span className="caption" style={{ fontWeight: 600 }}>Max Qty</span>
+                    )}
+                    <div />
+                  </div>
+
                   {/* Modifier options list */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                     {group.modifiers.map((mod) => (
                       <div
                         key={mod.id}
-                        className="flex items-center gap-2"
                         style={{
+                          display: "grid",
+                          gridTemplateColumns: group.selectionType === "quantity"
+                            ? "20px 1fr 100px 70px 32px"
+                            : "20px 1fr 100px 32px",
+                          gap: 8,
+                          alignItems: "center",
                           padding: "6px 8px",
                           borderRadius: 10,
                           background: "var(--color-cream-deep)",
@@ -1171,15 +1197,15 @@ export default function CreateDishPage() {
                         <GripVertical
                           size={14}
                           strokeWidth={1.8}
-                          style={{ color: "var(--color-brown-soft-2)", flexShrink: 0, cursor: "grab" }}
+                          style={{ color: "var(--color-brown-soft-2)", cursor: "grab" }}
                         />
                         <input
                           type="text"
                           className="input"
-                          placeholder="e.g., Mild, Medium, Hot"
+                          placeholder="e.g., Mild"
                           value={mod.name}
                           onChange={(e) => updateModifier(group.id, mod.id, "name", e.target.value)}
-                          style={{ flex: 1, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                          style={{ fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
                         />
                         <input
                           type="text"
@@ -1187,16 +1213,16 @@ export default function CreateDishPage() {
                           placeholder="+$0.00"
                           value={mod.priceAdjustment}
                           onChange={(e) => updateModifier(group.id, mod.id, "priceAdjustment", e.target.value)}
-                          style={{ width: 100, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                          style={{ fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
                         />
                         {group.selectionType === "quantity" && (
                           <input
-                            type="text"
+                            type="number"
                             className="input tnum"
-                            placeholder="Max"
+                            placeholder="—"
                             value={mod.maxQuantity}
                             onChange={(e) => updateModifier(group.id, mod.id, "maxQuantity", e.target.value)}
-                            style={{ width: 60, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                            style={{ fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
                           />
                         )}
                         <button
@@ -1212,7 +1238,6 @@ export default function CreateDishPage() {
                             background: "transparent",
                             border: "none",
                             cursor: "pointer",
-                            flexShrink: 0,
                           }}
                         >
                           <X size={14} strokeWidth={2} />
