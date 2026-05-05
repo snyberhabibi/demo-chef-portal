@@ -411,9 +411,8 @@ export default function CreateDishPage() {
                 <div>
                   <label className="field-label">Category *</label>
                   <div
+                    className="grid grid-cols-2 sm:grid-cols-3"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(3, 1fr)",
                       gap: 8,
                     }}
                   >
@@ -423,12 +422,12 @@ export default function CreateDishPage() {
                         <button
                           key={cat.label}
                           onClick={() => setSelectedCategory(cat.label)}
+                          className="h-[52px] sm:h-[64px]"
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "center",
-                            height: 64,
                             borderRadius: 12,
                             border: `1.5px solid ${isSelected ? "var(--color-orange)" : "rgba(51,31,46,0.1)"}`,
                             background: isSelected ? "rgba(252,157,53,0.05)" : "#fff",

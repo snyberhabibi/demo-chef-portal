@@ -8,15 +8,9 @@ import {
   Receipt,
   Star,
   UtensilsCrossed,
-  Package,
-  LayoutList,
-  MapPin,
-  ShoppingBag,
-  BookOpen,
-  BookMarked,
+  Wallet,
   Settings,
   User,
-  CreditCard,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -31,7 +25,6 @@ interface NavItem {
   label: string;
   icon: LucideIcon;
   badge?: string;
-  newBadge?: boolean;
 }
 
 interface NavGroup {
@@ -41,45 +34,28 @@ interface NavGroup {
 
 const navGroups: NavGroup[] = [
   {
-    label: "Overview",
+    label: "Main",
     items: [
       { href: "/dashboard", label: "Dashboard", icon: Home },
       { href: "/orders", label: "Orders", icon: Receipt, badge: "2" },
+      { href: "/menu", label: "Menu", icon: UtensilsCrossed },
       { href: "/reviews", label: "Reviews", icon: Star },
     ],
   },
   {
-    label: "Menu Management",
+    label: "Business",
     items: [
-      { href: "/menu", label: "Dishes", icon: UtensilsCrossed },
-      { href: "/bundles", label: "Bundles", icon: Package, newBadge: true },
-      { href: "/sections", label: "Custom Menu Sections", icon: LayoutList },
-    ],
-  },
-  {
-    label: "Operations",
-    items: [
-      { href: "/pickup-address", label: "Address Management", icon: MapPin },
-      { href: "/packaging", label: "Buy Packaging", icon: ShoppingBag, newBadge: true },
-    ],
-  },
-  {
-    label: "Help & Guides",
-    items: [
-      { href: "/tutorials", label: "Tutorials", icon: BookOpen, newBadge: true },
-      { href: "/portal-guide", label: "Portal Guide", icon: BookMarked },
+      { href: "/payments", label: "Earnings", icon: Wallet },
     ],
   },
   {
     label: "Account",
     items: [
-      { href: "/settings", label: "Account Settings", icon: Settings },
       { href: "/profile", label: "Profile", icon: User },
-      { href: "/payments", label: "Payment Methods", icon: CreditCard },
+      { href: "/settings", label: "Settings", icon: Settings },
     ],
   },
 ];
-
 export function Sidebar({ activePath }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -125,7 +101,6 @@ export function Sidebar({ activePath }: SidebarProps) {
       >
         {navGroups.map((group, groupIdx) => (
           <div key={group.label}>
-            {/* Group label */}
             {!collapsed && (
               <div
                 className="eyebrow"
@@ -138,7 +113,6 @@ export function Sidebar({ activePath }: SidebarProps) {
                 {group.label}
               </div>
             )}
-            {/* Items */}
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {group.items.map((item) => {
                 const isActive = activePath === item.href;
@@ -196,9 +170,6 @@ export function Sidebar({ activePath }: SidebarProps) {
                         {item.badge && (
                           <span className="badge-count">{item.badge}</span>
                         )}
-                        {item.newBadge && (
-                          <span className="badge-new">New</span>
-                        )}
                       </>
                     )}
                   </Link>
@@ -221,7 +192,6 @@ export function Sidebar({ activePath }: SidebarProps) {
               gap: 10,
             }}
           >
-            {/* Avatar with green dot */}
             <div className="relative flex-shrink-0">
               <img
                 src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"

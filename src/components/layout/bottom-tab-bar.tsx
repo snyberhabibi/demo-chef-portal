@@ -5,8 +5,8 @@ import {
   Home,
   Receipt,
   UtensilsCrossed,
+  Wallet,
   User,
-  MoreHorizontal,
 } from "lucide-react";
 
 interface BottomTabBarProps {
@@ -18,11 +18,11 @@ const tabs = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/orders", label: "Orders", icon: Receipt, badge: 2 },
   { href: "/menu", label: "Menu", icon: UtensilsCrossed },
+  { href: "/payments", label: "Earnings", icon: Wallet },
   { href: "/profile", label: "Profile", icon: User },
-  { href: "/settings", label: "More", icon: MoreHorizontal },
 ];
 
-export function BottomTabBar({ activePath, onMore }: BottomTabBarProps) {
+export function BottomTabBar({ activePath }: BottomTabBarProps) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around glass"
@@ -33,45 +33,11 @@ export function BottomTabBar({ activePath, onMore }: BottomTabBarProps) {
       }}
     >
       {tabs.map((tab) => {
-        const isMore = tab.label === "More";
-        const isActive = isMore
-          ? false
-          : tab.href === "/dashboard"
+        const isActive =
+          tab.href === "/dashboard"
             ? activePath === "/dashboard" || activePath === "/"
             : activePath.startsWith(tab.href);
         const Icon = tab.icon;
-
-        if (isMore) {
-          return (
-            <button
-              key={tab.href}
-              onClick={() => onMore?.()}
-              className="flex flex-col items-center justify-center relative"
-              style={{
-                flex: 1,
-                minHeight: 44,
-                gap: 2,
-                color: "var(--color-brown-soft-2)",
-                transition: "color var(--t-fast) var(--ease-spring)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              <span className="relative">
-                <Icon size={20} strokeWidth={1.5} />
-              </span>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                }}
-              >
-                {tab.label}
-              </span>
-            </button>
-          );
-        }
 
         return (
           <Link

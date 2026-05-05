@@ -243,9 +243,9 @@ export default function ReviewsPage() {
           {TABS.map((t) => (
             <button
               key={t}
-              className="body"
+              className="body text-[12px] sm:text-[13px]"
               style={{
-                padding: "10px 20px",
+                padding: "10px 14px",
                 background: "none",
                 border: "none",
                 fontWeight: activeTab === t ? 600 : 400,
@@ -321,9 +321,9 @@ export default function ReviewsPage() {
       {activeTab === "Chef Profile" && (
         <>
           {/* Rating summary card */}
-          <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces" style={{ fontSize: 48, lineHeight: 1 }}>
+              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1 }}>
                 5.0
               </div>
               <div style={{ marginTop: 8 }}>
@@ -362,7 +362,7 @@ export default function ReviewsPage() {
             {sortedReviews.map((review, idx) => (
               <div key={review.id}>
                 {idx > 0 && <div className="divider" />}
-                <div style={{ padding: 24 }}>
+                <div className="p-3.5 sm:p-6">
                   {/* Header row */}
                   <div className="flex items-start gap-3">
                     <div
@@ -391,7 +391,7 @@ export default function ReviewsPage() {
                   </div>
 
                   {/* Body text */}
-                  <p className="body-sm" style={{ margin: "12px 0 0" }}>{review.text}</p>
+                  <p className="body-sm text-[13px] sm:text-[14px]" style={{ margin: "12px 0 0" }}>{review.text}</p>
 
                   {/* Posted reply */}
                   {review.reply && (
@@ -417,11 +417,11 @@ export default function ReviewsPage() {
                     <div style={{ marginTop: 16 }}>
                       <div style={{ position: "relative" }}>
                         <textarea
-                          className="textarea"
+                          className="textarea review-composer-textarea"
                           value={review.composerText}
                           onChange={(e) => updateComposerText(review.id, e.target.value)}
                           placeholder="Write a reply..."
-                          style={{ minHeight: 80, fontSize: 14, transition: `border-color var(--t-fast)` }}
+                          style={{ minHeight: 64, fontSize: 14, transition: `border-color var(--t-fast)` }}
                         />
                         <span
                           className="tnum caption"

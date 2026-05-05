@@ -195,6 +195,7 @@ export default function OrderDetailPage() {
             return (
               <div
                 key={step.label}
+                className="gap-1 sm:gap-2"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -211,13 +212,12 @@ export default function OrderDetailPage() {
                 >
                   {/* Circle */}
                   <div
+                    className="w-[22px] h-[22px] sm:w-[28px] sm:h-[28px]"
                     style={{
                       position: "relative",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      width: 28,
-                      height: 28,
                       borderRadius: "50%",
                       background: isDone
                         ? "var(--color-sage)"
@@ -247,7 +247,7 @@ export default function OrderDetailPage() {
                   </div>
                   {/* Label */}
                   <span
-                    className="caption"
+                    className="caption text-[10px] sm:text-[12px]"
                     style={{
                       fontWeight: isCurrent ? 700 : 500,
                       color:
@@ -255,7 +255,6 @@ export default function OrderDetailPage() {
                           ? "var(--color-brown)"
                           : "var(--color-brown-soft-2)",
                       whiteSpace: "nowrap",
-                      fontSize: 12,
                     }}
                   >
                     {step.label}
@@ -288,10 +287,11 @@ export default function OrderDetailPage() {
         >
           <div className="eyebrow">READY BY</div>
           <div
-            className="heading-md"
+            className="heading-md fraunces"
             style={{
               marginTop: 4,
               color: "var(--color-brown)",
+              fontSize: "clamp(20px, 5vw, 28px)",
             }}
           >
             Today 6:30 PM
@@ -345,9 +345,8 @@ export default function OrderDetailPage() {
                     <img
                       src={item.image}
                       alt={item.name}
+                      className="w-9 h-9 sm:w-10 sm:h-10"
                       style={{
-                        width: 40,
-                        height: 40,
                         borderRadius: 8,
                         objectFit: "cover",
                         flexShrink: 0,
@@ -481,16 +480,11 @@ export default function OrderDetailPage() {
                     Sarah Khan
                   </span>
                   <span style={{ flex: 1 }} />
-                  <div style={{ display: "flex", gap: 4 }}>
+                  <div className="flex gap-1 sm:gap-2 shrink-0">
                     <a
                       href="tel:+14695550142"
+                      className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-lg"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 32,
-                        height: 32,
-                        borderRadius: 8,
                         background: "rgba(51,31,46,0.04)",
                         color: "var(--color-brown-soft)",
                         transition: "background var(--t-fast)",
@@ -501,13 +495,8 @@ export default function OrderDetailPage() {
                     </a>
                     <a
                       href="mailto:sarah.khan@email.com"
+                      className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-lg"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 32,
-                        height: 32,
-                        borderRadius: 8,
                         background: "rgba(51,31,46,0.04)",
                         color: "var(--color-brown-soft)",
                         transition: "background var(--t-fast)",
@@ -582,7 +571,7 @@ export default function OrderDetailPage() {
                     { label: "Platform fee", amount: "$4.60" },
                     { label: "Delivery", amount: "$4.99" },
                   ].map((row) => (
-                    <div key={row.label} className="receipt-row tnum">
+                    <div key={row.label} className="receipt-row tnum text-[12px] sm:text-[13px]">
                       <span className="receipt-label">{row.label}</span>
                       <span className="receipt-dots" />
                       <span className="receipt-value">{row.amount}</span>
@@ -764,9 +753,19 @@ export default function OrderDetailPage() {
       </div>
 
       {/* ======== Sticky bottom bar (mobile) ======== */}
+      <style>{`
+        @media (max-width: 1023px) {
+          .order-sticky-bar { bottom: 56px !important; }
+        }
+        @media (max-width: 640px) {
+          .order-stepper-circle { width: 24px !important; height: 24px !important; font-size: 10px !important; }
+          .order-eta-number { font-size: 24px !important; }
+        }
+      `}</style>
       <div
-        className="fixed bottom-0 left-0 right-0 lg:hidden glass"
+        className="fixed left-0 right-0 lg:hidden glass order-sticky-bar"
         style={{
+          bottom: 0,
           height: 64,
           padding: "8px 16px",
           paddingBottom: "calc(8px + env(safe-area-inset-bottom, 0px))",

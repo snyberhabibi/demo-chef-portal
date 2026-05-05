@@ -44,8 +44,7 @@ export default function LoginPage() {
       />
 
       <div
-        className="relative w-full page-fade"
-        style={{ maxWidth: 380 }}
+        className="relative w-full page-fade max-w-[340px] sm:max-w-[380px]"
       >
         {/* Logo — 24px height, 40px above headline */}
         <div className="text-center" style={{ marginBottom: 40 }}>

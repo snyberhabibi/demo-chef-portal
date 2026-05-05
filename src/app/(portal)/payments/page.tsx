@@ -67,14 +67,12 @@ export default function PaymentsPage() {
               ].map((step, i) => (
                 <div key={step.num} className="flex items-center">
                   {i > 0 && (
-                    <div style={{ width: 40, height: 2, background: "var(--color-cream-sunken)" }} />
+                    <div className="w-6 sm:w-10" style={{ height: 1.5, background: "var(--color-cream-sunken)" }} />
                   )}
                   <div className="flex flex-col items-center gap-2">
                     <div
-                      className="flex items-center justify-center tnum"
+                      className="flex items-center justify-center tnum w-6 h-6 sm:w-7 sm:h-7"
                       style={{
-                        width: 28,
-                        height: 28,
                         borderRadius: "50%",
                         background: "var(--color-cream-sunken)",
                         fontSize: 13,
@@ -215,7 +213,7 @@ export default function PaymentsPage() {
               <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces" style={{ fontSize: 40, lineHeight: 1, margin: "12px 0 4px" }}>
+            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px" }}>
               $2,184.50
             </div>
             <div className="body-sm">Total earnings</div>
@@ -251,10 +249,10 @@ export default function PaymentsPage() {
             {TRANSACTIONS.map((tx, i) => (
               <div key={i}>
                 <div className="divider" />
-                <div className="flex items-center gap-3" style={{ padding: "12px 24px" }}>
+                <div className="flex items-center gap-3 text-[12px] sm:text-[13px]" style={{ padding: "12px 24px" }}>
                   <span className="tnum caption" style={{ minWidth: 90, whiteSpace: "nowrap" }}>{tx.date}</span>
-                  <div className="flex-1 flex items-center gap-2">
-                    <span className="body-sm" style={{ color: "var(--color-brown)" }}>{tx.desc}</span>
+                  <div className="flex-1 flex items-center gap-2 min-w-0">
+                    <span className="body-sm truncate" style={{ color: "var(--color-brown)" }}>{tx.desc}</span>
                     <span className={`pill ${tx.type === "order" ? "pill-sage" : tx.type === "payout" ? "pill-mute" : "pill-orange"}`} style={{ fontSize: 10, padding: "2px 6px" }}>
                       {tx.type}
                     </span>

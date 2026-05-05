@@ -77,8 +77,7 @@ export default function WelcomePage() {
       />
 
       <div
-        className="relative w-full page-fade"
-        style={{ maxWidth: 480 }}
+        className="relative w-full page-fade max-w-[340px] sm:max-w-[480px]"
       >
         {/* Logo — 24px at top */}
         <div className="flex justify-center" style={{ marginBottom: 32 }}>
@@ -92,10 +91,8 @@ export default function WelcomePage() {
         {/* Celebration emoji — 72px circle, cream-deep bg, glow */}
         <div className="flex justify-center" style={{ marginBottom: 24 }}>
           <div
-            className="flex items-center justify-center glow-orange"
+            className="flex items-center justify-center glow-orange w-14 h-14 sm:w-[72px] sm:h-[72px]"
             style={{
-              width: 72,
-              height: 72,
               borderRadius: "50%",
               background: "var(--color-cream-deep)",
               fontSize: 36,
@@ -134,13 +131,12 @@ export default function WelcomePage() {
               <Link
                 key={step.num}
                 href={step.href}
-                className="card-gradient-border card-hover"
+                className="card-gradient-border card-hover min-h-[48px] sm:min-h-[56px]"
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
                   padding: "0 16px",
-                  height: 56,
                   cursor: "pointer",
                   textDecoration: "none",
                   color: "inherit",

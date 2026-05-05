@@ -109,6 +109,16 @@ export default function ProfilePage() {
         @media (min-width: 1024px) {
           .profile-wizard-layout { grid-template-columns: 260px 1fr !important; }
         }
+        @media (max-width: 640px) {
+          .profile-wizard-layout .input,
+          .profile-wizard-layout .textarea,
+          .profile-wizard-layout .select {
+            padding: 10px 12px !important;
+          }
+          .profile-wizard-layout .card {
+            max-width: 100% !important;
+          }
+        }
       `}</style>
       <div className="grid profile-wizard-layout" style={{ gridTemplateColumns: "1fr", gap: 24, alignItems: "start" }}>
         {/* Sidebar */}

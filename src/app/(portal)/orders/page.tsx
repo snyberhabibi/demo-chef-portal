@@ -353,6 +353,11 @@ export default function OrdersPage() {
 
   return (
     <div className="content-default section-stack">
+      <style>{`
+        @media (max-width: 640px) {
+          .order-filter-tabs button { height: 28px !important; font-size: 11px !important; }
+        }
+      `}</style>
       {/* -------- Filter bar + Search -------- */}
       <div className="flex items-center gap-3 flex-wrap">
         {/* Scrollable tabs */}
@@ -373,7 +378,7 @@ export default function OrdersPage() {
             <style>{`
               .order-filter-tabs::-webkit-scrollbar { display: none; }
             `}</style>
-            <div className="order-filter-tabs" style={{ display: "flex", gap: 6 }}>
+            <div className="order-filter-tabs" style={{ display: "flex", gap: 4 }}>
               {filterTabs.map((tab) => {
                 const isActive = tab.label === activeTab;
                 const count = tabCounts[tab.label];
@@ -381,14 +386,13 @@ export default function OrdersPage() {
                   <button
                     key={tab.label}
                     onClick={() => { setActiveTab(tab.label); setPage(1); }}
+                    className="h-7 sm:h-8 text-[11px] sm:text-[12px]"
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 5,
-                      height: 32,
-                      padding: "0 12px",
+                      padding: "0 10px",
                       borderRadius: 8,
-                      fontSize: 12,
                       fontWeight: 600,
                       whiteSpace: "nowrap",
                       border: "none",
@@ -571,9 +575,6 @@ export default function OrdersPage() {
                           : ""
                     }
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
                       minHeight: 56,
                       padding: "8px 20px",
                       borderBottom:
@@ -593,179 +594,245 @@ export default function OrdersPage() {
                       e.currentTarget.style.background = "transparent";
                     }}
                   >
-                    {/* Left cluster: hash + dot + name + items */}
-                    <div
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        minWidth: 0,
-                      }}
-                    >
-                      {/* Hash ID */}
-                      <span
-                        className="mono"
+                    {/* Desktop row layout */}
+                    <div className="hidden sm:flex items-center gap-3" style={{ minHeight: 40 }}>
+                      {/* Left cluster: hash + dot + name + items */}
+                      <div
                         style={{
-                          fontSize: 12,
-                          color: "var(--color-brown-soft-2)",
-                          flexShrink: 0,
-                          width: 64,
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                          minWidth: 0,
                         }}
                       >
-                        {order.hash}
-                      </span>
+                        {/* Hash ID */}
+                        <span
+                          className="mono"
+                          style={{
+                            fontSize: 12,
+                            color: "var(--color-brown-soft-2)",
+                            flexShrink: 0,
+                            width: 64,
+                          }}
+                        >
+                          {order.hash}
+                        </span>
 
-                      {/* Status dot */}
-                      <span
-                        style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          background: statusDotColor(order.status),
-                          flexShrink: 0,
-                        }}
-                      />
+                        {/* Status dot */}
+                        <span
+                          style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            background: statusDotColor(order.status),
+                            flexShrink: 0,
+                          }}
+                        />
 
-                      {/* Customer + items */}
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        {/* Customer + items */}
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span
+                              style={{
+                                fontSize: 14,
+                                fontWeight: 500,
+                                color: "var(--color-brown)",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {order.customer}
+                            </span>
+                            {order.urgency === "overdue" && (
+                              <span className="pill-red glow-red" style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                fontSize: 10,
+                                fontWeight: 700,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.04em",
+                                padding: "1px 6px",
+                                borderRadius: 9999,
+                                background: "rgba(229,65,65,0.1)",
+                                color: "var(--color-red-deep)",
+                              }}>
+                                OVERDUE
+                              </span>
+                            )}
+                          </div>
                           <span
                             style={{
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: "var(--color-brown)",
+                              fontSize: 13,
+                              color: "var(--color-brown-soft-2)",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              display: "block",
+                            }}
+                          >
+                            {itemSummary}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Center: method pill + ready-by */}
+                      <div
+                        className="hidden md:flex"
+                        style={{
+                          alignItems: "center",
+                          gap: 8,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <span
+                          className="pill-mute"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            padding: "2px 8px",
+                            borderRadius: 9999,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            background: "var(--color-cream-sunken)",
+                            color: "var(--color-brown-soft-2)",
+                          }}
+                        >
+                          {order.method === "delivery" ? (
+                            <Truck size={12} strokeWidth={2} />
+                          ) : (
+                            <ShoppingBag size={12} strokeWidth={2} />
+                          )}
+                          {order.method === "delivery" ? "Delivery" : "Pickup"}
+                        </span>
+
+                        {order.readyBy && (
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 3,
+                              fontSize: 12,
+                              color: "var(--color-brown-soft-2)",
                               whiteSpace: "nowrap",
                             }}
                           >
+                            <Clock size={12} strokeWidth={2} />
+                            {order.readyBy}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Right: price + payout + action */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <div style={{ textAlign: "right" }}>
+                          <div
+                            className="tnum"
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 600,
+                              color: "var(--color-brown)",
+                            }}
+                          >
+                            {order.price}
+                          </div>
+                          {order.payout && (
+                            <div
+                              className="caption tnum"
+                              style={{ marginTop: -1 }}
+                            >
+                              {order.payout}
+                            </div>
+                          )}
+                        </div>
+
+                        {label ? (
+                          <button
+                            className={`btn btn-sm ${actionBtnClass(order.status)}`}
+                            style={{ minWidth: 72 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toast(actionToastMsg(order.hash, order.status));
+                            }}
+                          >
+                            {label}
+                          </button>
+                        ) : (
+                          /* Spacer to keep alignment */
+                          <div style={{ width: 72 }} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile mini-card layout */}
+                    <div className="flex flex-col gap-1.5 sm:hidden" style={{ padding: "4px 0" }}>
+                      {/* Line 1: customer name + status pill */}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              background: statusDotColor(order.status),
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>
                             {order.customer}
                           </span>
                           {order.urgency === "overdue" && (
-                            <span className="pill-red glow-red" style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              fontSize: 10,
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.04em",
-                              padding: "1px 6px",
-                              borderRadius: 9999,
-                              background: "rgba(229,65,65,0.1)",
-                              color: "var(--color-red-deep)",
-                            }}>
-                              OVERDUE
-                            </span>
+                            <span style={{
+                              fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                              padding: "1px 6px", borderRadius: 9999,
+                              background: "rgba(229,65,65,0.1)", color: "var(--color-red-deep)",
+                            }}>OVERDUE</span>
                           )}
                         </div>
                         <span
                           style={{
-                            fontSize: 13,
-                            color: "var(--color-brown-soft-2)",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            display: "block",
+                            fontSize: 11, fontWeight: 600,
+                            color: statusDotColor(order.status),
+                            flexShrink: 0,
                           }}
                         >
-                          {itemSummary}
+                          {statusLabel(order.status)}
                         </span>
                       </div>
-                    </div>
-
-                    {/* Center: method pill + ready-by */}
-                    <div
-                      className="hidden md:flex"
-                      style={{
-                        alignItems: "center",
-                        gap: 8,
-                        flexShrink: 0,
-                      }}
-                    >
-                      <span
-                        className="pill-mute"
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 4,
-                          padding: "2px 8px",
-                          borderRadius: 9999,
-                          fontSize: 11,
-                          fontWeight: 600,
-                          background: "var(--color-cream-sunken)",
-                          color: "var(--color-brown-soft-2)",
-                        }}
-                      >
-                        {order.method === "delivery" ? (
-                          <Truck size={12} strokeWidth={2} />
-                        ) : (
-                          <ShoppingBag size={12} strokeWidth={2} />
-                        )}
-                        {order.method === "delivery" ? "Delivery" : "Pickup"}
+                      {/* Line 2: items text (truncated) */}
+                      <span style={{
+                        fontSize: 12, color: "var(--color-brown-soft-2)",
+                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                      }}>
+                        {itemSummary}
                       </span>
-
-                      {order.readyBy && (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 3,
-                            fontSize: 12,
-                            color: "var(--color-brown-soft-2)",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          <Clock size={12} strokeWidth={2} />
-                          {order.readyBy}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Right: price + payout + action */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        flexShrink: 0,
-                      }}
-                    >
-                      <div style={{ textAlign: "right" }}>
-                        <div
-                          className="tnum"
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "var(--color-brown)",
-                          }}
-                        >
+                      {/* Line 3: price + action button */}
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="tnum" style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>
                           {order.price}
-                        </div>
-                        {order.payout && (
-                          <div
-                            className="caption tnum"
-                            style={{ marginTop: -1 }}
+                        </span>
+                        {label && (
+                          <button
+                            className={`btn btn-sm ${actionBtnClass(order.status)}`}
+                            style={{ minWidth: 64, minHeight: 32, fontSize: 12, padding: "4px 10px" }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toast(actionToastMsg(order.hash, order.status));
+                            }}
                           >
-                            {order.payout}
-                          </div>
+                            {label}
+                          </button>
                         )}
                       </div>
-
-                      {label ? (
-                        <button
-                          className={`btn btn-sm ${actionBtnClass(order.status)}`}
-                          style={{ minWidth: 72 }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toast(actionToastMsg(order.hash, order.status));
-                          }}
-                        >
-                          {label}
-                        </button>
-                      ) : (
-                        /* Spacer to keep alignment */
-                        <div style={{ width: 72 }} />
-                      )}
                     </div>
                   </div>
                 </Link>

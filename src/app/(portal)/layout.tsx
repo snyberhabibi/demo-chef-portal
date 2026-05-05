@@ -24,6 +24,21 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Orders" },
     ],
   },
+  menu: {
+    title: "Menu",
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Menu" },
+    ],
+  },
+  "menu/new": {
+    title: "Create Dish",
+    breadcrumbs: [
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Menu", href: "/menu" },
+      { label: "Create" },
+    ],
+  },
   reviews: {
     title: "Reviews",
     breadcrumbs: [
@@ -31,68 +46,11 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Reviews" },
     ],
   },
-  menu: {
-    title: "Dishes",
+  payments: {
+    title: "Earnings & Payments",
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard" },
-      { label: "Dishes" },
-    ],
-  },
-  "menu/new": {
-    title: "Create Dish",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Dishes", href: "/menu" },
-      { label: "Create" },
-    ],
-  },
-  bundles: {
-    title: "Bundles",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Bundles" },
-    ],
-  },
-  sections: {
-    title: "Custom Menu Sections",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Custom Menu Sections" },
-    ],
-  },
-  "pickup-address": {
-    title: "Pickup Address",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Pickup Address" },
-    ],
-  },
-  packaging: {
-    title: "Buy Packaging",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Buy Packaging" },
-    ],
-  },
-  tutorials: {
-    title: "Tutorials",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Tutorials" },
-    ],
-  },
-  "portal-guide": {
-    title: "Portal Guide",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Portal Guide" },
-    ],
-  },
-  settings: {
-    title: "Account Settings",
-    breadcrumbs: [
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Account Settings" },
+      { label: "Earnings & Payments" },
     ],
   },
   profile: {
@@ -102,11 +60,11 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Profile" },
     ],
   },
-  payments: {
-    title: "Payment Methods",
+  settings: {
+    title: "Settings",
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard" },
-      { label: "Payment Methods" },
+      { label: "Settings" },
     ],
   },
   operations: {
@@ -123,11 +81,11 @@ const routeMap: Record<string, RouteConfig> = {
       { label: "Store Preview" },
     ],
   },
-  integrations: {
-    title: "POS & Integrations",
+  "pickup-address": {
+    title: "Pickup Address",
     breadcrumbs: [
       { label: "Dashboard", href: "/dashboard" },
-      { label: "POS & Integrations" },
+      { label: "Pickup Address" },
     ],
   },
 };
@@ -163,17 +121,20 @@ export default function PortalLayout({
         />
         <main
           className="flex-1 page-fade"
-          style={{ padding: "20px" }}
+          style={{ padding: "16px", overflowX: "hidden" }}
         >
           <style>{`
+            @media (min-width: 640px) {
+              main { padding: 20px !important; }
+            }
             @media (min-width: 1024px) {
               main { padding: 32px !important; }
             }
           `}</style>
-          <div className="pb-20 lg:pb-0">{children}</div>
+          <div className="pb-24 lg:pb-0">{children}</div>
         </main>
       </div>
-      <BottomTabBar activePath={activePath} onMore={() => setDrawerOpen(true)} />
+      <BottomTabBar activePath={activePath} />
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} activePath={activePath} />
     </div>
   );

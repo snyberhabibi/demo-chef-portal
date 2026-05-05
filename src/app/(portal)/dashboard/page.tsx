@@ -268,10 +268,11 @@ function ProgressRing({ pct }: { pct: number }) {
 function Sparkline({ points }: { points: string }) {
   return (
     <svg
+      className="sparkline-svg"
       width={120}
       height={32}
       viewBox="0 0 120 32"
-      style={{ display: "block", marginTop: 8 }}
+      style={{ display: "block", marginTop: 8, maxWidth: "100%" }}
     >
       <polyline
         points={points}
@@ -305,7 +306,7 @@ export default function DashboardPage() {
     <div className="section-stack">
       {/* Mode toggle — Linear-style tab buttons with active underline */}
       <div
-        className="flex items-center gap-0"
+        className="flex items-center gap-0 mode-toggle-wrap"
         style={{
           borderBottom: "1px solid rgba(51,31,46,0.08)",
           marginBottom: 4,
@@ -764,6 +765,15 @@ function ModeB() {
 
   return (
     <div className="content-wide section-stack line-reveal">
+      <style>{`
+        @media (max-width: 640px) {
+          .sparkline-svg { width: 80px; }
+          .quick-action-link { height: 56px !important; }
+          .urgent-card-link { min-width: 240px !important; padding: 12px !important; }
+          .mode-toggle-wrap { width: 100%; }
+          .mode-toggle-wrap button { flex: 1; }
+        }
+      `}</style>
       {/* Greeting */}
       <h1 className="heading-lg">
         {greeting}, Amira{" "}
@@ -778,7 +788,7 @@ function ModeB() {
       </h1>
 
       {/* Stat cards — 4 across, Stripe-dense */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {stats.map((stat, i) => (
           <div key={i} className="stat-card-premium">
             <div className="stat-accent" />
@@ -788,7 +798,7 @@ function ModeB() {
               </div>
               <div
                 className="fraunces tnum"
-                style={{ fontSize: 36, lineHeight: 1 }}
+                style={{ fontSize: "clamp(24px, 6vw, 36px)", lineHeight: 1 }}
               >
                 {stat.value}
               </div>
@@ -830,7 +840,7 @@ function ModeB() {
 
       {/* Urgent strip — horizontal scroll */}
       <div
-        className="flex gap-3 overflow-x-auto pb-1"
+        className="flex gap-2 sm:gap-3 overflow-x-auto pb-1"
         style={{ margin: "0 -16px", padding: "0 16px" }}
       >
         {urgentCards.map((card, i) => {
@@ -839,10 +849,10 @@ function ModeB() {
             <Link
               key={i}
               href={card.href}
-              className={`shrink-0 card card-hover ${card.urgencyClass}`}
+              className={`shrink-0 card card-hover ${card.urgencyClass} urgent-card-link`}
               style={{
                 padding: "12px 16px",
-                minWidth: 220,
+                minWidth: 240,
                 textDecoration: "none",
                 color: "inherit",
                 display: "flex",
@@ -887,7 +897,7 @@ function ModeB() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Link
           href="/menu/new"
-          className="btn btn-gradient card-hover flex items-center gap-3"
+          className="btn btn-gradient card-hover flex items-center gap-3 quick-action-link"
           style={{
             height: 72,
             textDecoration: "none",
@@ -899,7 +909,7 @@ function ModeB() {
         </Link>
         <Link
           href="/store-preview"
-          className="card card-hover flex items-center gap-3"
+          className="card card-hover flex items-center gap-3 quick-action-link"
           style={{
             height: 72,
             textDecoration: "none",
@@ -912,7 +922,7 @@ function ModeB() {
         </Link>
         <Link
           href="/operations"
-          className="card card-hover flex items-center gap-3"
+          className="card card-hover flex items-center gap-3 quick-action-link"
           style={{
             height: 72,
             textDecoration: "none",
@@ -971,7 +981,7 @@ function ModeB() {
                 (e.currentTarget.style.background = "transparent")
               }
             >
-              {/* Hash */}
+              {/* Hash — hidden on mobile */}
               <span
                 className="mono hidden sm:inline"
                 style={{
@@ -1063,7 +1073,7 @@ function ModeB() {
           textAlign: "center",
         }}
       >
-        <span className="body-sm" style={{ fontWeight: 600, color: "var(--color-brown)" }}>
+        <span className="body-sm sm:body" style={{ fontWeight: 600, color: "var(--color-brown)", fontSize: "clamp(12px, 3vw, 14px)" }}>
           Today: 4 orders &middot; $186 revenue &middot; 2 pending
         </span>
       </div>
