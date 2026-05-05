@@ -215,7 +215,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
 
   return (
     <div
-      className="card"
+      className="card card-interactive"
       style={{
         padding: "16px 18px",
         opacity: isPast ? 0.85 : 1,
@@ -454,7 +454,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Close Early -- coming soon")}
+              onClick={() => toast("Close Early -- coming soon", "info")}
             >
               <Ban size={12} />
               Close Early
@@ -466,7 +466,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-dark btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Edit -- coming soon")}
+              onClick={() => toast("Edit -- coming soon", "info")}
             >
               <Pencil size={12} />
               Edit
@@ -474,7 +474,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             <button
               className="btn btn-ghost btn-sm"
               style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
-              onClick={() => toast("Cancel -- coming soon")}
+              onClick={() => toast("Cancel -- coming soon", "info")}
             >
               <X size={12} />
               Cancel

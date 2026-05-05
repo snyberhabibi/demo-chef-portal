@@ -76,7 +76,7 @@ type GuideTab = (typeof GUIDE_TABS)[number];
 
 export default function SettingsPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
   const [name, setName] = useState("Amira Haddad");
@@ -207,7 +207,7 @@ export default function SettingsPage() {
                   </div>
                   {CHANNELS.map((ch) => (
                     <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
-                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} onClick={() => toggleNotif(cat.label, ch)}>
+                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} role="switch" aria-checked={notifs[cat.label][ch]} aria-label={`${cat.label} ${ch} notifications`} onClick={() => toggleNotif(cat.label, ch)}>
                         <span className="toggle-thumb" />
                       </button>
                     </div>
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                 <Shield size={18} style={{ color: "var(--color-brown-soft)" }} />
                 <div><span className="body" style={{ fontWeight: 500 }}>Two-factor authentication</span><div className="caption">Not enabled</div></div>
               </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => toast("Two-factor authentication coming soon")}>Set up</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => toast("Two-factor authentication coming soon", "info")}>Set up</button>
             </div>
           </div>
           <div className="divider" />
@@ -323,7 +323,7 @@ export default function SettingsPage() {
                           {testState === "idle" ? "Send test" : testState === "sending" ? "Sending" : "Sent"}
                         </button>
                       )}
-                      <button className="btn btn-ghost btn-sm" onClick={() => toast("Channel configuration coming soon")}>{ch.connected ? "Edit" : "Set up"}</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => toast("Channel configuration coming soon", "info")}>{ch.connected ? "Edit" : "Set up"}</button>
                     </div>
                   </div>
                 );
@@ -354,7 +354,7 @@ export default function SettingsPage() {
               {tutorials.map((t, i) => {
                 const Icon = t.icon;
                 return (
-                  <button key={i} onClick={() => toast(`Tutorial: ${t.title} \u2014 coming soon`)} className="card card-hover" style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12, color: "inherit", textAlign: "left", cursor: "pointer", border: "none", width: "100%" }}>
+                  <button key={i} onClick={() => toast(`Tutorial: ${t.title} \u2014 coming soon`, "info")} className="card card-hover" style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12, color: "inherit", textAlign: "left", cursor: "pointer", border: "none", width: "100%" }}>
                     <div className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--color-cream-deep)" }}>
                       <Icon size={20} style={{ color: "var(--color-brown-soft)" }} />
                     </div>
@@ -385,7 +385,7 @@ export default function SettingsPage() {
             {activeGuideTab === "Video Tutorials" && (
               <div className="section-stack">
                 <div><h2 className="heading-lg">How-To Videos</h2><p className="body-sm" style={{ marginTop: 4 }}>Watch step-by-step guides to get the most out of your chef portal.</p></div>
-                <div className="card flex flex-col items-center justify-center" style={{ aspectRatio: "16/9", background: "var(--color-brown)", position: "relative", cursor: "pointer", overflow: "hidden", padding: 0 }} onClick={() => toast("Video playback coming soon")}>
+                <div className="card flex flex-col items-center justify-center" style={{ aspectRatio: "16/9", background: "var(--color-brown)", position: "relative", cursor: "pointer", overflow: "hidden", padding: 0 }} onClick={() => toast("Video playback coming soon", "info")}>
                   <div className="flex items-center justify-center glow-red" style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(255,255,255,0.95)", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
                     <Play size={22} fill="var(--color-red)" style={{ color: "var(--color-red)", marginLeft: 2 }} />
                   </div>
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-center" style={{ width: 48, height: 48, borderRadius: 12, background: "var(--color-cream-deep)" }}><FileText size={24} style={{ color: "var(--color-brown-soft)" }} /></div>
                     <div><div className="heading-sm">Chef Success Playbook</div><div className="caption" style={{ marginTop: 2 }}>18 pages</div></div>
                   </div>
-                  <button className="btn btn-dark btn-sm" onClick={() => toast("PDF download coming soon")}><Download size={14} />View Full Playbook</button>
+                  <button className="btn btn-dark btn-sm" onClick={() => toast("PDF download coming soon", "info")}><Download size={14} />View Full Playbook</button>
                 </div>
               </div>
             )}

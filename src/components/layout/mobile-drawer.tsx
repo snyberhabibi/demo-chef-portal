@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { X, LogOut } from "lucide-react";
 import { navGroups } from "@/lib/constants/navigation";
@@ -9,26 +10,55 @@ interface MobileDrawerProps {
   open: boolean;
   onClose: () => void;
   activePath: string;
+  triggerRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
-  if (!open) return null;
+export function MobileDrawer({ open, onClose, activePath, triggerRef }: MobileDrawerProps) {
+  const [visible, setVisible] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      setVisible(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setAnimating(true));
+      });
+      // Focus close button when drawer opens
+      const t = setTimeout(() => closeButtonRef.current?.focus(), 100);
+      return () => clearTimeout(t);
+    } else if (visible) {
+      setAnimating(false);
+      const timer = setTimeout(() => setVisible(false), 300);
+      // Return focus to hamburger trigger when closing
+      triggerRef?.current?.focus();
+      return () => clearTimeout(timer);
+    }
+  }, [open, visible, triggerRef]);
+
+  /* Escape key handler */
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }, [onClose]);
+
+  if (!visible) return null;
 
   return (
     <>
       <style>{`
-        @keyframes drawerSlideIn {
-          from { transform: translateX(-100%); }
-          to   { transform: translateX(0); }
-        }
-        @keyframes drawerFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+          .drawer-backdrop,
+          .drawer-panel {
+            transition: none !important;
+          }
         }
       `}</style>
 
       {/* Backdrop */}
       <div
+        className="drawer-backdrop"
         onClick={onClose}
         style={{
           position: "fixed",
@@ -36,12 +66,18 @@ export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
           background: "rgba(51,31,46,0.4)",
           backdropFilter: "blur(4px)",
           zIndex: 60,
-          animation: "drawerFadeIn 0.2s ease-out both",
+          opacity: animating ? 1 : 0,
+          transition: "opacity 0.3s ease",
         }}
       />
 
       {/* Drawer */}
       <div
+        className="drawer-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        onKeyDown={handleKeyDown}
         style={{
           position: "fixed",
           left: 0,
@@ -52,12 +88,14 @@ export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
           zIndex: 61,
           display: "flex",
           flexDirection: "column",
-          animation: "drawerSlideIn 0.3s ease-out both",
+          transform: animating ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
           overflowY: "auto",
         }}
       >
         {/* Close button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           style={{
             position: "absolute",
@@ -74,7 +112,7 @@ export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
             color: "var(--color-brown-soft-2)",
             cursor: "pointer",
           }}
-          aria-label="Close menu"
+          aria-label="Close navigation"
         >
           <X size={18} strokeWidth={2} />
         </button>

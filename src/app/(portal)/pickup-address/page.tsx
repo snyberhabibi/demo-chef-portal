@@ -6,7 +6,7 @@ import { MapPin, Copy, Edit3, Clock, Check } from "lucide-react";
 
 export default function PickupAddressPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const [copied, setCopied] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);

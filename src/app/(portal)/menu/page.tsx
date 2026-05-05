@@ -417,7 +417,7 @@ export default function MenuPage() {
           </div>
 
           {/* Search bar */}
-          <div style={{ position: "relative", width: "100%" }}>
+          <form role="search" onSubmit={(e) => e.preventDefault()} style={{ position: "relative", width: "100%" }}>
             <Search
               size={16}
               strokeWidth={2}
@@ -433,6 +433,7 @@ export default function MenuPage() {
             <input
               type="text"
               placeholder="Search by name, category, or cuisine..."
+              aria-label="Search dishes"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="text-sm sm:text-sm"
@@ -447,7 +448,7 @@ export default function MenuPage() {
                 color: "var(--color-brown)",
               }}
             />
-          </div>
+          </form>
 
           {/* Dish Grid */}
           {filteredDishes.length === 0 ? (
@@ -612,7 +613,7 @@ export default function MenuPage() {
                             Edit
                           </Link>
                           <button
-                            onClick={(e) => { e.stopPropagation(); toast("Dish archived"); setOpenMenuId(null); }}
+                            onClick={(e) => { e.stopPropagation(); toast("Dish archived", "warning"); setOpenMenuId(null); }}
                             style={{
                               display: "block",
                               width: "100%",
@@ -630,7 +631,7 @@ export default function MenuPage() {
                             Archive
                           </button>
                           <button
-                            onClick={(e) => { e.stopPropagation(); toast("Dish deleted"); setOpenMenuId(null); }}
+                            onClick={(e) => { e.stopPropagation(); toast("Dish deleted", "warning"); setOpenMenuId(null); }}
                             style={{
                               display: "block",
                               width: "100%",
@@ -709,7 +710,7 @@ export default function MenuPage() {
           </div>
 
           {/* Search bar */}
-          <div style={{ position: "relative", width: "100%" }}>
+          <form role="search" onSubmit={(e) => e.preventDefault()} style={{ position: "relative", width: "100%" }}>
             <Search
               size={16}
               strokeWidth={2}
@@ -725,6 +726,7 @@ export default function MenuPage() {
             <input
               type="text"
               placeholder="Search bundles..."
+              aria-label="Search bundles"
               value={bundleSearch}
               onChange={(e) => setBundleSearch(e.target.value)}
               className="text-sm sm:text-sm"
@@ -739,7 +741,7 @@ export default function MenuPage() {
                 color: "var(--color-brown)",
               }}
             />
-          </div>
+          </form>
 
           <div
             className="line-reveal"
@@ -755,7 +757,7 @@ export default function MenuPage() {
                 <Link
                   key={bundle.id}
                   href="/menu/new"
-                  className="card card-photo card-hover group"
+                  className="card card-photo card-interactive group"
                   style={{ padding: 0, overflow: "hidden", textDecoration: "none", color: "inherit" }}
                 >
                   <div className="relative" style={{ aspectRatio: "4/3" }}>
@@ -905,7 +907,7 @@ export default function MenuPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            toast(`Deleted: ${section.name}`);
+                            toast(`Deleted: ${section.name}`, "warning");
                             setSections((prev) => prev.filter((s) => s.id !== section.id));
                             setOpenSectionMenuId(null);
                           }}

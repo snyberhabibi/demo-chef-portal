@@ -42,7 +42,7 @@ const desserts: StoreDish[] = [
 /* ------------------------------------------------------------------ */
 export default function StorePreviewPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -199,7 +199,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Popular Dishes</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {popularDishes.map((dish) => (
-                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this")} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} />
               ))}
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Desserts</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {desserts.map((dish) => (
-                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this")} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} />
               ))}
             </div>
           </div>

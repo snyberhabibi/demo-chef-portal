@@ -62,7 +62,7 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
 /* ------------------------------------------------------------------ */
 export default function ReviewsPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const [activeTab, setActiveTab] = useState<Tab>("Chef Profile");
   const [sortBy, setSortBy] = useState("Newest");

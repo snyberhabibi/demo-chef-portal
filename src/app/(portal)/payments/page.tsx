@@ -20,7 +20,7 @@ const INFO_BLOCKS = [
 
 export default function PaymentsPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const [state, setState] = useState<StripeState>("A");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);

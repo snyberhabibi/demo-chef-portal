@@ -9,9 +9,10 @@ interface TopBarProps {
   title: string;
   breadcrumbs?: { label: string; href?: string }[];
   onMobileMenuToggle?: () => void;
+  hamburgerRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) {
+export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }: TopBarProps) {
   const { toast } = useToast();
 
   return (
@@ -25,6 +26,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
     >
       {/* Mobile: hamburger left, title center */}
       <button
+        ref={hamburgerRef}
         className="lg:hidden flex items-center justify-center rounded-lg"
         style={{
           width: 44,
@@ -35,7 +37,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
           transition: `all var(--t-fast) var(--ease-spring)`,
         }}
         onClick={onMobileMenuToggle}
-        aria-label="Open menu"
+        aria-label="Open navigation menu"
       >
         <Menu size={18} strokeWidth={1.5} />
       </button>
@@ -137,7 +139,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
               "var(--color-cream-sunken)";
           }}
           aria-label="Search"
-          onClick={() => toast("Search coming soon")}
+          onClick={() => toast("Search coming soon", "info")}
         >
           <span style={{ fontSize: 11 }}>&#x2318;K</span>
         </button>
@@ -145,6 +147,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
         {/* Bell with red dot */}
         <Link
           href="/orders"
+          aria-label="Notifications - 3 new"
           className="relative flex items-center justify-center rounded-lg"
           style={{
             width: 44,
@@ -178,6 +181,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
         {/* Avatar — 44px touch area, 28px visual */}
         <Link
           href="/profile"
+          aria-label="Your profile"
           className="flex items-center justify-center flex-shrink-0"
           style={{ width: 44, height: 44 }}
         >

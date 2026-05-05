@@ -99,7 +99,7 @@ const INITIAL_OVERRIDES: DateOverride[] = [
 /* ------------------------------------------------------------------ */
 export default function OperationsPage() {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => { setLoaded(true); }, []);
 
   const { toast } = useToast();
   const [state, setState] = useState<StoreState>("live");
@@ -255,6 +255,9 @@ export default function OperationsPage() {
           </div>
           <button
             className={`toggle toggle-lg ${storeToggle ? "is-on toggle-glow" : ""}`}
+            role="switch"
+            aria-checked={storeToggle}
+            aria-label="Toggle store on or off"
             onClick={() => setStoreToggle(!storeToggle)}
           >
             <span className="toggle-thumb" />
@@ -281,6 +284,9 @@ export default function OperationsPage() {
             </div>
             <button
               className="toggle toggle-lg is-on toggle-glow glow-sage"
+              role="switch"
+              aria-checked={true}
+              aria-label="Store is live, toggle to turn off"
               onClick={() => setShowTurnOffConfirm(true)}
             >
               <span className="toggle-thumb" />
@@ -375,7 +381,7 @@ export default function OperationsPage() {
               const today = new Date();
               const formatted = today.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
               setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: formatted, endDate: formatted, days: 1, note: "Blocked today", autoPause: true }]);
-              toast("Today blocked \u2014 no new orders");
+              toast("Today blocked \u2014 no new orders", "warning");
             }}
             style={{
               display: "inline-flex",
@@ -409,6 +415,7 @@ export default function OperationsPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); copyMondayToWeekdays(); toast("Monday hours copied to weekdays"); }}
                       title="Copy Monday to all weekdays"
+                      aria-label="Copy Monday hours to all weekdays"
                       style={{
                         width: 24,
                         height: 24,
@@ -431,6 +438,9 @@ export default function OperationsPage() {
                 {/* Toggle */}
                 <button
                   className={`toggle ${daySchedule.enabled ? "is-on" : ""}`}
+                  role="switch"
+                  aria-checked={daySchedule.enabled}
+                  aria-label={`${day} availability`}
                   onClick={() => toggleDay(day)}
                   style={{ flexShrink: 0, marginTop: 2 }}
                 >
@@ -505,6 +515,7 @@ export default function OperationsPage() {
                           </select>
                           <button
                             onClick={() => removeWindow(day, w.id)}
+                            aria-label={`Remove time window from ${day}`}
                             style={{
                               background: "none",
                               border: "none",
@@ -534,7 +545,7 @@ export default function OperationsPage() {
           <div className="heading-sm" style={{ fontSize: 14 }}>Auto-accept orders</div>
           <div className="body-sm" style={{ marginTop: 2 }}>Incoming orders are automatically confirmed</div>
         </div>
-        <button className={`toggle ${autoAccept ? "is-on" : ""}`} onClick={() => setAutoAccept(!autoAccept)}>
+        <button className={`toggle ${autoAccept ? "is-on" : ""}`} role="switch" aria-checked={autoAccept} aria-label="Auto-accept orders" onClick={() => setAutoAccept(!autoAccept)}>
           <span className="toggle-thumb" />
         </button>
       </div>

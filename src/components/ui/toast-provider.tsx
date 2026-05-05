@@ -8,20 +8,23 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { Check } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, Info } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
+type ToastVariant = "success" | "error" | "warning" | "info";
+
 interface Toast {
   id: number;
   message: string;
+  variant: ToastVariant;
   undoAction?: () => void;
   exiting?: boolean;
 }
 
 interface ToastContextValue {
-  toast: (message: string, undoAction?: () => void) => void;
+  toast: (message: string, variantOrUndo?: ToastVariant | (() => void), undoAction?: () => void) => void;
 }
 
 const MAX_MESSAGE_LENGTH = 40;
@@ -54,22 +57,31 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toast = useCallback(
-    (message: string, undoAction?: () => void) => {
+    (message: string, variantOrUndo?: ToastVariant | (() => void), undoAction?: () => void) => {
       const id = nextId.current++;
       const truncated =
         message.length > MAX_MESSAGE_LENGTH
           ? message.slice(0, MAX_MESSAGE_LENGTH - 1) + "\u2026"
           : message;
 
+      // Resolve overloaded signature
+      let variant: ToastVariant = "success";
+      let undo: (() => void) | undefined = undoAction;
+      if (typeof variantOrUndo === "function") {
+        undo = variantOrUndo;
+      } else if (typeof variantOrUndo === "string") {
+        variant = variantOrUndo;
+      }
+
       setToasts((prev) => {
-        const next = [...prev, { id, message: truncated, undoAction }];
+        const next = [...prev, { id, message: truncated, variant, undoAction: undo }];
         // Stack max 3
         if (next.length > 3) return next.slice(next.length - 3);
         return next;
       });
 
-      // Auto-dismiss: 6s for toasts with undo, 4s for success
-      const duration = undoAction ? 6000 : 4000;
+      // Auto-dismiss: 6s for toasts with undo, 4s for others
+      const duration = undo ? 6000 : 4000;
       setTimeout(() => dismiss(id), duration);
     },
     [dismiss]
@@ -136,6 +148,43 @@ function ToastContainer({
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Variant styling                                                    */
+/* ------------------------------------------------------------------ */
+const variantStyles: Record<
+  ToastVariant,
+  { borderColor: string; bg: string; iconBg: string; iconColor: string; Icon: typeof CheckCircle2 }
+> = {
+  success: {
+    borderColor: "var(--color-sage)",
+    bg: "rgba(121,173,99,0.04)",
+    iconBg: "var(--color-sage-soft)",
+    iconColor: "var(--color-sage-deep)",
+    Icon: CheckCircle2,
+  },
+  error: {
+    borderColor: "var(--color-red)",
+    bg: "rgba(229,65,65,0.04)",
+    iconBg: "var(--color-red-soft)",
+    iconColor: "var(--color-red-deep)",
+    Icon: XCircle,
+  },
+  warning: {
+    borderColor: "var(--color-orange)",
+    bg: "rgba(252,157,53,0.06)",
+    iconBg: "var(--color-orange-soft)",
+    iconColor: "var(--color-orange-text)",
+    Icon: AlertTriangle,
+  },
+  info: {
+    borderColor: "var(--color-brown-soft-2)",
+    bg: "rgba(51,31,46,0.03)",
+    iconBg: "var(--color-cream-sunken)",
+    iconColor: "var(--color-brown-soft)",
+    Icon: Info,
+  },
+};
+
 function ToastItem({
   toast: t,
   onDismiss,
@@ -148,6 +197,8 @@ function ToastItem({
     requestAnimationFrame(() => setMounted(true));
   }, []);
 
+  const v = variantStyles[t.variant];
+
   return (
     <div
       role="status"
@@ -156,9 +207,9 @@ function ToastItem({
         alignItems: "center",
         gap: 10,
         padding: "12px 16px",
-        background: "#fff",
+        background: `linear-gradient(135deg, ${v.bg}, #fff)`,
         borderRadius: 12,
-        borderLeft: "4px solid var(--color-sage)",
+        borderLeft: `4px solid ${v.borderColor}`,
         boxShadow:
           "0 8px 24px rgba(51,31,46,0.10), 0 2px 6px rgba(51,31,46,0.04)",
         pointerEvents: "auto",
@@ -171,7 +222,7 @@ function ToastItem({
         transform: mounted && !t.exiting ? "translateY(0)" : undefined,
       }}
     >
-      {/* Check icon */}
+      {/* Variant icon */}
       <span
         style={{
           display: "flex",
@@ -180,12 +231,12 @@ function ToastItem({
           width: 24,
           height: 24,
           borderRadius: "50%",
-          background: "var(--color-sage-soft)",
-          color: "var(--color-sage-deep)",
+          background: v.iconBg,
+          color: v.iconColor,
           flexShrink: 0,
         }}
       >
-        <Check size={14} strokeWidth={3} />
+        <v.Icon size={14} strokeWidth={3} />
       </span>
 
       {/* Message */}
