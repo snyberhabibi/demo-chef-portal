@@ -222,6 +222,13 @@ export default function FlashSalesPage() {
 /* ------------------------------------------------------------------ */
 /*  Flash Sale Card                                                    */
 /* ------------------------------------------------------------------ */
+/* Mock stock data for live sale items */
+const stockData: Record<string, { claimed: number; total: number }> = {
+  "Mansaf": { claimed: 38, total: 50 },
+  "Knafeh": { claimed: 22, total: 25 },
+  "Shawarma": { claimed: 12, total: 50 },
+};
+
 function FlashSaleCard({ sale }: { sale: FlashSale }) {
   const dotColor = statusDotColor(sale.status);
   const isLive = sale.status === "live";
@@ -326,40 +333,54 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
         </div>
       )}
 
-      {/* Row 3: items pills */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 6,
-          marginTop: 10,
-        }}
-      >
-        {sale.items.map((item) => (
-          <span
-            key={item}
-            style={{
-              display: "inline-block",
-              padding: "3px 10px",
-              borderRadius: 9999,
-              fontSize: 11,
-              fontWeight: 600,
-              background: "var(--color-cream-sunken)",
-              color: "var(--color-brown-soft)",
-            }}
-          >
-            {item}
-          </span>
-        ))}
-        {isDraft && (
-          <span
-            className="caption"
-            style={{ alignSelf: "center", fontStyle: "italic" }}
-          >
-            {sale.items.length} items added
-          </span>
-        )}
-      </div>
+      {/* Row 3: items pills / stock indicators for live sales */}
+      {isLive ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+          {sale.items.map((item) => {
+            const stock = stockData[item];
+            if (!stock) {
+              return (
+                <span key={item} style={{ display: "inline-block", padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600, background: "var(--color-cream-sunken)", color: "var(--color-brown-soft)", alignSelf: "flex-start" }}>{item}</span>
+              );
+            }
+            const remaining = stock.total - stock.claimed;
+            const pct = (stock.claimed / stock.total) * 100;
+            const isLowStock = remaining / stock.total < 0.2;
+            const isSoldOut = remaining <= 0;
+
+            return (
+              <div key={item} style={{ position: "relative", padding: "8px 12px", borderRadius: 10, background: "var(--color-cream)" }}>
+                {isSoldOut && (
+                  <div style={{ position: "absolute", inset: 0, borderRadius: 10, background: "rgba(229,65,65,0.06)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1 }}>
+                    <span style={{ fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--color-red-deep)", background: "rgba(252,228,228,0.9)", padding: "4px 12px", borderRadius: 6 }}>SOLD OUT</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4, opacity: isSoldOut ? 0.4 : 1 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>{item}</span>
+                  <span className="caption tnum" style={{ fontWeight: 600, color: isLowStock && !isSoldOut ? "var(--color-red-deep)" : "var(--color-brown-soft)" }}>
+                    {isSoldOut ? "0" : stock.claimed} of {stock.total} claimed
+                  </span>
+                </div>
+                <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden", opacity: isSoldOut ? 0.4 : 1 }}>
+                  <div style={{ height: "100%", borderRadius: 2, background: isLowStock ? "var(--color-red)" : "var(--color-red)", width: `${Math.min(pct, 100)}%`, transition: "width 0.6s ease" }} />
+                </div>
+                {isLowStock && !isSoldOut && (
+                  <span style={{ display: "inline-block", marginTop: 4, fontSize: 11, fontWeight: 700, color: "var(--color-red-deep)" }}>Almost gone!</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+          {sale.items.map((item) => (
+            <span key={item} style={{ display: "inline-block", padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600, background: "var(--color-cream-sunken)", color: "var(--color-brown-soft)" }}>{item}</span>
+          ))}
+          {isDraft && (
+            <span className="caption" style={{ alignSelf: "center", fontStyle: "italic" }}>{sale.items.length} items added</span>
+          )}
+        </div>
+      )}
 
       {/* Row 4: fulfillment info for live/upcoming */}
       {(isLive || isUpcoming) && (

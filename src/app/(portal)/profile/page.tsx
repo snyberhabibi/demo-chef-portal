@@ -6,11 +6,7 @@ import Link from "next/link";
 import { Camera, X, Upload, ExternalLink } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { SectionCard } from "@/components/ui/section-card";
-
-const ALL_CUISINES = [
-  "Palestinian", "Lebanese", "Jordanian", "Iraqi", "Syrian", "Egyptian",
-  "Moroccan", "Turkish", "Persian", "Indian", "Mexican", "Italian",
-];
+import { chefProfile, allCuisines as ALL_CUISINES } from "@/lib/mock-data";
 
 export default function ProfilePage() {
   const [loaded, setLoaded] = useState(false);
@@ -18,14 +14,14 @@ export default function ProfilePage() {
 
   const { toast } = useToast();
 
-  // Form state
-  const [businessName, setBusinessName] = useState("Yalla Kitchen");
-  const [tagline, setTagline] = useState("Authentic Palestinian home cooking");
-  const [bio, setBio] = useState("Every dish is made fresh to order with love, using recipes passed down through generations.");
-  const [story, setStory] = useState("I grew up watching my mother and grandmother cook for our family. Their recipes tell the story of our heritage.");
-  const [inspires, setInspires] = useState("The joy on people's faces when they taste food that reminds them of home.");
-  const [experience, setExperience] = useState("5");
-  const [cuisines, setCuisines] = useState(["Palestinian", "Lebanese", "Jordanian", "Iraqi"]);
+  // Form state — initialized from centralized mock data
+  const [businessName, setBusinessName] = useState(chefProfile.businessName);
+  const [tagline, setTagline] = useState(chefProfile.tagline);
+  const [bio, setBio] = useState(chefProfile.bio);
+  const [story, setStory] = useState(chefProfile.story);
+  const [inspires, setInspires] = useState(chefProfile.inspires);
+  const [experience, setExperience] = useState(chefProfile.experience);
+  const [cuisines, setCuisines] = useState(chefProfile.cuisines);
   const [cuisineSearch, setCuisineSearch] = useState("");
   const [cuisineDropdownOpen, setCuisineDropdownOpen] = useState(false);
   const cuisineRef = useRef<HTMLDivElement>(null);
@@ -90,7 +86,7 @@ export default function ProfilePage() {
       <div className="card" style={{ display: "flex", alignItems: "center", gap: 20 }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <img
-            src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
+            src={chefProfile.avatar}
             alt="Chef"
             style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
           />

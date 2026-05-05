@@ -74,7 +74,7 @@ export default function LoginPage() {
             style={{
               height: 48,
               borderRadius: 14,
-              fontSize: 15,
+              fontSize: 16,
             }}
           />
 

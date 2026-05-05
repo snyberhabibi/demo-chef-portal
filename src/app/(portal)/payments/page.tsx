@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CreditCard, CheckCircle, AlertTriangle, ChevronDown, ArrowRight, ExternalLink, Shield, Zap, Eye } from "lucide-react";
+import { transactions as TRANSACTIONS } from "@/lib/mock-data";
 
 type StripeState = "A" | "B" | "C";
 
@@ -9,14 +10,6 @@ const FAQ_ITEMS = [
   { q: "When do I get paid?", a: "Payouts are processed every Friday for all orders completed through Sunday." },
   { q: "What are the fees?", a: "Yalla Bites charges 10% per order. Stripe charges 2.9% + $0.30 per transaction." },
   { q: "Can I use my existing Stripe account?", a: "Yes! If you already have a Stripe account, we'll link it during the connection process." },
-];
-
-const TRANSACTIONS = [
-  { date: "May 2, 2026", desc: "Order #1042 - Sarah K.", amount: "+$48.00", type: "order" },
-  { date: "May 1, 2026", desc: "Order #1041 - Marcus T.", amount: "+$36.00", type: "order" },
-  { date: "Apr 30, 2026", desc: "Weekly payout", amount: "-$342.00", type: "payout" },
-  { date: "Apr 29, 2026", desc: "Platform fee - Week of Apr 21", amount: "-$18.40", type: "fee" },
-  { date: "Apr 28, 2026", desc: "Order #1038 - Priya R.", amount: "+$64.00", type: "order" },
 ];
 
 const INFO_BLOCKS = [

@@ -5,42 +5,36 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import {
+  dishes as allDishes,
+  chefProfile,
+  averageRating,
+  reviews,
+  getDish,
+} from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
-/*  Verified working Unsplash URLs                                     */
+/*  Derived store-preview data from centralized mock-data              */
 /* ------------------------------------------------------------------ */
-const bannerImg =
-  "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=1600&h=600&fit=crop";
-const chefAvatar =
-  "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop";
+const bannerImg = chefProfile.banner;
+const chefAvatar = chefProfile.avatar;
 
-/* Dish images */
-const mansafImg =
-  "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop";
-const falafelImg =
-  "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop";
-const shawarmaImg =
-  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop";
-const knafehImg =
-  "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop";
-const baklavaImg =
-  "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop";
-
-interface Dish {
+interface StoreDish {
   name: string;
   price: string;
   image: string;
 }
 
-const popularDishes: Dish[] = [
-  { name: "Grandma\u2019s Mansaf", price: "$22.00", image: mansafImg },
-  { name: "Falafel Plate", price: "$14.00", image: falafelImg },
-  { name: "Shawarma Bowl", price: "$16.00", image: shawarmaImg },
+/* Popular dishes — main dishes + appetizers that are published */
+const popularDishes: StoreDish[] = [
+  { name: getDish("mansaf")!.name, price: `$${getDish("mansaf")!.price.toFixed(2)}`, image: getDish("mansaf")!.image },
+  { name: getDish("falafel")!.name, price: `$${getDish("falafel")!.price.toFixed(2)}`, image: getDish("falafel")!.image },
+  { name: getDish("shawarma")!.name, price: `$${getDish("shawarma")!.price.toFixed(2)}`, image: getDish("shawarma")!.image },
 ];
 
-const desserts: Dish[] = [
-  { name: "Knafeh", price: "$18.00", image: knafehImg },
-  { name: "Baklava Box", price: "$12.00", image: baklavaImg },
+const desserts: StoreDish[] = [
+  { name: getDish("knafeh")!.name, price: `$${getDish("knafeh")!.price.toFixed(2)}`, image: getDish("knafeh")!.image },
+  { name: getDish("baklava")!.name, price: `$${getDish("baklava")!.price.toFixed(2)}`, image: getDish("baklava")!.image },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -146,10 +140,10 @@ export default function StorePreviewPage() {
         <div style={{ padding: "40px 24px 24px", background: "var(--color-cream)" }}>
           {/* Kitchen name + tagline */}
           <h1 className="heading-lg" style={{ fontSize: 24, color: "var(--color-brown)" }}>
-            Yalla Kitchen by Amira
+            {chefProfile.businessName} by {chefProfile.name}
           </h1>
           <p className="body-sm" style={{ marginTop: 4, color: "var(--color-brown-soft)" }}>
-            Authentic Palestinian home cooking
+            {chefProfile.tagline}
           </p>
 
           {/* Status + rating row */}
@@ -160,9 +154,9 @@ export default function StorePreviewPage() {
               <span style={{ opacity: 0.6, fontSize: 12 }}>&middot; Closes at 6:00 PM</span>
             </span>
             <span className="flex items-center gap-1 body" style={{ fontWeight: 600, color: "var(--color-brown)" }}>
-              4.8
+              {averageRating.toFixed(1)}
               <Star size={14} fill="var(--color-sage)" color="var(--color-sage)" />
-              <span style={{ fontWeight: 400, opacity: 0.6, fontSize: 12 }}>(4 reviews)</span>
+              <span style={{ fontWeight: 400, opacity: 0.6, fontSize: 12 }}>({reviews.length} reviews)</span>
             </span>
           </div>
 
@@ -186,7 +180,7 @@ export default function StorePreviewPage() {
           {/* About */}
           <div className="card" style={{ padding: "16px 20px" }}>
             <p className="body-sm" style={{ margin: 0, lineHeight: 1.6 }}>
-              Authentic Palestinian home cooking passed down through generations. Every dish is made fresh to order with love.
+              {chefProfile.tagline} passed down through generations. {chefProfile.bio}
               {bioExpanded && (
                 <span> I grew up watching my mother and grandmother cook for our family. Their recipes tell the story of our heritage — from the hills of Nablus to our kitchen in Dallas. Every spice, every fold of dough, carries a memory. We source local ingredients when possible, and our menu changes with the seasons to bring you the very best flavors.</span>
               )}
@@ -243,7 +237,7 @@ export default function StorePreviewPage() {
 /* ------------------------------------------------------------------ */
 /*  Dish card                                                          */
 /* ------------------------------------------------------------------ */
-function DishCard({ dish, onAdd }: { dish: Dish; onAdd?: () => void }) {
+function DishCard({ dish, onAdd }: { dish: StoreDish; onAdd?: () => void }) {
   return (
     <div className="card-photo" style={{ padding: 0 }}>
       <div style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>

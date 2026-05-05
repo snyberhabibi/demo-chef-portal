@@ -17,49 +17,15 @@ import {
   Quote,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { getOrderDetail, type OrderDetailData } from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
-/*  Order data lookup — keyed by ID prefix                             */
+/*  Order data — now from centralized @/lib/mock-data                  */
 /* ------------------------------------------------------------------ */
-interface OrderData {
-  orderHash: string;
-  orderStatus: "paid" | "confirmed" | "preparing" | "ready";
-  orderMethod: "delivery" | "pickup";
-  items: { name: string; qty: number; portion: string; customizations: { label: string; value: string }[]; price: string; image: string }[];
-  customer: { name: string; avatar: string; phone: string; email: string; address: string; mapsQuery: string };
-  timeline: { time: string; label: string; done: boolean }[];
-  readyBy: string;
-  readyIn: string;
-  subtotal: string;
-  platformFee: string;
-  delivery: string;
-  total: string;
-  payout: string;
-}
 
-const ORDER_DATA: Record<string, OrderData> = {
-  /* Keyed by hash prefix (first 7 chars without #) matching the orders list page */
-  "a8f2c1": {
-    orderHash: "#a8f2c1",
-    orderStatus: "paid",
-    orderMethod: "delivery",
-    items: [
-      { name: "Homemade Mansaf", qty: 2, portion: "Family Size", customizations: [{ label: "SPICE", value: "Medium" }, { label: "EXTRAS", value: "Extra pine nuts" }], price: "$28.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
-      { name: "Walnut Baklava", qty: 1, portion: "Box of 12", customizations: [{ label: "EXTRAS", value: "Extra syrup" }], price: "$18.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
-    ],
-    customer: { name: "Sarah Khan", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop", phone: "+14695550142", email: "sarah.khan@email.com", address: "742 Evergreen Terrace, Springfield", mapsQuery: "742+Evergreen+Terrace+Springfield" },
-    timeline: [
-      { time: "2:30 PM", label: "Order placed by Sarah Khan", done: true },
-      { time: "—", label: "Awaiting confirmation", done: false },
-    ],
-    readyBy: "Today 6:30 PM",
-    readyIn: "In 3h 45m",
-    subtotal: "$46.00",
-    platformFee: "$4.60",
-    delivery: "$4.99",
-    total: "$55.59",
-    payout: "$45.20",
-  },
+/* LEGACY: Keeping old entries as fallback for hash-based routing.     */
+/*         Primary data now comes from getOrderDetail().               */
+const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   "b3d4e7": {
     orderHash: "#b3d4e7",
     orderStatus: "confirmed",
@@ -302,8 +268,7 @@ const ORDER_DATA: Record<string, OrderData> = {
   },
 };
 
-/* Default fallback — uses the first order (a8f2c1 / Sarah Khan) */
-const DEFAULT_ORDER: OrderData = ORDER_DATA["a8f2c1"];
+/* Default fallback — now uses centralized mock data */
 
 const steps = [
   { label: "Confirmed", done: false },
@@ -399,7 +364,11 @@ export default function OrderDetailPage() {
   const { toast } = useToast();
   const params = useParams();
   const orderId = typeof params.id === "string" ? params.id : "";
-  const order = ORDER_DATA[orderId] || DEFAULT_ORDER;
+  const centralData = getOrderDetail(orderId);
+  /* Fall back to legacy hash data for orders not fully defined in centralized mock-data */
+  const order = centralData.orderHash === "#a8f2c1" && orderId !== "1042" && orderId !== "a8f2c1"
+    ? (_LEGACY_HASH_DATA[orderId] || centralData)
+    : centralData;
   const { orderHash, orderStatus, orderMethod, items, customer, timeline } = order;
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const curStep = currentStepIndex(orderStatus);

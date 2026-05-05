@@ -15,6 +15,14 @@ import {
   Zap,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import {
+  dashboardStats as stats,
+  recentOrders as rawRecentOrders,
+  flashSales,
+  chefProfile,
+  type Order,
+  type OrderStatus,
+} from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Seed data                                                         */
@@ -127,68 +135,51 @@ const onboardingPhases: Phase[] = [
   },
 ];
 
-const stats = [
-  {
-    label: "Orders This Month",
-    value: "47",
-    delta: "\u219112% vs last month",
-    positive: true,
-  },
-  {
-    label: "Revenue This Month",
-    value: "$2,184",
-    delta: "\u21918% vs last month",
-    positive: true,
-  },
-  {
-    label: "Active Dishes",
-    value: "12",
-    delta: "3 drafts",
-    positive: null,
-  },
-  {
-    label: "Avg Rating",
-    value: "4.8",
-    delta: "from 4 reviews",
-    positive: null,
-  },
-];
+/* Derive dashboard-friendly recent orders from centralized data */
+function statusDotColor(s: OrderStatus): string {
+  switch (s) {
+    case "paid":
+    case "confirmed":
+      return "var(--color-orange)";
+    case "preparing":
+      return "#e8a832";
+    case "ready":
+    case "readyForPickup":
+    case "delivered":
+    case "pickedUp":
+    case "outForDelivery":
+      return "var(--color-sage)";
+    case "cancelled":
+    case "rejected":
+      return "var(--color-red)";
+    default:
+      return "var(--color-brown-soft-2)";
+  }
+}
 
-const recentOrders = [
-  {
-    hashId: "#1042",
-    customer: "Sarah K.",
-    itemCount: 3,
-    method: "delivery" as const,
-    status: "Paid",
-    statusColor: "var(--color-orange)",
-    price: "$49.00",
-    date: "Today, 2:14 PM",
-    readyBy: "6:30 PM",
-  },
-  {
-    hashId: "#1041",
-    customer: "Marcus T.",
-    itemCount: 1,
-    method: "delivery" as const,
-    status: "Preparing",
-    statusColor: "#e8a832",
-    price: "$26.50",
-    date: "Today, 1:30 PM",
-    readyBy: "7:00 PM",
-  },
-  {
-    hashId: "#1040",
-    customer: "Priya R.",
-    itemCount: 1,
-    method: "pickup" as const,
-    status: "Ready",
-    statusColor: "var(--color-sage)",
-    price: "$18.00",
-    date: "Yesterday",
-    readyBy: null,
-  },
-];
+function statusLabel(s: OrderStatus): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function itemCount(items: { qty: number }[]): number {
+  return items.reduce((sum, i) => sum + i.qty, 0);
+}
+
+const recentOrders = rawRecentOrders.map((o) => ({
+  hashId: `#${o.orderId}`,
+  customer: o.customer,
+  itemCount: itemCount(o.items),
+  method: o.method,
+  status: statusLabel(o.status),
+  statusColor: statusDotColor(o.status),
+  price: o.price,
+  date: o.time ? `${o.date}, ${o.time}` : o.date,
+  readyBy: o.readyBy ?? null,
+}));
+
+/* Live and upcoming flash sales for the dashboard cards */
+const liveSale = flashSales.find((s) => s.status === "live");
+const upcomingSale = flashSales.find((s) => s.status === "upcoming");
 
 /* ------------------------------------------------------------------ */
 /*  Time-appropriate greeting                                          */
@@ -287,10 +278,12 @@ function ModeA() {
   const [step5Done, setStep5Done] = useState(false);
   const [quickDishName, setQuickDishName] = useState("");
   const [quickDishPrice, setQuickDishPrice] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [goLiveDone, setGoLiveDone] = useState(false);
 
   const allSteps = onboardingPhases.flatMap((p) => p.steps);
   const doneCount =
-    allSteps.filter((s) => s.done).length + (step5Done ? 1 : 0);
+    allSteps.filter((s) => s.done).length + (step5Done ? 1 : 0) + (goLiveDone ? 1 : 0);
   const totalSteps = allSteps.length;
   const pct = (doneCount / totalSteps) * 100;
   const remaining = totalSteps - doneCount;
@@ -302,8 +295,68 @@ function ModeA() {
     toast(`"${quickDishName}" published to your menu`);
   };
 
+  const handleGoLive = () => {
+    if (goLiveDone) return;
+    setGoLiveDone(true);
+    // Check prefers-reduced-motion before showing confetti
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReduced) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3500);
+    }
+    toast("Your kitchen is live! \uD83C\uDF89");
+  };
+
   return (
     <div className="section-stack line-reveal">
+      <style>{`
+        @keyframes confettiFall {
+          0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+          80% { opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti-particle {
+          position: fixed;
+          top: 0;
+          width: 8px;
+          height: 8px;
+          z-index: 9999;
+          pointer-events: none;
+          animation: confettiFall 3s ease-out forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .confetti-particle { animation: none; display: none; }
+        }
+      `}</style>
+
+      {/* Confetti celebration overlay */}
+      {showConfetti && (
+        <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9999, overflow: "hidden" }}>
+          {Array.from({ length: 60 }).map((_, i) => {
+            const colors = ["#e54141", "#a27460", "#79ad63", "#fc9d35", "#faf9f6"];
+            const color = colors[i % colors.length];
+            const left = Math.random() * 100;
+            const delay = Math.random() * 1.2;
+            const size = 6 + Math.random() * 6;
+            const shape = i % 3 === 0 ? "50%" : i % 3 === 1 ? "0" : "2px";
+            return (
+              <div
+                key={i}
+                className="confetti-particle"
+                style={{
+                  left: `${left}%`,
+                  width: size,
+                  height: size,
+                  borderRadius: shape,
+                  background: color,
+                  animationDelay: `${delay}s`,
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
       {/* Header with progress bar */}
       <div>
         <h1 className="heading-lg" style={{ marginBottom: 6 }}>
@@ -440,6 +493,55 @@ function ModeA() {
                       {isCurrent && !isExpanded && (
                         <span className="btn btn-gradient btn-sm shrink-0" style={{ fontSize: 12 }}>
                           Continue <ChevronRight size={12} />
+                        </span>
+                      )}
+                    </button>
+                  ) : step.id === 10 ? (
+                    <button
+                      type="button"
+                      onClick={handleGoLive}
+                      className="flex items-center gap-3 w-full text-left"
+                      style={{
+                        padding: "0 16px",
+                        height: 44,
+                        background: "transparent",
+                        border: "none",
+                        cursor: goLiveDone ? "default" : "pointer",
+                        display: "flex",
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 16,
+                          height: 16,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {goLiveDone ? (
+                          <Check size={14} strokeWidth={2.5} style={{ color: "var(--color-sage)" }} />
+                        ) : (
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "var(--color-brown-soft-2)" }}>
+                            {step.id}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className="flex-1 min-w-0"
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: goLiveDone ? "var(--color-brown-soft-2)" : "var(--color-brown)",
+                          textDecoration: goLiveDone ? "line-through" : undefined,
+                        }}
+                      >
+                        {step.label}
+                      </span>
+                      {!goLiveDone && (
+                        <span className="btn btn-gradient btn-sm shrink-0" style={{ fontSize: 12 }}>
+                          Go Live! <ChevronRight size={12} />
                         </span>
                       )}
                     </button>
@@ -645,7 +747,7 @@ function ModeB() {
 
       {/* Greeting */}
       <h1 className="heading-lg" style={{ margin: "0 0 8px 0" }}>
-        {greeting}, Amira{" "}
+        {greeting}, {chefProfile.name}{" "}
         <span
           role="img"
           aria-label="wave"
@@ -675,6 +777,7 @@ function ModeB() {
           placeholder="Search recent orders..."
           value={dashSearch}
           onChange={(e) => setDashSearch(e.target.value)}
+          className="text-sm sm:text-sm"
           style={{
             width: "100%",
             height: 44,
@@ -683,7 +786,6 @@ function ModeB() {
             borderRadius: 10,
             border: "1px solid rgba(51,31,46,0.1)",
             background: "#fff",
-            fontSize: 14,
             color: "var(--color-brown)",
           }}
         />
@@ -738,76 +840,80 @@ function ModeB() {
         </div>
         <div style={{ display: "flex", gap: 10, overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none", paddingBottom: 2 }}>
           {/* Live sale card */}
-          <Link
-            href="/flash-sales"
-            className="card card-hover"
-            style={{
-              display: "block",
-              textDecoration: "none",
-              padding: "14px 16px",
-              minWidth: 280,
-              flex: "0 0 auto",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <span
-                className="dash-pulse-dot"
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "var(--color-sage)",
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
-                Weekend Special
+          {liveSale && (
+            <Link
+              href="/flash-sales"
+              className="card card-hover"
+              style={{
+                display: "block",
+                textDecoration: "none",
+                padding: "14px 16px",
+                minWidth: 280,
+                flex: "0 0 auto",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span
+                  className="dash-pulse-dot"
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "var(--color-sage)",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
+                  {liveSale.name}
+                </span>
+                <Zap size={14} style={{ color: "var(--color-orange)", flexShrink: 0 }} />
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>{liveSale.orderCount} orders</span>
+                <span className="caption">&middot;</span>
+                <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>${liveSale.revenue?.toLocaleString()}</span>
+              </div>
+              <span className="caption tnum" style={{ color: "var(--color-red)", fontWeight: 600 }}>
+                Orders close in {liveSale.countdown}
               </span>
-              <Zap size={14} style={{ color: "var(--color-orange)", flexShrink: 0 }} />
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>23 orders</span>
-              <span className="caption">&middot;</span>
-              <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)" }}>$847</span>
-            </div>
-            <span className="caption tnum" style={{ color: "var(--color-red)", fontWeight: 600 }}>
-              Orders close in 6h 32m
-            </span>
-          </Link>
+            </Link>
+          )}
 
           {/* Upcoming sale card */}
-          <Link
-            href="/flash-sales"
-            className="card card-hover"
-            style={{
-              display: "block",
-              textDecoration: "none",
-              padding: "14px 16px",
-              minWidth: 280,
-              flex: "0 0 auto",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "var(--color-orange)",
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
-                Meal Prep Monday
+          {upcomingSale && (
+            <Link
+              href="/flash-sales"
+              className="card card-hover"
+              style={{
+                display: "block",
+                textDecoration: "none",
+                padding: "14px 16px",
+                minWidth: 280,
+                flex: "0 0 auto",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "var(--color-orange)",
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1 }}>
+                  {upcomingSale.name}
+                </span>
+              </div>
+              <div className="caption" style={{ marginBottom: 4 }}>
+                Opens {upcomingSale.orderOpen} &rarr; Closes {upcomingSale.orderClose}
+              </div>
+              <span className="caption tnum" style={{ color: "var(--color-orange)", fontWeight: 600 }}>
+                Opens in {upcomingSale.countdown}
               </span>
-            </div>
-            <div className="caption" style={{ marginBottom: 4 }}>
-              Opens Sun 6 PM &rarr; Closes Mon 11 PM
-            </div>
-            <span className="caption tnum" style={{ color: "var(--color-orange)", fontWeight: 600 }}>
-              Opens in 2d 4h
-            </span>
-          </Link>
+            </Link>
+          )}
         </div>
       </div>
 

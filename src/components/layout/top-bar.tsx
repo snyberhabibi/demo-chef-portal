@@ -27,8 +27,8 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
       <button
         className="lg:hidden flex items-center justify-center rounded-lg"
         style={{
-          width: 40,
-          height: 40,
+          width: 44,
+          height: 44,
           color: "var(--color-brown-soft-2)",
           background: "transparent",
           border: "none",
@@ -147,8 +147,8 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
           href="/orders"
           className="relative flex items-center justify-center rounded-lg"
           style={{
-            width: 36,
-            height: 36,
+            width: 44,
+            height: 44,
             color: "var(--color-brown-soft-2)",
             transition: `all var(--t-fast) var(--ease-spring)`,
           }}
@@ -175,17 +175,22 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
           />
         </Link>
 
-        {/* Avatar */}
+        {/* Avatar — 44px touch area, 28px visual */}
         <Link
           href="/profile"
-          className="rounded-full overflow-hidden flex-shrink-0"
-          style={{ width: 28, height: 28 }}
+          className="flex items-center justify-center flex-shrink-0"
+          style={{ width: 44, height: 44 }}
         >
-          <img
-            src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
+          <div
+            className="rounded-full overflow-hidden"
+            style={{ width: 28, height: 28 }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </Link>
       </div>
     </header>
