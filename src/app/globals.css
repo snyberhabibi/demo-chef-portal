@@ -505,7 +505,6 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
 /* Pill-shaped primary CTA (full rounded, Yalla Bites brand) */
 .btn-pill { border-radius: 9999px; }
-.btn-red { border-radius: 9999px; }
 
 /* Accent line — 4px bar under headlines */
 .accent-line {

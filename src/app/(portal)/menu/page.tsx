@@ -579,6 +579,7 @@ export default function MenuPage() {
               placeholder="Search by name, category, or cuisine..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              className="text-sm sm:text-sm"
               style={{
                 width: "100%",
                 height: 44,
@@ -587,7 +588,6 @@ export default function MenuPage() {
                 borderRadius: 10,
                 border: "1px solid rgba(51,31,46,0.1)",
                 background: "#fff",
-                fontSize: 14,
                 color: "var(--color-brown)",
               }}
             />
@@ -630,7 +630,7 @@ export default function MenuPage() {
                     }}
                   >
                     <Link
-                      href="/menu/new"
+                      href={`/menu/new?edit=${dish.id}`}
                       onClick={() => toast(`Editing: ${dish.name}`)}
                       style={{ textDecoration: "none", color: "inherit", display: "block" }}
                     >
@@ -739,7 +739,7 @@ export default function MenuPage() {
                           }}
                         >
                           <Link
-                            href="/menu/new"
+                            href={`/menu/new?edit=${dish.id}`}
                             onClick={() => { toast(`Editing ${dish.name}`); setOpenMenuId(null); }}
                             style={{
                               display: "block",
@@ -869,6 +869,7 @@ export default function MenuPage() {
               placeholder="Search bundles..."
               value={bundleSearch}
               onChange={(e) => setBundleSearch(e.target.value)}
+              className="text-sm sm:text-sm"
               style={{
                 width: "100%",
                 height: 44,
@@ -877,7 +878,6 @@ export default function MenuPage() {
                 borderRadius: 10,
                 border: "1px solid rgba(51,31,46,0.1)",
                 background: "#fff",
-                fontSize: 14,
                 color: "var(--color-brown)",
               }}
             />

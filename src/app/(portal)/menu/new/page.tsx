@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronDown,
-  ChevronUp,
   Plus,
   Trash2,
   Upload,
@@ -16,6 +15,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { SectionCard } from "@/components/ui/section-card";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -94,78 +94,41 @@ interface SizeRow {
 }
 
 /* ------------------------------------------------------------------ */
-/*  SectionCard (same pattern as Profile page)                         */
+/*  Dish data for edit mode (mirrors menu page data)                   */
 /* ------------------------------------------------------------------ */
-
-function SectionCard({
-  title,
-  subtitle,
-  open,
-  onToggle,
-  children,
-}: {
-  title: string;
-  subtitle: string;
-  open: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-      <button
-        onClick={onToggle}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          padding: "16px 20px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <div>
-          <div className="heading-sm">{title}</div>
-          <div className="caption" style={{ marginTop: 1 }}>
-            {subtitle}
-          </div>
-        </div>
-        {open ? (
-          <ChevronUp size={18} style={{ color: "var(--color-brown-soft-2)" }} />
-        ) : (
-          <ChevronDown size={18} style={{ color: "var(--color-brown-soft-2)" }} />
-        )}
-      </button>
-      <div
-        style={{
-          overflow: "hidden",
-          transition: "max-height 0.3s ease, opacity 0.3s ease",
-          maxHeight: open ? 3000 : 0,
-          opacity: open ? 1 : 0,
-        }}
-      >
-        <div
-          style={{
-            padding: "0 20px 20px",
-            borderTop: "1px solid rgba(51,31,46,0.04)",
-          }}
-        >
-          <div style={{ paddingTop: 16 }}>{children}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
+const EDITABLE_DISHES: Record<string, { name: string; price: string; category: string; cuisine: string; description: string; status: "draft" | "published" }> = {
+  mansaf: { name: "Homemade Mansaf", price: "28.00", category: "Main Dishes", cuisine: "Jordanian", description: "Traditional Jordanian lamb dish cooked in fermented dried yogurt and served with rice.", status: "published" },
+  knafeh: { name: "Pistachio Knafeh", price: "18.00", category: "Desserts", cuisine: "Palestinian", description: "Crispy shredded phyllo pastry filled with sweet cheese and topped with pistachios.", status: "published" },
+  baklava: { name: "Walnut Baklava", price: "14.00", category: "Desserts", cuisine: "Turkish", description: "Layers of flaky phyllo dough filled with chopped walnuts, sweetened with honey syrup.", status: "published" },
+  shawarma: { name: "Chicken Shawarma", price: "16.00", category: "Main Dishes", cuisine: "Lebanese", description: "Marinated chicken slow-roasted on a vertical spit, served with garlic sauce.", status: "published" },
+  hummus: { name: "Smoky Hummus", price: "10.00", category: "Appetizers", cuisine: "Middle Eastern", description: "Classic chickpea dip with a smoky twist, drizzled with olive oil.", status: "draft" },
+  falafel: { name: "Crispy Falafel", price: "12.00", category: "Appetizers", cuisine: "Egyptian", description: "Golden fried chickpea fritters, crispy outside, fluffy inside.", status: "published" },
+  tabouleh: { name: "Tabouleh Salad", price: "11.00", category: "Salads", cuisine: "Lebanese", description: "Fresh parsley and bulgur salad with tomatoes, mint, and lemon dressing.", status: "draft" },
+  mandi: { name: "Chicken Mandi", price: "22.00", category: "Main Dishes", cuisine: "Yemeni", description: "Aromatic rice and chicken cooked with a blend of Yemeni spices.", status: "published" },
+  fattoush: { name: "Garden Fattoush", price: "10.00", category: "Salads", cuisine: "Lebanese", description: "Crispy pita chip salad with fresh vegetables and sumac dressing.", status: "published" },
+  kibbeh: { name: "Lamb Kibbeh", price: "16.00", category: "Appetizers", cuisine: "Syrian", description: "Fried bulgur shells stuffed with seasoned ground lamb and pine nuts.", status: "published" },
+  manaqish: { name: "Manaqish", price: "8.00", category: "Bakery", cuisine: "Lebanese", description: "Lebanese flatbread topped with za'atar, cheese, or ground meat.", status: "draft" },
+};
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 export default function CreateDishPage() {
+  return (
+    <Suspense fallback={<div className="content-default section-stack page-fade"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>}>
+      <CreateDishPageInner />
+    </Suspense>
+  );
+}
+
+function CreateDishPageInner() {
   const router = useRouter();
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+  const editDish = editId ? EDITABLE_DISHES[editId] : null;
+  const isEditMode = !!editDish;
 
   /* ── Section collapse state ── */
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -182,15 +145,15 @@ export default function CreateDishPage() {
   };
 
   /* ── The Basics ── */
-  const [dishName, setDishName] = useState("");
-  const [description, setDescription] = useState("");
-  const [cuisine, setCuisine] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [status, setStatus] = useState<"draft" | "published">("draft");
+  const [dishName, setDishName] = useState(editDish?.name ?? "");
+  const [description, setDescription] = useState(editDish?.description ?? "");
+  const [cuisine, setCuisine] = useState(editDish?.cuisine ?? "");
+  const [selectedCategory, setSelectedCategory] = useState(editDish?.category ?? "");
+  const [status, setStatus] = useState<"draft" | "published">(editDish?.status ?? "draft");
 
   /* ── Pricing & Sizes ── */
   const [sizeRows, setSizeRows] = useState<SizeRow[]>([
-    { id: 1, portionLabel: "", size: "", price: "" },
+    { id: 1, portionLabel: editDish ? "portion" : "", size: editDish ? "Regular" : "", price: editDish?.price ?? "" },
   ]);
   const [nextSizeId, setNextSizeId] = useState(2);
 
@@ -396,7 +359,7 @@ export default function CreateDishPage() {
           marginBottom: 28,
         }}
       >
-        <h1 className="heading-md">Create New Dish</h1>
+        <h1 className="heading-md">{isEditMode ? `Edit: ${editDish.name}` : "Create New Dish"}</h1>
         <span
           className={`pill ${status === "published" ? "pill-sage" : "pill-orange"}`}
           style={{ fontSize: 11, transition: "all 0.2s ease" }}
@@ -732,7 +695,7 @@ export default function CreateDishPage() {
               {sizeRows.map((row) => (
                 <div
                   key={row.id}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 flex-wrap sm:flex-nowrap"
                   style={{
                     padding: "8px 12px",
                     borderRadius: 10,
@@ -1617,8 +1580,8 @@ export default function CreateDishPage() {
 
                 {/* Column headers */}
                 <div
+                  className="hidden sm:grid"
                   style={{
-                    display: "grid",
                     gridTemplateColumns:
                       group.selectionType === "quantity"
                         ? "20px 1fr 100px 70px 32px"
@@ -1654,6 +1617,7 @@ export default function CreateDishPage() {
                   {group.modifiers.map((mod) => (
                     <div
                       key={mod.id}
+                      className="modifier-row"
                       style={{
                         display: "grid",
                         gridTemplateColumns:
@@ -1902,6 +1866,7 @@ export default function CreateDishPage() {
             left: 0 !important;
             right: 0 !important;
             padding: 12px 24px !important;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
             background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(16px) !important;
             -webkit-backdrop-filter: blur(16px) !important;
@@ -1911,6 +1876,14 @@ export default function CreateDishPage() {
           }
           .create-dish-bottom-bar .btn {
             flex: 1;
+          }
+        }
+        @media (max-width: 639px) {
+          .modifier-row {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .modifier-row > *:first-child {
+            display: none !important;
           }
         }
       `}</style>

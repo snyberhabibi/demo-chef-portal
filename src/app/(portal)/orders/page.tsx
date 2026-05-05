@@ -1,198 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, Truck, ShoppingBag, Package, ChevronRight, ChevronDown, MessageSquare, ExternalLink, ClipboardList } from "lucide-react";
+import { Search, Truck, ShoppingBag, Package, ChevronRight, ChevronDown, MessageSquare, ExternalLink, ClipboardList, LayoutGrid, List, Volume2, VolumeX, X } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-type OrderStatus =
-  | "paid"
-  | "confirmed"
-  | "preparing"
-  | "ready"
-  | "readyForPickup"
-  | "outForDelivery"
-  | "delivered"
-  | "pickedUp"
-  | "rescheduling"
-  | "cancelled"
-  | "rejected";
-
-type Urgency = "overdue" | "due-soon" | null;
-
-interface Order {
-  hash: string;
-  customer: string;
-  items: { qty: number; name: string }[];
-  method: "delivery" | "pickup";
-  date: string;
-  time?: string;
-  price: string;
-  payout: string;
-  status: OrderStatus;
-  cancelNote?: string;
-  readyBy?: string;
-  urgency?: Urgency;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Mock data — 12 orders                                              */
-/* ------------------------------------------------------------------ */
-const orders: Order[] = [
-  {
-    hash: "#a8f2c1",
-    customer: "Sarah K.",
-    items: [
-      { qty: 2, name: "Mansaf" },
-      { qty: 1, name: "Baklava" },
-    ],
-    method: "delivery",
-    date: "Today",
-    time: "2:30 PM",
-    price: "$49.00",
-    payout: "$45.20",
-    status: "paid",
-    readyBy: "6:30 PM",
-    urgency: "due-soon",
-  },
-  {
-    hash: "#b3d4e7",
-    customer: "Marcus T.",
-    items: [
-      { qty: 1, name: "Falafel Wrap" },
-      { qty: 1, name: "Hummus" },
-    ],
-    method: "delivery",
-    date: "Today",
-    time: "3:15 PM",
-    price: "$26.50",
-    payout: "$22.10",
-    status: "confirmed",
-    readyBy: "7:00 PM",
-  },
-  {
-    hash: "#c9e1f3",
-    customer: "Priya R.",
-    items: [{ qty: 1, name: "Knafeh" }],
-    method: "delivery",
-    date: "Today",
-    time: "1:55 PM",
-    price: "$18.00",
-    payout: "$16.50",
-    status: "preparing",
-    readyBy: "5:15 PM",
-    urgency: "overdue",
-  },
-  {
-    hash: "#d2f4a8",
-    customer: "Jordan L.",
-    items: [{ qty: 3, name: "Shawarma" }],
-    method: "pickup",
-    date: "Today",
-    time: "3:02 PM",
-    price: "$48.00",
-    payout: "$44.10",
-    status: "ready",
-  },
-  {
-    hash: "#e5g7b9",
-    customer: "Layla M.",
-    items: [
-      { qty: 1, name: "Mandi" },
-      { qty: 1, name: "Tabouleh" },
-    ],
-    method: "delivery",
-    date: "Yesterday",
-    price: "$33.00",
-    payout: "",
-    status: "cancelled",
-    cancelNote: "by customer",
-  },
-  {
-    hash: "#f8h2c4",
-    customer: "Daniel B.",
-    items: [{ qty: 1, name: "Family Dinner Bundle" }],
-    method: "pickup",
-    date: "Yesterday",
-    price: "$65.00",
-    payout: "$59.80",
-    status: "delivered",
-  },
-  {
-    hash: "#g1j3d5",
-    customer: "Amina H.",
-    items: [
-      { qty: 2, name: "Baklava" },
-      { qty: 1, name: "Hummus" },
-    ],
-    method: "delivery",
-    date: "May 2",
-    price: "$28.00",
-    payout: "$25.40",
-    status: "pickedUp",
-  },
-  {
-    hash: "#h4k6e7",
-    customer: "Omar S.",
-    items: [{ qty: 1, name: "Mansaf (Full Tray)" }],
-    method: "delivery",
-    date: "May 2",
-    price: "$100.00",
-    payout: "$92.00",
-    status: "paid",
-    readyBy: "8:00 AM",
-  },
-  {
-    hash: "#i7l9f8",
-    customer: "Nadia K.",
-    items: [{ qty: 4, name: "Falafel" }],
-    method: "pickup",
-    date: "May 1",
-    price: "$36.00",
-    payout: "$33.20",
-    status: "delivered",
-  },
-  {
-    hash: "#j2m4g1",
-    customer: "Rami A.",
-    items: [
-      { qty: 1, name: "Mansaf" },
-      { qty: 2, name: "Knafeh" },
-    ],
-    method: "delivery",
-    date: "May 1",
-    price: "$64.00",
-    payout: "$58.80",
-    status: "delivered",
-  },
-  {
-    hash: "#k5n7h3",
-    customer: "Fatima Z.",
-    items: [{ qty: 1, name: "Bundle: Weekly Prep" }],
-    method: "delivery",
-    date: "Apr 30",
-    price: "$75.00",
-    payout: "$69.00",
-    status: "rejected",
-  },
-  {
-    hash: "#l8p2i5",
-    customer: "Hassan W.",
-    items: [
-      { qty: 2, name: "Shawarma" },
-      { qty: 1, name: "Tabouleh" },
-    ],
-    method: "pickup",
-    date: "Apr 30",
-    price: "$43.00",
-    payout: "$39.50",
-    status: "delivered",
-  },
-];
+import { orders, type Order, type OrderStatus, type Urgency } from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Filter tabs                                                        */
@@ -295,17 +108,32 @@ export default function OrdersPage() {
   const { toast } = useToast();
   const [statusOverrides, setStatusOverrides] = useState<Record<string, OrderStatus>>({});
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "pipeline">("list");
+  const [audioAlerts, setAudioAlerts] = useState(false);
+  const [bottomSheetOrder, setBottomSheetOrder] = useState<Order | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const activeFilter = filterTabs.find((f) => f.label === activeTab)!;
 
-  /* Count per tab */
+  /* Count per tab — recompute when statuses change */
   const tabCounts = useMemo(() => {
     const counts: Record<string, number> = {};
+    const effectiveOrders = orders.map((o) => ({
+      ...o,
+      status: statusOverrides[o.hash] || o.status,
+    }));
     for (const tab of filterTabs) {
-      counts[tab.label] = orders.filter(tab.match).length;
+      counts[tab.label] = effectiveOrders.filter(tab.match).length;
     }
     return counts;
-  }, []);
+  }, [statusOverrides]);
 
   /* Filtered + searched */
   const filtered = useMemo(() => {
@@ -332,7 +160,7 @@ export default function OrdersPage() {
     return statusOverrides[order.hash] || order.status;
   };
 
-  const advanceStatus = (hash: string, currentStatus: OrderStatus) => {
+  const advanceStatus = useCallback((hash: string, currentStatus: OrderStatus) => {
     const nextMap: Partial<Record<OrderStatus, OrderStatus>> = {
       paid: "confirmed",
       confirmed: "preparing",
@@ -344,7 +172,16 @@ export default function OrdersPage() {
     if (next) {
       setStatusOverrides((prev) => ({ ...prev, [hash]: next }));
     }
-  };
+  }, []);
+
+  const handleOrderAction = useCallback((order: Order, effectiveStatus: OrderStatus) => {
+    if (isMobile) {
+      setBottomSheetOrder(order);
+    } else {
+      toast(actionToastMsg(order.hash, effectiveStatus));
+      advanceStatus(order.hash, effectiveStatus);
+    }
+  }, [isMobile, toast, advanceStatus]);
 
   if (!loaded) {
     return (
@@ -491,6 +328,7 @@ export default function OrdersPage() {
             placeholder="Search orders..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            className="text-[13px] sm:text-[13px]"
             style={{
               width: "100%",
               height: 44,
@@ -499,7 +337,6 @@ export default function OrdersPage() {
               borderRadius: 10,
               border: "1px solid rgba(51,31,46,0.1)",
               background: "#fff",
-              fontSize: 13,
               color: "var(--color-brown)",
               outline: "none",
               transition: "border-color var(--t-fast), box-shadow var(--t-fast)",
@@ -530,6 +367,7 @@ export default function OrdersPage() {
           placeholder="Search by order ID, customer, or dish..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          className="text-[13px] sm:text-[13px]"
           style={{
             width: "100%",
             height: 44,
@@ -538,7 +376,6 @@ export default function OrdersPage() {
             borderRadius: 10,
             border: "1px solid rgba(51,31,46,0.1)",
             background: "#fff",
-            fontSize: 13,
             color: "var(--color-brown)",
             outline: "none",
             transition: "border-color var(--t-fast), box-shadow var(--t-fast)",
@@ -755,8 +592,10 @@ export default function OrdersPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 28,
-                  height: 28,
+                  minWidth: 36,
+                  minHeight: 36,
+                  width: 36,
+                  height: 36,
                   borderRadius: 6,
                   fontSize: 12,
                   fontWeight: 600,
