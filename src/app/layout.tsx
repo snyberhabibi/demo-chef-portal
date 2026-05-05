@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import { I18nProvider } from "@/lib/i18n";
+import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
+import { InstallPrompt } from "@/components/pwa/install-prompt";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,9 +19,32 @@ const jakarta = Plus_Jakarta_Sans({
   weight: ["500", "600", "700", "800"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#331f2e",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: "Yalla Bites — Chef Portal",
-  description: "Manage your kitchen, menu, and orders",
+  description: "Manage your kitchen, menu, orders, and flash sales — all in one place.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Yalla Bites",
+    startupImage: "/icons/icon-512.png",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +54,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full`}>
-      <body className="min-h-full flex flex-col"><I18nProvider><ToastProvider>{children}</ToastProvider></I18nProvider></body>
+      <body className="min-h-full flex flex-col"><I18nProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></I18nProvider></body>
     </html>
   );
 }
