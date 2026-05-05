@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
 /*  Verified working Unsplash URLs                                     */
@@ -46,6 +47,7 @@ const desserts: Dish[] = [
 /* ------------------------------------------------------------------ */
 export default function StorePreviewPage() {
   const router = useRouter();
+  const { toast } = useToast();
   return (
     <div className="content-default" style={{ margin: "-16px auto" }}>
       <style>{`
@@ -138,7 +140,7 @@ export default function StorePreviewPage() {
               <span style={{ opacity: 0.6, fontSize: 12 }}>&middot; Closes at 6:00 PM</span>
             </span>
             <span className="flex items-center gap-1 body" style={{ fontWeight: 600, color: "var(--color-brown)" }}>
-              4.0
+              4.8
               <Star size={14} fill="var(--color-sage)" color="var(--color-sage)" />
               <span style={{ fontWeight: 400, opacity: 0.6, fontSize: 12 }}>(4 reviews)</span>
             </span>
@@ -181,7 +183,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Popular Dishes</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {popularDishes.map((dish) => (
-                <DishCard key={dish.name} dish={dish} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this")} />
               ))}
             </div>
           </div>
@@ -191,7 +193,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Desserts</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {desserts.map((dish) => (
-                <DishCard key={dish.name} dish={dish} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this")} />
               ))}
             </div>
           </div>
@@ -219,7 +221,7 @@ export default function StorePreviewPage() {
 /* ------------------------------------------------------------------ */
 /*  Dish card                                                          */
 /* ------------------------------------------------------------------ */
-function DishCard({ dish }: { dish: Dish }) {
+function DishCard({ dish, onAdd }: { dish: Dish; onAdd?: () => void }) {
   return (
     <div className="card-photo" style={{ padding: 0 }}>
       <div style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>
@@ -244,7 +246,7 @@ function DishCard({ dish }: { dish: Dish }) {
             <button
               className="btn btn-sm btn-dark"
               style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999 }}
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => { e.preventDefault(); onAdd?.(); }}
             >
               <ShoppingCart size={12} strokeWidth={2} />
               Add

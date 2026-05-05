@@ -177,7 +177,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
 
         {/* Avatar */}
         <Link
-          href="/settings"
+          href="/profile"
           className="rounded-full overflow-hidden flex-shrink-0"
           style={{ width: 28, height: 28 }}
         >

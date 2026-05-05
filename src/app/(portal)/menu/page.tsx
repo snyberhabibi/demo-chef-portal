@@ -28,7 +28,7 @@ const dishes: Dish[] = [
   {
     id: "mansaf",
     name: "Homemade Mansaf",
-    price: 100,
+    price: 28,
     status: "published",
     image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     category: "Main Dishes",
@@ -508,6 +508,8 @@ export default function MenuPage() {
                 overflowX: "auto",
                 scrollbarWidth: "none",
                 paddingBottom: 2,
+                maskImage: "linear-gradient(to right, black 90%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to right, black 90%, transparent 100%)",
               }}
             >
               {categories.map((cat) => {
@@ -676,7 +678,7 @@ export default function MenuPage() {
                     </Link>
 
                     <div
-                      className="absolute opacity-0 group-hover:opacity-100"
+                      className="absolute opacity-100"
                       style={{
                         top: 8,
                         right: 8,

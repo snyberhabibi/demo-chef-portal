@@ -5,7 +5,7 @@ import {
   Home,
   Receipt,
   UtensilsCrossed,
-  Wallet,
+  Star,
   User,
 } from "lucide-react";
 
@@ -18,7 +18,7 @@ const tabs = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/orders", label: "Orders", icon: Receipt, badge: 2 },
   { href: "/menu", label: "Menu", icon: UtensilsCrossed },
-  { href: "/payments", label: "Earnings", icon: Wallet },
+  { href: "/reviews", label: "Reviews", icon: Star },
   { href: "/profile", label: "Profile", icon: User },
 ];
 

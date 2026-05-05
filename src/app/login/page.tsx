@@ -62,7 +62,6 @@ export default function LoginPage() {
         >
           Welcome to <span className="text-gradient">your kitchen</span>.
         </h1>
-        <span className="accent-line" style={{ margin: '12px auto 0' }} />
 
         {/* Email input — 48px, rounded-xl (14px) */}
         <div className="flex flex-col" style={{ gap: 12 }}>
@@ -170,12 +169,6 @@ export default function LoginPage() {
 
           {showPassword && (
             <div className="mt-3 flex flex-col gap-3 page-fade">
-              <input
-                type="email"
-                placeholder="Email"
-                className="input"
-                style={{ height: 48, borderRadius: 14 }}
-              />
               <input
                 type="password"
                 placeholder="Password"

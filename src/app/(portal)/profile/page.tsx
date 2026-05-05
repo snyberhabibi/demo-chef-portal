@@ -26,7 +26,7 @@ export default function ProfilePage() {
 
   // Section collapse state
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    kitchen: true, about: true, cuisines: true, branding: false, operations: false,
+    kitchen: true, about: true, cuisines: true, branding: false,
   });
 
   const toggleSection = (key: string) => {
@@ -225,22 +225,6 @@ export default function ProfilePage() {
         </div>
       </SectionCard>
 
-      {/* Section: Operations */}
-      <SectionCard
-        title="Operations"
-        subtitle="Hours, availability, and order settings"
-        open={openSections.operations}
-        onToggle={() => toggleSection("operations")}
-      >
-        <div style={{ textAlign: "center", padding: "20px 0" }}>
-          <div className="body-sm" style={{ marginBottom: 12 }}>
-            Manage your hours, availability, and order settings on the dedicated Operations page.
-          </div>
-          <Link href="/operations" className="btn btn-ghost btn-sm">
-            Go to Operations & Hours →
-          </Link>
-        </div>
-      </SectionCard>
 
       {/* Bottom save */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>

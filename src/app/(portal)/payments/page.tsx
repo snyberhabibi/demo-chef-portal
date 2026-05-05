@@ -32,7 +32,8 @@ export default function PaymentsPage() {
   return (
     <div className="content-narrow section-stack">
       {/* State toggle */}
-      <div style={{ display: "inline-flex", gap: 4 }}>
+      <div style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
+        <span className="caption" style={{ fontWeight: 600, marginRight: 4 }}>Demo:</span>
         {(["A", "B", "C"] as StripeState[]).map((s) => (
           <button
             key={s}

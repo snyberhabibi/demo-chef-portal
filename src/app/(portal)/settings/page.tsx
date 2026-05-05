@@ -192,7 +192,7 @@ export default function SettingsPage() {
                   </div>
                   {CHANNELS.map((ch) => (
                     <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
-                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} onClick={() => toggleNotif(cat.label, ch)} style={{ transform: "scale(0.85)" }}>
+                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} onClick={() => toggleNotif(cat.label, ch)}>
                         <span className="toggle-thumb" />
                       </button>
                     </div>

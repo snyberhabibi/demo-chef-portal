@@ -569,7 +569,7 @@ function ModeA() {
 
       {/* Need help? — simple caption link */}
       <Link
-        href="/tutorials"
+        href="/settings"
         className="caption"
         style={{
           color: "var(--color-brown-soft-2)",
@@ -641,7 +641,7 @@ function ModeB() {
         />
         <input
           type="text"
-          placeholder="Search orders, dishes, reviews..."
+          placeholder="Search recent orders..."
           value={dashSearch}
           onChange={(e) => setDashSearch(e.target.value)}
           style={{

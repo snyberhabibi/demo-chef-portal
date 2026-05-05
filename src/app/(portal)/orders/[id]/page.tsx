@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   Check,
@@ -18,11 +19,117 @@ import {
 import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
-/*  Static data — hardcoded for order #a8f2c1 (Sarah K., paid)         */
+/*  Order data lookup — keyed by ID prefix                             */
 /* ------------------------------------------------------------------ */
-const orderHash = "#a8f2c1";
-const orderStatus: "paid" | "confirmed" | "preparing" | "ready" = "paid";
-const orderMethod: "delivery" | "pickup" = "delivery";
+interface OrderData {
+  orderHash: string;
+  orderStatus: "paid" | "confirmed" | "preparing" | "ready";
+  orderMethod: "delivery" | "pickup";
+  items: { name: string; qty: number; portion: string; customizations: { label: string; value: string }[]; price: string; image: string }[];
+  customer: { name: string; avatar: string; phone: string; email: string; address: string; mapsQuery: string };
+  timeline: { time: string; label: string; done: boolean }[];
+  readyBy: string;
+  readyIn: string;
+  subtotal: string;
+  platformFee: string;
+  delivery: string;
+  total: string;
+  payout: string;
+}
+
+const ORDER_DATA: Record<string, OrderData> = {
+  "1042": {
+    orderHash: "#1042",
+    orderStatus: "paid",
+    orderMethod: "delivery",
+    items: [
+      { name: "Lamb Kibbeh", qty: 2, portion: "Regular", customizations: [{ label: "SPICE", value: "Medium" }, { label: "EXTRAS", value: "Extra tahini" }], price: "$32.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
+      { name: "Garden Fattoush", qty: 1, portion: "Large", customizations: [], price: "$12.00", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop" },
+    ],
+    customer: { name: "Sarah Khan", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop", phone: "+14695550142", email: "sarah.khan@email.com", address: "742 Evergreen Terrace, Springfield", mapsQuery: "742+Evergreen+Terrace+Springfield" },
+    timeline: [
+      { time: "2:14 PM", label: "Order placed by Sarah Khan", done: true },
+      { time: "—", label: "Awaiting confirmation", done: false },
+    ],
+    readyBy: "Today 6:30 PM",
+    readyIn: "In 3h 45m",
+    subtotal: "$44.00",
+    platformFee: "$4.40",
+    delivery: "$4.99",
+    total: "$53.39",
+    payout: "$43.60",
+  },
+  "1041": {
+    orderHash: "#1041",
+    orderStatus: "preparing",
+    orderMethod: "pickup",
+    items: [
+      { name: "Chicken Shawarma", qty: 1, portion: "Plate", customizations: [{ label: "SPICE", value: "Hot" }, { label: "EXTRAS", value: "Extra garlic sauce" }], price: "$16.00", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop" },
+      { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop" },
+    ],
+    customer: { name: "Marcus Thompson", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550199", email: "marcus.t@email.com", address: "1200 Main St, Dallas", mapsQuery: "1200+Main+St+Dallas" },
+    timeline: [
+      { time: "1:30 PM", label: "Order placed by Marcus Thompson", done: true },
+      { time: "1:32 PM", label: "Order confirmed", done: true },
+      { time: "1:45 PM", label: "Preparing started", done: true },
+      { time: "—", label: "Next step pending", done: false },
+    ],
+    readyBy: "Today 2:30 PM",
+    readyIn: "In 45m",
+    subtotal: "$26.00",
+    platformFee: "$2.60",
+    delivery: "$0.00",
+    total: "$28.60",
+    payout: "$23.40",
+  },
+  "1040": {
+    orderHash: "#1040",
+    orderStatus: "ready",
+    orderMethod: "delivery",
+    items: [
+      { name: "Pistachio Knafeh", qty: 1, portion: "Whole", customizations: [{ label: "EXTRAS", value: "Extra syrup on side" }], price: "$18.00", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop" },
+    ],
+    customer: { name: "Priya Ramirez", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550177", email: "priya.r@email.com", address: "890 Oak Lane, Plano", mapsQuery: "890+Oak+Lane+Plano" },
+    timeline: [
+      { time: "11:00 AM", label: "Order placed by Priya Ramirez", done: true },
+      { time: "11:02 AM", label: "Order confirmed", done: true },
+      { time: "11:30 AM", label: "Preparing started", done: true },
+      { time: "12:15 PM", label: "Marked ready for pickup", done: true },
+    ],
+    readyBy: "Ready now",
+    readyIn: "Awaiting driver",
+    subtotal: "$18.00",
+    platformFee: "$1.80",
+    delivery: "$4.99",
+    total: "$24.79",
+    payout: "$16.20",
+  },
+};
+
+/* Default fallback order data */
+const DEFAULT_ORDER: OrderData = {
+  orderHash: "#a8f2c1",
+  orderStatus: "paid",
+  orderMethod: "delivery",
+  items: [
+    { name: "Homemade Mansaf", qty: 2, portion: "Family Size", customizations: [{ label: "SPICE", value: "Medium" }, { label: "EXTRAS", value: "Extra pine nuts" }], price: "$28.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
+    { name: "Walnut Baklava", qty: 1, portion: "Box of 12", customizations: [{ label: "EXTRAS", value: "Extra syrup" }], price: "$18.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
+  ],
+  customer: { name: "Sarah Khan", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop", phone: "+14695550142", email: "sarah.khan@email.com", address: "742 Evergreen Terrace, Springfield", mapsQuery: "742+Evergreen+Terrace+Springfield" },
+  timeline: [
+    { time: "2:30 PM", label: "Order placed by Sarah Khan", done: true },
+    { time: "2:32 PM", label: "Order confirmed", done: true },
+    { time: "2:45 PM", label: "Preparing started", done: true },
+    { time: "—", label: "Next step pending", done: false },
+  ],
+  readyBy: "Today 6:30 PM",
+  readyIn: "In 3h 45m",
+  subtotal: "$46.00",
+  platformFee: "$4.60",
+  delivery: "$4.99",
+  total: "$55.59",
+  payout: "$45.20",
+};
 
 const steps = [
   { label: "Confirmed", done: false },
@@ -45,37 +152,6 @@ function currentStepIndex(status: string): number {
       return -1;
   }
 }
-
-const items = [
-  {
-    name: "Homemade Mansaf",
-    qty: 2,
-    portion: "Family Size",
-    customizations: [
-      { label: "SPICE", value: "Medium" },
-      { label: "EXTRAS", value: "Extra pine nuts" },
-    ],
-    price: "$28.00",
-    image:
-      "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
-  },
-  {
-    name: "Walnut Baklava",
-    qty: 1,
-    portion: "Box of 12",
-    customizations: [{ label: "EXTRAS", value: "Extra syrup" }],
-    price: "$18.00",
-    image:
-      "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop",
-  },
-];
-
-const timeline = [
-  { time: "2:30 PM", label: "Order placed by Sarah Khan", done: true },
-  { time: "2:32 PM", label: "Order confirmed", done: true },
-  { time: "2:45 PM", label: "Preparing started", done: true },
-  { time: "—", label: "Next step pending", done: false },
-];
 
 /* ------------------------------------------------------------------ */
 /*  Action helpers                                                     */
@@ -146,6 +222,10 @@ function statusLabel(s: string): string {
 /* ------------------------------------------------------------------ */
 export default function OrderDetailPage() {
   const { toast } = useToast();
+  const params = useParams();
+  const orderId = typeof params.id === "string" ? params.id : "";
+  const order = ORDER_DATA[orderId] || DEFAULT_ORDER;
+  const { orderHash, orderStatus, orderMethod, items, customer, timeline } = order;
   const [cancelConfirm, setCancelConfirm] = useState(false);
   const curStep = currentStepIndex(orderStatus);
 
@@ -294,7 +374,7 @@ export default function OrderDetailPage() {
               fontSize: "clamp(20px, 5vw, 28px)",
             }}
           >
-            Today 6:30 PM
+            {order.readyBy}
           </div>
           <div
             className="body-sm"
@@ -303,7 +383,7 @@ export default function OrderDetailPage() {
               color: "var(--color-sage-deep)",
             }}
           >
-            In 3h 45m
+            {order.readyIn}
           </div>
         </div>
 
@@ -460,8 +540,8 @@ export default function OrderDetailPage() {
                   }}
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
-                    alt="Sarah Khan"
+                    src={customer.avatar}
+                    alt={customer.name}
                     style={{
                       width: 36,
                       height: 36,
@@ -477,12 +557,12 @@ export default function OrderDetailPage() {
                       color: "var(--color-brown)",
                     }}
                   >
-                    Sarah Khan
+                    {customer.name}
                   </span>
                   <span style={{ flex: 1 }} />
                   <div className="flex gap-1 sm:gap-2 shrink-0">
                     <a
-                      href="tel:+14695550142"
+                      href={`tel:${customer.phone}`}
                       className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-lg"
                       style={{
                         background: "rgba(51,31,46,0.04)",
@@ -494,7 +574,7 @@ export default function OrderDetailPage() {
                       <Phone size={14} strokeWidth={2} />
                     </a>
                     <a
-                      href="mailto:sarah.khan@email.com"
+                      href={`mailto:${customer.email}`}
                       className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-lg"
                       style={{
                         background: "rgba(51,31,46,0.04)",
@@ -531,10 +611,10 @@ export default function OrderDetailPage() {
                   />
                   <div>
                     <div style={{ fontSize: 13, color: "var(--color-brown)" }}>
-                      742 Evergreen Terrace, Springfield
+                      {customer.address}
                     </div>
                     <a
-                      href="https://maps.google.com/?q=742+Evergreen+Terrace+Springfield"
+                      href={`https://maps.google.com/?q=${customer.mapsQuery}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -567,9 +647,9 @@ export default function OrderDetailPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {/* Line items with receipt pattern */}
                   {[
-                    { label: "Subtotal", amount: "$46.00" },
-                    { label: "Platform fee", amount: "$4.60" },
-                    { label: "Delivery", amount: "$4.99" },
+                    { label: "Subtotal", amount: order.subtotal },
+                    { label: "Platform fee", amount: order.platformFee },
+                    { label: "Delivery", amount: order.delivery },
                   ].map((row) => (
                     <div key={row.label} className="receipt-row tnum text-[12px] sm:text-[13px]">
                       <span className="receipt-label">{row.label}</span>
@@ -589,7 +669,7 @@ export default function OrderDetailPage() {
                     <div className="receipt-row tnum" style={{ fontSize: 15, fontWeight: 600, color: "var(--color-brown)" }}>
                       <span className="receipt-label" style={{ fontWeight: 600 }}>Total</span>
                       <span className="receipt-dots" />
-                      <span className="receipt-value" style={{ fontWeight: 600 }}>$55.59</span>
+                      <span className="receipt-value" style={{ fontWeight: 600 }}>{order.total}</span>
                     </div>
                   </div>
                 </div>
@@ -618,7 +698,7 @@ export default function OrderDetailPage() {
                   }}
                 >
                   <span>Your payout</span>
-                  <span style={{ fontSize: 17 }}>$45.20</span>
+                  <span style={{ fontSize: 17 }}>{order.payout}</span>
                 </div>
               </div>
             </div>

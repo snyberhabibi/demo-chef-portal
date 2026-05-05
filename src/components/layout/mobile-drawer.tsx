@@ -10,6 +10,7 @@ import {
   UtensilsCrossed,
   Wallet,
   Clock,
+  MapPin,
   Settings,
   User,
 } from "lucide-react";
@@ -47,7 +48,8 @@ const navGroups: NavGroup[] = [
     label: "Business",
     items: [
       { href: "/payments", label: "Earnings", icon: Wallet },
-      { href: "/operations", label: "Availability", icon: Clock },
+      { href: "/operations", label: "Operations", icon: Clock },
+      { href: "/pickup-address", label: "Pickup Address", icon: MapPin },
     ],
   },
   {

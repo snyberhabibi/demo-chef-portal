@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 type StoreState = "pending" | "approved-off" | "live" | "rejected";
 
@@ -97,6 +98,7 @@ const INITIAL_OVERRIDES: DateOverride[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function OperationsPage() {
+  const { toast } = useToast();
   const [state, setState] = useState<StoreState>("live");
   const [storeToggle, setStoreToggle] = useState(state === "live");
   const [autoAccept, setAutoAccept] = useState(true);
@@ -184,7 +186,8 @@ export default function OperationsPage() {
   return (
     <div className="content-narrow section-stack">
       {/* State toggle for demo */}
-      <div style={{ display: "inline-flex", gap: 4, flexWrap: "wrap" }}>
+      <div style={{ display: "inline-flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
+        <span className="caption" style={{ fontWeight: 600, marginRight: 4 }}>Demo:</span>
         {stateButtons.map((s) => (
           <button
             key={s.key}
@@ -538,7 +541,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Block dates when you won&apos;t be cooking</div>
               </div>
-              <button className="btn btn-dark btn-sm">
+              <button className="btn btn-dark btn-sm" onClick={() => { setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: "Jan 10, 2026", endDate: "Jan 12, 2026", days: 3, note: "Personal day", autoPause: true }]); toast("Time off added"); }}>
                 <Plus size={14} /> Add time off
               </button>
             </div>
@@ -609,7 +612,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Different hours for a specific date</div>
               </div>
-              <button className="btn btn-dark btn-sm">
+              <button className="btn btn-dark btn-sm" onClick={() => { setOverrides((prev) => [...prev, { id: String(Date.now()), date: "January 15, 2026", monthAbbr: "JAN", dayNum: "15", windows: ["10:00 AM \u2013 2:00 PM"], note: "Special hours" }]); toast("Override added"); }}>
                 <Plus size={14} /> Add override
               </button>
             </div>

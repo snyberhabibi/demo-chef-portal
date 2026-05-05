@@ -1337,6 +1337,11 @@ export default function CreateDishPage() {
             bottom: 56px !important;
           }
         }
+        @media (min-width: 1024px) {
+          .wizard-bottom-nav {
+            left: 260px !important;
+          }
+        }
       `}</style>
     </div>
   );
