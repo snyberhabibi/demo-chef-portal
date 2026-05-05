@@ -955,6 +955,9 @@ export default function MenuPage() {
               Bundles support &ldquo;Pick Your Own&rdquo; quantity selection &mdash; customers choose N items from your options with +/- steppers.
               <Link href="/menu/new" style={{ color: "var(--color-red)", fontWeight: 600 }}> Create a bundle with quantity selection &rarr;</Link>
             </div>
+            <div className="body-sm" style={{ marginTop: 10, color: "var(--color-brown-soft)", fontStyle: "italic" }}>
+              Bundle creation uses the same form as dishes. Select &ldquo;Weekly cutoff&rdquo; lead time for meal prep bundles.
+            </div>
           </div>
 
         </>
