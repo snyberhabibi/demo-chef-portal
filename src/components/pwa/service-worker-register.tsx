@@ -36,7 +36,7 @@ export function ServiceWorkerRegister() {
         console.log("[SW] Registered:", registration.scope);
 
         // If a waiting worker already exists on load
-        if (registration.waiting) {
+        if (registration.waiting && !sessionStorage.getItem("sw-update-dismissed")) {
           setWaitingWorker(registration.waiting);
           setShowUpdate(true);
         }
@@ -50,7 +50,8 @@ export function ServiceWorkerRegister() {
             // New SW installed and waiting to activate
             if (
               newWorker.state === "installed" &&
-              navigator.serviceWorker.controller
+              navigator.serviceWorker.controller &&
+              !sessionStorage.getItem("sw-update-dismissed")
             ) {
               setWaitingWorker(newWorker);
               setShowUpdate(true);
@@ -71,6 +72,11 @@ export function ServiceWorkerRegister() {
         onControllerChange
       );
     };
+  }, []);
+
+  const dismiss = useCallback(() => {
+    setShowUpdate(false);
+    sessionStorage.setItem("sw-update-dismissed", "1");
   }, []);
 
   if (!showUpdate) return null;
@@ -100,23 +106,43 @@ export function ServiceWorkerRegister() {
       }}
     >
       <span>Update available</span>
-      <button
-        onClick={handleUpdate}
-        style={{
-          background: "#e54141",
-          color: "#fff",
-          border: "none",
-          borderRadius: "10px",
-          padding: "8px 16px",
-          fontSize: "13px",
-          fontWeight: 600,
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-          minHeight: "36px",
-        }}
-      >
-        Tap to refresh
-      </button>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <button
+          onClick={dismiss}
+          aria-label="Dismiss update"
+          style={{
+            background: "transparent",
+            color: "rgba(250,249,246,0.6)",
+            border: "none",
+            borderRadius: "8px",
+            padding: "8px 12px",
+            fontSize: "13px",
+            fontWeight: 500,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            minHeight: "36px",
+          }}
+        >
+          Later
+        </button>
+        <button
+          onClick={handleUpdate}
+          style={{
+            background: "#e54141",
+            color: "#fff",
+            border: "none",
+            borderRadius: "10px",
+            padding: "8px 16px",
+            fontSize: "13px",
+            fontWeight: 600,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            minHeight: "36px",
+          }}
+        >
+          Refresh
+        </button>
+      </div>
     </div>
   );
 }
