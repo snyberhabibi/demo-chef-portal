@@ -14,15 +14,15 @@ const chefAvatar =
 
 /* Dish images */
 const mansafImg =
-  "https://images.unsplash.com/photo-1547424850-28ac9f1cd013?w=600&h=400&fit=crop";
-const hummusImg =
-  "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=400&fit=crop";
+  "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop";
+const falafelImg =
+  "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop";
 const shawarmaImg =
-  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=400&fit=crop";
+  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop";
 const knafehImg =
-  "https://images.unsplash.com/photo-1579888944880-d98341245702?w=600&h=400&fit=crop";
+  "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop";
 const baklavaImg =
-  "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=400&fit=crop";
+  "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop";
 
 interface Dish {
   name: string;
@@ -32,7 +32,7 @@ interface Dish {
 
 const popularDishes: Dish[] = [
   { name: "Grandma\u2019s Mansaf", price: "$22.00", image: mansafImg },
-  { name: "Falafel Plate", price: "$14.00", image: hummusImg },
+  { name: "Falafel Plate", price: "$14.00", image: falafelImg },
   { name: "Shawarma Bowl", price: "$16.00", image: shawarmaImg },
 ];
 

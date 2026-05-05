@@ -70,7 +70,7 @@ const dishes: Dish[] = [
     name: "Tabouleh Salad",
     price: 11,
     status: "draft",
-    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
     category: "Salads",
   },
   {
@@ -78,7 +78,7 @@ const dishes: Dish[] = [
     name: "Chicken Mandi",
     price: 22,
     status: "archived",
-    image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     category: "Main Dishes",
   },
   {
@@ -86,7 +86,7 @@ const dishes: Dish[] = [
     name: "Garden Fattoush",
     price: 10,
     status: "published",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
     category: "Salads",
   },
   {
@@ -387,7 +387,7 @@ export default function MenuPage() {
         </div>
 
         {/* Search */}
-        <div className="relative" style={{ width: 280, flexShrink: 0 }}>
+        <div className="relative hidden sm:block" style={{ width: 280, flexShrink: 0 }}>
           <Search
             size={15}
             strokeWidth={2}
@@ -409,6 +409,30 @@ export default function MenuPage() {
             style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
           />
         </div>
+      </div>
+
+      {/* Mobile Search */}
+      <div className="relative sm:hidden" style={{ marginTop: -8 }}>
+        <Search
+          size={15}
+          strokeWidth={2}
+          className="absolute"
+          style={{
+            left: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--color-brown-soft-2)",
+            pointerEvents: "none",
+          }}
+        />
+        <input
+          type="text"
+          className="input"
+          placeholder="Search dishes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10, width: "100%" }}
+        />
       </div>
 
       {/* ── Dish Grid ── */}

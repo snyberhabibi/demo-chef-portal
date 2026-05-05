@@ -13,7 +13,7 @@ interface TopBarProps {
 export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) {
   return (
     <header
-      className="sticky top-0 z-10 flex items-center glass"
+      className="sticky top-0 z-30 flex items-center glass"
       style={{
         height: 52,
         borderBottom: "1px solid rgba(51,31,46,0.06)",

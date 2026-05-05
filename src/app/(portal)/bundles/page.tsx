@@ -20,7 +20,7 @@ const BUNDLES: Bundle[] = [
   {
     id: 1,
     name: "Family Dinner for 4",
-    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     items: 5,
     price: 65,
     status: "published",
@@ -28,7 +28,7 @@ const BUNDLES: Bundle[] = [
   {
     id: 2,
     name: "Weekly Meal Prep",
-    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop",
     items: 7,
     price: 75,
     status: "published",
@@ -36,7 +36,7 @@ const BUNDLES: Bundle[] = [
   {
     id: 3,
     name: "Mezze Tasting Plate",
-    image: "https://images.unsplash.com/photo-1542528180-a1208c5169a5?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
     items: 4,
     price: 42,
     status: "draft",
@@ -44,7 +44,7 @@ const BUNDLES: Bundle[] = [
   {
     id: 4,
     name: "Sweet Tooth Box",
-    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop",
     items: 3,
     price: 32,
     status: "published",
@@ -138,8 +138,8 @@ export default function BundlesPage() {
 
         <div style={{ flex: 1 }} />
 
-        {/* Search */}
-        <div className="relative" style={{ width: 280, flexShrink: 0 }}>
+        {/* Search — desktop */}
+        <div className="relative hidden sm:block" style={{ width: 280, flexShrink: 0 }}>
           <Search
             size={15}
             strokeWidth={2}
@@ -161,6 +161,30 @@ export default function BundlesPage() {
             style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10 }}
           />
         </div>
+      </div>
+
+      {/* Mobile Search */}
+      <div className="relative sm:hidden" style={{ marginTop: -8 }}>
+        <Search
+          size={15}
+          strokeWidth={2}
+          className="absolute"
+          style={{
+            left: 12,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--color-brown-soft-2)",
+            pointerEvents: "none",
+          }}
+        />
+        <input
+          type="text"
+          className="input"
+          placeholder="Search bundles..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ paddingLeft: 36, height: 36, fontSize: 13, borderRadius: 10, width: "100%" }}
+        />
       </div>
 
       {/* ── Bundle Grid ── */}

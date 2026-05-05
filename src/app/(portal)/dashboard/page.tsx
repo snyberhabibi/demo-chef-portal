@@ -795,9 +795,9 @@ function ModeB() {
                   <Star
                     key={s}
                     size={13}
-                    fill={s <= 4 ? "var(--color-sage)" : "none"}
+                    fill={s <= Math.round(parseFloat(stat.value)) ? "var(--color-sage)" : "none"}
                     color="var(--color-sage)"
-                    strokeWidth={s <= 4 ? 0 : 1.5}
+                    strokeWidth={s <= Math.round(parseFloat(stat.value)) ? 0 : 1.5}
                   />
                 ))}
               </div>
@@ -880,7 +880,7 @@ function ModeB() {
       </div>
 
       {/* Quick actions — 3 cards in a row, 72px height */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Link
           href="/menu/new"
           className="card card-hover flex items-center gap-3"
@@ -971,7 +971,7 @@ function ModeB() {
             >
               {/* Hash */}
               <span
-                className="mono"
+                className="mono hidden sm:inline"
                 style={{
                   fontSize: 13,
                   fontWeight: 600,

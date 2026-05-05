@@ -101,9 +101,14 @@ export default function ProfilePage() {
       </div>
 
       {/* FormWizard layout */}
-      <div className="grid" style={{ gridTemplateColumns: "260px 1fr", gap: 24, alignItems: "start" }}>
+      <style>{`
+        @media (min-width: 1024px) {
+          .profile-wizard-layout { grid-template-columns: 260px 1fr !important; }
+        }
+      `}</style>
+      <div className="grid profile-wizard-layout" style={{ gridTemplateColumns: "1fr", gap: 24, alignItems: "start" }}>
         {/* Sidebar */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <div className="card" style={{ padding: 20 }}>
             {/* Progress bar */}
             <div style={{ height: 3, borderRadius: 2, background: "var(--color-cream-sunken)", marginBottom: 20 }}>

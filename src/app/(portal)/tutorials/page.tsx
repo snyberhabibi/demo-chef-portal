@@ -108,7 +108,7 @@ export default function TutorialsPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
           gap: 16,
         }}
       >

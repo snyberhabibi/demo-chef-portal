@@ -52,7 +52,7 @@ export default function PackagingPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
+          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
           gap: 16,
         }}
       >

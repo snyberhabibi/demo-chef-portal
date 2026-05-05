@@ -763,7 +763,7 @@ export default function OrderDetailPage() {
           padding: "8px 16px",
           paddingBottom: "calc(8px + env(safe-area-inset-bottom, 0px))",
           borderTop: "1px solid rgba(51,31,46,0.06)",
-          zIndex: 50,
+          zIndex: 45,
           display: "flex",
           alignItems: "center",
         }}
