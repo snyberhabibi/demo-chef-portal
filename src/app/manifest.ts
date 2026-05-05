@@ -7,6 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Manage your kitchen, menu, orders, and flash sales — all in one place.",
     start_url: "/dashboard",
+    id: "/",
+    scope: "/",
     display: "standalone",
     background_color: "#faf9f6",
     theme_color: "#331f2e",
@@ -43,6 +45,34 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
+      },
+    ],
+    screenshots: [
+      {
+        src: "/icons/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        form_factor: "narrow",
+      },
+      {
+        src: "/icons/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        form_factor: "wide",
+      },
+    ],
+    shortcuts: [
+      {
+        name: "Orders",
+        short_name: "Orders",
+        url: "/orders",
+        icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
+      },
+      {
+        name: "Flash Sales",
+        short_name: "Sales",
+        url: "/flash-sales",
+        icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
       },
     ],
   };
