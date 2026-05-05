@@ -32,16 +32,19 @@ export default function PaymentsPage() {
   return (
     <div className="content-narrow section-stack">
       {/* State toggle */}
-      <div className="flex gap-2">
-        {(["A", "B", "C"] as StripeState[]).map((s) => (
-          <button
-            key={s}
-            className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
-            onClick={() => setState(s)}
-          >
-            State {s}
-          </button>
-        ))}
+      <div style={{ background: "var(--color-cream-sunken)", padding: "8px 12px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span className="caption" style={{ fontWeight: 600 }}>Demo:</span>
+        <div className="flex gap-2">
+          {(["A", "B", "C"] as StripeState[]).map((s) => (
+            <button
+              key={s}
+              className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
+              onClick={() => setState(s)}
+            >
+              State {s}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* State A: Not connected */}
@@ -51,7 +54,6 @@ export default function PaymentsPage() {
             <div className="heading-lg" style={{ fontSize: 24, marginBottom: 8 }}>
               Get paid for your cooking
             </div>
-            <div className="accent-line" style={{ margin: '0 auto 16px' }} />
             <p className="body-sm" style={{ maxWidth: 380, margin: "0 auto 28px" }}>
               Connect your bank account through Stripe to receive payouts for every order.
             </p>
@@ -213,7 +215,7 @@ export default function PaymentsPage() {
               <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces text-gradient" style={{ fontSize: 40, lineHeight: 1, margin: "12px 0 4px" }}>
+            <div className="fraunces" style={{ fontSize: 40, lineHeight: 1, margin: "12px 0 4px" }}>
               $2,184.50
             </div>
             <div className="body-sm">Total earnings</div>

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -45,6 +45,7 @@ const desserts: Dish[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function StorePreviewPage() {
+  const router = useRouter();
   return (
     <div className="content-default" style={{ margin: "-16px auto" }}>
       <style>{`
@@ -55,7 +56,7 @@ export default function StorePreviewPage() {
       <div className="store-preview-wrap" style={{ margin: 0, background: "var(--color-cream)" }}>
         {/* Banner */}
         <div style={{ position: "relative" }}>
-          <div className="grain" style={{ height: 240, overflow: "hidden", borderRadius: "0 0 16px 16px", position: "relative" }}>
+          <div style={{ height: 240, overflow: "hidden", borderRadius: "0 0 16px 16px", position: "relative" }}>
             <img
               src={bannerImg}
               alt="Kitchen banner"
@@ -75,8 +76,8 @@ export default function StorePreviewPage() {
           </div>
 
           {/* Back button */}
-          <Link
-            href="/dashboard"
+          <button
+            onClick={() => router.back()}
             className="flex items-center justify-center rounded-full glass"
             style={{
               position: "absolute",
@@ -87,10 +88,12 @@ export default function StorePreviewPage() {
               boxShadow: "0 2px 8px rgba(51,31,46,0.12)",
               color: "var(--color-brown)",
               zIndex: 2,
+              border: "none",
+              cursor: "pointer",
             }}
           >
             <ArrowLeft size={18} strokeWidth={2} />
-          </Link>
+          </button>
 
           {/* Preview badge */}
           <div
@@ -158,6 +161,21 @@ export default function StorePreviewPage() {
         {/* Content */}
         <div style={{ padding: "32px 24px 40px" }}>
 
+          {/* About */}
+          <div className="card" style={{ padding: "20px 24px" }}>
+            <p className="body-sm" style={{ margin: 0, lineHeight: 1.6 }}>
+              Authentic Palestinian home cooking passed down through generations. Every dish is made fresh to order with love.
+            </p>
+            <a
+              href="#"
+              className="caption"
+              style={{ color: "var(--color-red)", fontWeight: 500, marginTop: 8, display: "inline-block" }}
+              onClick={(e) => e.preventDefault()}
+            >
+              Read more
+            </a>
+          </div>
+
           {/* Popular Dishes */}
           <div style={{ marginTop: 32 }}>
             <div className="heading-md" style={{ marginBottom: 14 }}>Popular Dishes</div>
@@ -224,7 +242,7 @@ function DishCard({ dish }: { dish: Dish }) {
               </span>
             </div>
             <button
-              className="btn-gradient"
+              className="btn btn-sm btn-dark"
               style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999 }}
               onClick={(e) => e.preventDefault()}
             >

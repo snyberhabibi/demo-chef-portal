@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Shield, LogOut, Trash2, UserPlus, ChevronRight, ChevronDown, Check, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 const NOTIF_CATEGORIES = [
   { label: "New Orders", desc: "When a customer places an order" },
@@ -15,6 +16,7 @@ const NOTIF_CATEGORIES = [
 const CHANNELS = ["Email", "Push", "SMS"];
 
 export default function SettingsPage() {
+  const [name, setName] = useState("Amira Haddad");
   const [phone, setPhone] = useState("(469) 277-0767");
   const [phoneEditing, setPhoneEditing] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
@@ -27,6 +29,8 @@ export default function SettingsPage() {
     });
     return init;
   });
+
+  const { toast } = useToast();
 
   const toggleNotif = (cat: string, channel: string) => {
     setNotifs((prev) => ({
@@ -41,7 +45,7 @@ export default function SettingsPage() {
       <div className="section-stack" style={{ gap: 0 }}>
         {/* Avatar + Name */}
         <div className="flex items-center gap-4">
-          <div className="glow-orange" style={{ borderRadius: '50%' }}>
+          <div style={{ borderRadius: '50%' }}>
             <img
               src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
               alt="Profile"
@@ -50,7 +54,10 @@ export default function SettingsPage() {
             />
           </div>
           <div>
-            <button className="btn btn-ghost btn-sm">Change photo</button>
+            <label className="btn btn-ghost btn-sm" style={{ cursor: "pointer" }}>
+              Change photo
+              <input type="file" accept="image/*" style={{ display: "none" }} onChange={() => toast("Photo updated")} />
+            </label>
           </div>
         </div>
 
@@ -59,7 +66,7 @@ export default function SettingsPage() {
         {/* Name */}
         <div>
           <label className="field-label">Full Name</label>
-          <input className="input" defaultValue="Amira Haddad" />
+          <input className="input" value={name} onChange={e => setName(e.target.value)} />
         </div>
 
         <div className="divider" style={{ margin: "20px 0" }} />
@@ -224,7 +231,7 @@ export default function SettingsPage() {
               <div className="caption">Not enabled</div>
             </div>
           </div>
-          <button className="btn btn-ghost btn-sm">Set up</button>
+          <button className="btn btn-ghost btn-sm" onClick={() => toast("Two-factor authentication coming soon")}>Set up</button>
         </div>
       </div>
 
@@ -232,7 +239,6 @@ export default function SettingsPage() {
 
       {/* Danger zone - minimal, caption red text, no separate card */}
       <div>
-        <div className="accent-line" style={{ marginBottom: 16 }} />
         <div className="caption" style={{ color: "var(--color-red)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
           Danger Zone
         </div>

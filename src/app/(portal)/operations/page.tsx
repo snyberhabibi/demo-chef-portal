@@ -24,6 +24,7 @@ export default function OperationsPage() {
   const [schedule, setSchedule] = useState(defaultSchedule);
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
   const [copyFeedback, setCopyFeedback] = useState(false);
+  const [showTurnOffConfirm, setShowTurnOffConfirm] = useState(false);
 
   const stateButtons: { key: StoreState; label: string }[] = [
     { key: "pending", label: "Pending" },
@@ -48,30 +49,33 @@ export default function OperationsPage() {
   return (
     <div className="content-narrow section-stack">
       {/* State toggle for demo — underline tabs */}
-      <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
-        {stateButtons.map((s) => (
-          <button
-            key={s.key}
-            className="body-sm"
-            style={{
-              padding: "10px 16px",
-              background: "none",
-              border: "none",
-              fontWeight: state === s.key ? 600 : 400,
-              color: state === s.key ? "var(--color-red)" : "var(--color-brown-soft)",
-              borderBottom: state === s.key ? "2px solid var(--color-red)" : "2px solid transparent",
-              marginBottom: -1,
-              cursor: "pointer",
-              transition: `color var(--t-fast) var(--ease-spring)`,
-            }}
-            onClick={() => {
-              setState(s.key);
-              setStoreToggle(s.key === "live");
-            }}
-          >
-            {s.label}
-          </button>
-        ))}
+      <div style={{ background: "var(--color-cream-sunken)", padding: "8px 12px", borderRadius: 10, display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span className="caption" style={{ fontWeight: 600 }}>Demo:</span>
+        <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
+          {stateButtons.map((s) => (
+            <button
+              key={s.key}
+              className="body-sm"
+              style={{
+                padding: "10px 16px",
+                background: "none",
+                border: "none",
+                fontWeight: state === s.key ? 600 : 400,
+                color: state === s.key ? "var(--color-red)" : "var(--color-brown-soft)",
+                borderBottom: state === s.key ? "2px solid var(--color-red)" : "2px solid transparent",
+                marginBottom: -1,
+                cursor: "pointer",
+                transition: `color var(--t-fast) var(--ease-spring)`,
+              }}
+              onClick={() => {
+                setState(s.key);
+                setStoreToggle(s.key === "live");
+              }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Status banners — thin left border + icon + text */}
@@ -121,31 +125,60 @@ export default function OperationsPage() {
       )}
 
       {state === "live" && (
-        <div
-          className="flex items-center justify-between gap-4 glow-sage"
-          style={{
-            borderLeft: "3px solid var(--color-sage)",
-            borderRadius: 8,
-            padding: "14px 16px",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <CheckCircle size={18} style={{ color: "var(--color-sage-deep)", flexShrink: 0 }} />
-            <div>
-              <div className="heading-sm" style={{ fontSize: 14, color: "var(--color-sage-deep)" }}>Your store is live</div>
-              <div className="body-sm" style={{ marginTop: 2 }}>Customers can see your menu and place orders</div>
-            </div>
-          </div>
-          <button
-            className="toggle toggle-lg is-on toggle-glow glow-sage"
-            onClick={() => {
-              setStoreToggle(false);
-              setState("approved-off");
+        <>
+          <div
+            className="flex items-center justify-between gap-4 glow-sage"
+            style={{
+              borderLeft: "3px solid var(--color-sage)",
+              borderRadius: 8,
+              padding: "14px 16px",
             }}
           >
-            <span className="toggle-thumb" />
-          </button>
-        </div>
+            <div className="flex items-center gap-3">
+              <CheckCircle size={18} style={{ color: "var(--color-sage-deep)", flexShrink: 0 }} />
+              <div>
+                <div className="heading-sm" style={{ fontSize: 14, color: "var(--color-sage-deep)" }}>Your store is live</div>
+                <div className="body-sm" style={{ marginTop: 2 }}>Customers can see your menu and place orders</div>
+              </div>
+            </div>
+            <button
+              className="toggle toggle-lg is-on toggle-glow glow-sage"
+              onClick={() => setShowTurnOffConfirm(true)}
+            >
+              <span className="toggle-thumb" />
+            </button>
+          </div>
+          {showTurnOffConfirm && (
+            <div
+              style={{
+                borderLeft: "3px solid var(--color-orange)",
+                borderRadius: 8,
+                padding: "14px 16px",
+                background: "rgba(252,157,53,0.05)",
+              }}
+            >
+              <div className="body-sm" style={{ marginBottom: 12, fontWeight: 500 }}>
+                Turn off your store? You won&apos;t receive new orders.
+              </div>
+              <div className="flex gap-2">
+                <button className="btn btn-ghost btn-sm" onClick={() => setShowTurnOffConfirm(false)}>
+                  Keep Live
+                </button>
+                <button
+                  className="btn btn-sm"
+                  style={{ background: "var(--color-red-deep)", color: "#fff", border: "none" }}
+                  onClick={() => {
+                    setStoreToggle(false);
+                    setState("approved-off");
+                    setShowTurnOffConfirm(false);
+                  }}
+                >
+                  Turn Off
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {state === "rejected" && (

@@ -4,11 +4,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   return (
     <div
@@ -198,6 +200,7 @@ export default function LoginPage() {
                   minHeight: 44,
                   cursor: "pointer",
                 }}
+                onClick={() => toast("Check your email for a password reset link")}
               >
                 Forgot password?
               </button>

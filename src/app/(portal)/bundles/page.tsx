@@ -91,7 +91,6 @@ export default function BundlesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="heading-lg">Bundles</h1>
-          <div className="accent-line" style={{ marginTop: 8, marginBottom: 4 }} />
           <p className="body-sm" style={{ marginTop: 4 }}>
             Create curated meal bundles to increase average order value
           </p>
@@ -305,20 +304,6 @@ export default function BundlesPage() {
         })}
       </div>
 
-      {/* ── Pagination ── */}
-      <div className="flex items-center justify-between" style={{ paddingTop: 4 }}>
-        <span className="caption">
-          Showing 1&ndash;{filteredBundles.length} of {filteredBundles.length}
-        </span>
-        <div className="flex gap-1">
-          <button
-            className="pill pill-brown"
-            style={{ cursor: "pointer", minWidth: 32, justifyContent: "center" }}
-          >
-            1
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

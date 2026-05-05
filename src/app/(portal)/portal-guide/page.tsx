@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { Play, FileText, BookOpen, Video, Download } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 const TABS = ["Video Tutorials", "Chef Playbook"] as const;
 type Tab = (typeof TABS)[number];
 
 export default function PortalGuidePage() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>("Video Tutorials");
 
   return (
@@ -61,6 +63,7 @@ export default function PortalGuidePage() {
               overflow: "hidden",
               padding: 0,
             }}
+            onClick={() => toast("Video playback coming soon")}
           >
             {/* Play button - 48px white circle with red triangle */}
             <div
@@ -115,9 +118,9 @@ export default function PortalGuidePage() {
                 <div className="caption" style={{ marginTop: 2 }}>18 pages</div>
               </div>
             </div>
-            <button className="btn btn-gradient btn-sm">
+            <button className="btn btn-dark btn-sm" onClick={() => toast("PDF download coming soon")}>
               <Download size={14} />
-              View Full Playbook PDF
+              View Full Playbook
             </button>
           </div>
         </div>

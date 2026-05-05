@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Star, MessageSquare } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -14,11 +14,11 @@ type Tab = (typeof TABS)[number];
 const SORT_OPTIONS = ["Newest", "Oldest", "Highest", "Lowest"];
 
 const breakdownData = [
-  { stars: 5, count: 3, pct: 75 },
+  { stars: 5, count: 4, pct: 100 },
   { stars: 4, count: 0, pct: 0 },
   { stars: 3, count: 0, pct: 0 },
   { stars: 2, count: 0, pct: 0 },
-  { stars: 1, count: 1, pct: 25 },
+  { stars: 1, count: 0, pct: 0 },
 ];
 
 const PROFILE_REVIEWS = [
@@ -52,14 +52,14 @@ const PROFILE_REVIEWS = [
     date: "2 weeks ago",
     text: "Loved everything but baklava was a bit dry compared to last time. Still delicious overall. Will keep ordering!",
     reply: null,
-    composerOpen: true,
+    composerOpen: false,
     composerText: "",
   },
   {
     id: 4,
     initials: "JL",
     name: "Jordan L.",
-    rating: 1,
+    rating: 5,
     date: "3 weeks ago",
     text: "Picked up for family dinner, everyone went back for seconds. The hummus and shawarma were a huge hit. Thank you Amira!",
     reply: {
@@ -159,10 +159,38 @@ export default function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<Tab>("Chef Profile");
   const [sortBy, setSortBy] = useState("Newest");
   const [sortOpen, setSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
   const [reviews, setReviews] = useState(PROFILE_REVIEWS);
   const [expandedDish, setExpandedDish] = useState<number | null>(null);
   const [expandedBundle, setExpandedBundle] = useState<number | null>(null);
   const maxChars = 500;
+
+  /* Click-outside to close sort dropdown */
+  useEffect(() => {
+    if (!sortOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => document.removeEventListener("click", handler, true);
+  }, [sortOpen]);
+
+  /* Sorted reviews */
+  const sortedReviews = useMemo(() => {
+    const list = [...reviews];
+    switch (sortBy) {
+      case "Oldest":
+        return list.reverse();
+      case "Highest":
+        return list.sort((a, b) => b.rating - a.rating);
+      case "Lowest":
+        return list.sort((a, b) => a.rating - b.rating);
+      default: // "Newest" — original order
+        return list;
+    }
+  }, [reviews, sortBy]);
 
   const toggleComposer = useCallback((id: number) => {
     setReviews((prev) =>
@@ -235,7 +263,7 @@ export default function ReviewsPage() {
         </div>
 
         {/* Sort dropdown */}
-        <div style={{ position: "relative" }}>
+        <div ref={sortRef} style={{ position: "relative" }}>
           <button
             className="btn btn-ghost btn-sm"
             onClick={() => setSortOpen(!sortOpen)}
@@ -295,11 +323,11 @@ export default function ReviewsPage() {
           {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces text-gradient" style={{ fontSize: 48, lineHeight: 1 }}>
-                4.0
+              <div className="fraunces" style={{ fontSize: 48, lineHeight: 1 }}>
+                5.0
               </div>
               <div style={{ marginTop: 8 }}>
-                <StarRow rating={4} size={18} />
+                <StarRow rating={5} size={18} />
               </div>
               <div className="caption" style={{ marginTop: 6 }}>4 ratings</div>
             </div>
@@ -331,7 +359,7 @@ export default function ReviewsPage() {
 
           {/* Review list - single card with dividers */}
           <div className="card" style={{ padding: 0 }}>
-            {reviews.map((review, idx) => (
+            {sortedReviews.map((review, idx) => (
               <div key={review.id}>
                 {idx > 0 && <div className="divider" />}
                 <div style={{ padding: 24 }}>
@@ -412,7 +440,7 @@ export default function ReviewsPage() {
                           Cancel
                         </button>
                         <button
-                          className="btn btn-gradient btn-sm"
+                          className="btn btn-dark btn-sm"
                           onClick={() => postReply(review.id)}
                           disabled={review.composerText.trim().length === 0}
                         >

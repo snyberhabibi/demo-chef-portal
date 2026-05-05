@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Plus, Search, X, ClipboardList, Copy, MoreHorizontal } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 type DishStatus = "published" | "draft" | "archived";
 
@@ -70,7 +71,7 @@ const dishes: Dish[] = [
     name: "Tabouleh Salad",
     price: 11,
     status: "draft",
-    image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop",
     category: "Salads",
   },
   {
@@ -78,7 +79,7 @@ const dishes: Dish[] = [
     name: "Chicken Mandi",
     price: 22,
     status: "archived",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop",
     category: "Main Dishes",
   },
   {
@@ -86,7 +87,7 @@ const dishes: Dish[] = [
     name: "Garden Fattoush",
     price: 10,
     status: "published",
-    image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop",
     category: "Salads",
   },
   {
@@ -136,6 +137,8 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const filteredDishes = dishes.filter((dish) => {
     const passesStatus =
@@ -298,7 +301,6 @@ export default function MenuPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="heading-lg">Dishes</h1>
-          <span className="accent-line" />
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -416,7 +418,6 @@ export default function MenuPage() {
           />
         </div>
       </div>
-      <span className="accent-line-sm" />
 
       {/* Mobile Search */}
       <div className="relative sm:hidden" style={{ marginTop: -8 }}>
@@ -469,63 +470,103 @@ export default function MenuPage() {
           >
             {filteredDishes.map((dish) => {
               const badge = statusBadge(dish.status);
+              const isMenuOpen = openMenuId === dish.id;
               return (
-                <Link
+                <div
                   key={dish.id}
-                  href="/menu/new"
-                  className="card-photo group overflow-hidden rounded-[20px]"
+                  className="card-photo group overflow-hidden rounded-[20px] relative"
                   style={{
                     padding: 0,
                     opacity: dish.status === "archived" ? 0.6 : 1,
-                    textDecoration: "none",
-                    color: "inherit",
                   }}
                 >
-                  {/* Image */}
-                  <div className="relative" style={{ aspectRatio: "4/3", overflow: "hidden" }}>
-                    <img
-                      src={dish.image}
-                      alt={dish.name}
-                      className="w-full h-full object-cover"
-                      style={{ borderRadius: "20px 20px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
-                    />
+                  <Link
+                    href="/menu/new"
+                    onClick={() => toast(`Editing: ${dish.name}`)}
+                    style={{ textDecoration: "none", color: "inherit", display: "block" }}
+                  >
+                    {/* Image */}
+                    <div className="relative" style={{ aspectRatio: "4/3", overflow: "hidden" }}>
+                      <img
+                        src={dish.image}
+                        alt={dish.name}
+                        className="w-full h-full object-cover"
+                        style={{ borderRadius: "20px 20px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
+                      />
 
-                    {/* Status pill overlay */}
-                    <div
-                      className="absolute"
-                      style={{
-                        top: 8,
-                        left: 8,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 5,
-                        padding: "3px 10px 3px 8px",
-                        borderRadius: 9999,
-                        background: badge.bg,
-                        backdropFilter: "blur(8px)",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: badge.color,
-                      }}
-                    >
-                      <span
+                      {/* Status pill overlay */}
+                      <div
+                        className="absolute"
                         style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          background: badge.dot,
-                          flexShrink: 0,
+                          top: 8,
+                          left: 8,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
+                          padding: "3px 10px 3px 8px",
+                          borderRadius: 9999,
+                          background: badge.bg,
+                          backdropFilter: "blur(8px)",
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: badge.color,
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: "50%",
+                            background: badge.dot,
+                            flexShrink: 0,
+                          }}
+                        />
+                        {badge.label}
+                      </div>
+
+                      {/* Hover tint */}
+                      <div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                        style={{
+                          background: "rgba(51,31,46,0.05)",
+                          transition: "opacity var(--t-fast)",
+                          borderRadius: "12px 12px 0 0",
+                          pointerEvents: "none",
                         }}
                       />
-                      {badge.label}
                     </div>
 
-                    {/* 3-dot menu (hover) */}
-                    <div
-                      className="absolute opacity-0 group-hover:opacity-100"
+                    {/* Info */}
+                    <div style={{ padding: "10px 14px 14px" }}>
+                      <div className="caption" style={{ marginBottom: 2 }}>
+                        {dish.category}
+                      </div>
+                      <div className="heading-sm" style={{ fontSize: 14, lineHeight: 1.3 }}>
+                        {dish.name}
+                      </div>
+                      <div className="body-sm tnum" style={{ marginTop: 3 }}>
+                        ${dish.price.toFixed(2)}
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* 3-dot menu button */}
+                  <div
+                    className="absolute opacity-0 group-hover:opacity-100"
+                    style={{
+                      top: 8,
+                      right: 8,
+                      zIndex: 10,
+                      transition: "opacity var(--t-fast)",
+                    }}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setOpenMenuId(isMenuOpen ? null : dish.id);
+                      }}
                       style={{
-                        top: 8,
-                        right: 8,
                         width: 30,
                         height: 30,
                         borderRadius: 8,
@@ -534,56 +575,87 @@ export default function MenuPage() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        transition: "opacity var(--t-fast)",
                         color: "var(--color-brown)",
+                        border: "none",
+                        cursor: "pointer",
                       }}
                     >
                       <MoreHorizontal size={15} />
-                    </div>
+                    </button>
 
-                    {/* Hover tint */}
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                      style={{
-                        background: "rgba(51,31,46,0.05)",
-                        transition: "opacity var(--t-fast)",
-                        borderRadius: "12px 12px 0 0",
-                        pointerEvents: "none",
-                      }}
-                    />
+                    {/* Dropdown */}
+                    {isMenuOpen && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 34,
+                          right: 0,
+                          width: 140,
+                          background: "#fff",
+                          borderRadius: 10,
+                          boxShadow: "0 4px 16px rgba(51,31,46,0.12)",
+                          overflow: "hidden",
+                          zIndex: 20,
+                        }}
+                      >
+                        <Link
+                          href="/menu/new"
+                          onClick={() => { toast(`Editing ${dish.name}`); setOpenMenuId(null); }}
+                          style={{
+                            display: "block",
+                            padding: "10px 14px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "var(--color-brown)",
+                            textDecoration: "none",
+                            borderBottom: "1px solid rgba(51,31,46,0.06)",
+                          }}
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toast("Dish archived"); setOpenMenuId(null); }}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            padding: "10px 14px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "var(--color-brown)",
+                            background: "none",
+                            border: "none",
+                            borderBottom: "1px solid rgba(51,31,46,0.06)",
+                            cursor: "pointer",
+                            textAlign: "left",
+                          }}
+                        >
+                          Archive
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toast("Dish deleted"); setOpenMenuId(null); }}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            padding: "10px 14px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "var(--color-red)",
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            textAlign: "left",
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
-
-                  {/* Info */}
-                  <div style={{ padding: "10px 14px 14px" }}>
-                    <div className="caption" style={{ marginBottom: 2 }}>
-                      {dish.category}
-                    </div>
-                    <div className="heading-sm" style={{ fontSize: 14, lineHeight: 1.3 }}>
-                      {dish.name}
-                    </div>
-                    <div className="body-sm tnum" style={{ marginTop: 3 }}>
-                      ${dish.price.toFixed(2)}
-                    </div>
-                  </div>
-                </Link>
+                </div>
               );
             })}
           </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between" style={{ paddingTop: 4 }}>
-            <span className="caption">
-              Showing 1&ndash;{filteredDishes.length} of {filteredDishes.length}
-            </span>
-            <div className="flex gap-1">
-              <button
-                className="pill pill-brown"
-                style={{ cursor: "pointer", minWidth: 32, justifyContent: "center" }}
-              >
-                1
-              </button>
-            </div>
-          </div>
         </>
       )}
     </div>

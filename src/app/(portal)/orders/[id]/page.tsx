@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -145,6 +146,7 @@ function statusLabel(s: string): string {
 /* ------------------------------------------------------------------ */
 export default function OrderDetailPage() {
   const { toast } = useToast();
+  const [cancelConfirm, setCancelConfirm] = useState(false);
   const curStep = currentStepIndex(orderStatus);
 
   return (
@@ -711,7 +713,7 @@ export default function OrderDetailPage() {
             {/* Cancel link */}
             <div style={{ paddingTop: 4 }}>
               <button
-                onClick={() => toast("Cancellation requested for " + orderHash)}
+                onClick={() => setCancelConfirm(true)}
                 className="caption"
                 style={{
                   background: "none",
@@ -727,6 +729,35 @@ export default function OrderDetailPage() {
               >
                 Cancel this order
               </button>
+              {cancelConfirm && (
+                <div
+                  style={{
+                    marginTop: 12,
+                    borderLeft: "3px solid var(--color-red)",
+                    borderRadius: 8,
+                    padding: "14px 16px",
+                  }}
+                >
+                  <div className="body-sm" style={{ marginBottom: 12, color: "var(--color-red-deep)" }}>
+                    Are you sure? This will cancel order {orderHash}.
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="btn btn-ghost btn-sm" onClick={() => setCancelConfirm(false)}>
+                      Go Back
+                    </button>
+                    <button
+                      className="btn btn-sm"
+                      style={{ background: "var(--color-red-deep)", color: "#fff", border: "none" }}
+                      onClick={() => {
+                        toast("Order cancelled");
+                        setCancelConfirm(false);
+                      }}
+                    >
+                      Cancel Order
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -746,7 +777,7 @@ export default function OrderDetailPage() {
         }}
       >
         <button
-          className="btn btn-block btn-gradient"
+          className={`btn btn-block ${actionBtnClass(orderStatus)}`}
           style={{ minHeight: 48, borderRadius: 12, fontSize: 15 }}
           onClick={() => toast(`Order ${orderHash} updated`)}
         >

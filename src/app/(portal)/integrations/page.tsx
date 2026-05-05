@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Smartphone, Mail, MessageSquare, Webhook, Send, CheckCircle, AlertCircle, Check, Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 const INITIAL_CHANNELS = [
   {
@@ -31,6 +32,7 @@ const INITIAL_CHANNELS = [
 ];
 
 export default function IntegrationsPage() {
+  const { toast } = useToast();
   const [channels] = useState(INITIAL_CHANNELS);
   const [squareConnected, setSquareConnected] = useState(false);
   const [testSending, setTestSending] = useState(false);
@@ -64,6 +66,14 @@ export default function IntegrationsPage() {
 
   return (
     <div className="content-default section-stack">
+      {/* Page heading */}
+      <div>
+        <h1 className="heading-lg">POS & Integrations</h1>
+        <p className="body-sm" style={{ marginTop: 4 }}>
+          Connect your tools and notification channels
+        </p>
+      </div>
+
       {/* Status banner - subtle card-cream */}
       <div className="card-cream flex items-start gap-3">
         <AlertCircle size={18} style={{ color: "var(--color-orange)", marginTop: 2, flexShrink: 0 }} />
@@ -151,7 +161,7 @@ export default function IntegrationsPage() {
                       {testState === "idle" ? "Send test" : testState === "sending" ? "Sending" : "Sent"}
                     </button>
                   )}
-                  <button className="btn btn-ghost btn-sm">
+                  <button className="btn btn-ghost btn-sm" onClick={() => toast("Channel configuration coming soon")}>
                     {ch.connected ? "Edit" : "Set up"}
                   </button>
                 </div>
@@ -164,7 +174,7 @@ export default function IntegrationsPage() {
       {/* Test button - centered at bottom */}
       <div className="flex justify-center" style={{ paddingTop: 8 }}>
         <button
-          className="btn btn-gradient btn-lg"
+          className="btn btn-dark btn-lg"
           style={{ minWidth: 200 }}
           onClick={handleTestOrder}
           disabled={testSending}

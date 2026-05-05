@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { Bell, Menu } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 interface TopBarProps {
   title: string;
@@ -11,6 +12,8 @@ interface TopBarProps {
 }
 
 export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) {
+  const { toast } = useToast();
+
   return (
     <header
       className="sticky top-0 z-30 flex items-center glass"
@@ -134,6 +137,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle }: TopBarProps) 
               "var(--color-cream-sunken)";
           }}
           aria-label="Search"
+          onClick={() => toast("Search coming soon")}
         >
           <span style={{ fontSize: 11 }}>&#x2318;K</span>
         </button>

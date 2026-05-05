@@ -108,14 +108,9 @@ export default function WelcomePage() {
         </div>
 
         {/* Headline — heading-xl, "Amira!" on second line in fraunces-italic */}
-        <h1 className="heading-xl text-center" style={{ marginBottom: 0 }}>
-          Welcome to Yalla Bites,
-        </h1>
-        <h1
-          className="heading-xl fraunces-italic text-center"
-          style={{ marginBottom: 0 }}
-        >
-          Amira!
+        <h1 className="heading-xl" style={{textAlign:"center"}}>
+          Welcome to Yalla Bites,{" "}
+          <span className="fraunces-italic">Amira!</span>
         </h1>
 
         {/* Subtitle — body-lg */}
@@ -129,9 +124,7 @@ export default function WelcomePage() {
         >
           Let&apos;s set up your kitchen. Takes about 5 minutes.
         </p>
-        <div className="flex justify-center" style={{ marginBottom: 32 }}>
-          <span className="accent-line" />
-        </div>
+        <div style={{ marginBottom: 32 }} />
 
         {/* Step cards — 56px height, 8px gap */}
         <div className="flex flex-col line-reveal" style={{ gap: 8, marginBottom: 32 }}>

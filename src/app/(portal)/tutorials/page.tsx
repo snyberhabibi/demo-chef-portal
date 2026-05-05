@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   ClipboardList,
   Layers,
@@ -14,6 +13,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -78,6 +78,7 @@ const TUTORIALS = [
 ];
 
 export default function TutorialsPage() {
+  const { toast } = useToast();
   const [tutorials] = useState(TUTORIALS);
   const completedCount = tutorials.filter((t) => t.completed).length;
   const totalCount = tutorials.length;
@@ -91,7 +92,6 @@ export default function TutorialsPage() {
           <span className="body" style={{ fontWeight: 600 }}>Your progress</span>
           <span className="tnum caption">{completedCount} / {totalCount}</span>
         </div>
-        <div className="accent-line" style={{ marginBottom: 8 }} />
         <div style={{ height: 3, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
           <div
             style={{
@@ -99,7 +99,7 @@ export default function TutorialsPage() {
               borderRadius: 2,
               background: "var(--color-sage)",
               width: `${progressPct}%`,
-              transition: `width 0.3s var(--ease-spring)`,
+              transition: "width 0.3s var(--ease-spring)",
             }}
           />
         </div>
@@ -116,17 +116,20 @@ export default function TutorialsPage() {
         {tutorials.map((t, i) => {
           const Icon = t.icon;
           return (
-            <Link
+            <button
               key={i}
-              href="#"
+              onClick={() => toast(`Tutorial: ${t.title} \u2014 coming soon`)}
               className="card card-hover"
               style={{
                 padding: 20,
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
-                textDecoration: "none",
                 color: "inherit",
+                textAlign: "left",
+                cursor: "pointer",
+                border: "none",
+                width: "100%",
               }}
             >
               {/* Icon in cream-deep circle */}
@@ -162,14 +165,14 @@ export default function TutorialsPage() {
                 )}
 
                 <span
-                  className="caption flex items-center gap-1 text-gradient"
-                  style={{ fontWeight: 600 }}
+                  className="caption flex items-center gap-1"
+                  style={{ fontWeight: 600, color: "var(--color-red)" }}
                 >
                   {t.completed ? "Run again" : "Start"}
                   <ArrowRight size={12} />
                 </span>
               </div>
-            </Link>
+            </button>
           );
         })}
       </div>

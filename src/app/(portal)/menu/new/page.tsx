@@ -129,7 +129,7 @@ export default function CreateDishPage() {
         <button className="btn btn-ghost btn-sm" onClick={() => router.push("/menu")}>
           Discard
         </button>
-        <button className="btn btn-gradient btn-sm" onClick={() => router.push("/menu")}>
+        <button className="btn btn-dark btn-sm" onClick={() => router.push("/menu")}>
           Save Dish
         </button>
       </div>
@@ -211,7 +211,6 @@ export default function CreateDishPage() {
                     >
                       {step.label}
                     </div>
-                    {isCurrent && <div className="accent-line-sm" style={{ marginTop: 4 }} />}
                     <div
                       style={{
                         fontSize: 11,
@@ -875,7 +874,7 @@ export default function CreateDishPage() {
 
       {/* ── Bottom Navigation ── */}
       <div
-        className="glass"
+        className="glass wizard-bottom-nav"
         style={{
           position: "fixed",
           bottom: 0,
@@ -927,7 +926,7 @@ export default function CreateDishPage() {
         </div>
 
         <button
-          className={`btn btn-sm ${currentStep === 5 ? "btn-gradient" : "btn-dark"}`}
+          className="btn btn-sm btn-dark"
           onClick={() => {
             if (currentStep < 5) setCurrentStep(currentStep + 1);
             else router.push("/menu");
@@ -938,11 +937,14 @@ export default function CreateDishPage() {
         </button>
       </div>
 
-      {/* Responsive: collapse sidebar on mobile */}
+      {/* Responsive: collapse sidebar on mobile, wizard bottom nav above tab bar */}
       <style jsx>{`
         @media (max-width: 1023px) {
           .wizard-layout {
             grid-template-columns: 1fr !important;
+          }
+          .wizard-bottom-nav {
+            bottom: 56px !important;
           }
         }
       `}</style>

@@ -430,7 +430,6 @@ export default function OrdersPage() {
               })}
             </div>
           </div>
-          <span className="accent-line-sm" />
         </div>
 
         {/* Search — right side on desktop */}

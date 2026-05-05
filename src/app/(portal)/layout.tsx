@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
 import { BottomTabBar } from "@/components/layout/bottom-tab-bar";
+import { MobileDrawer } from "@/components/layout/mobile-drawer";
 
 interface RouteConfig {
   title: string;
@@ -136,6 +138,7 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Try two-segment match first (e.g. menu/new), then single segment
   const segments = pathname.split("/").filter(Boolean);
@@ -156,6 +159,7 @@ export default function PortalLayout({
         <TopBar
           title={config.title}
           breadcrumbs={config.breadcrumbs}
+          onMobileMenuToggle={() => setDrawerOpen(true)}
         />
         <main
           className="flex-1 page-fade"
@@ -169,7 +173,8 @@ export default function PortalLayout({
           <div className="pb-20 lg:pb-0">{children}</div>
         </main>
       </div>
-      <BottomTabBar activePath={activePath} />
+      <BottomTabBar activePath={activePath} onMore={() => setDrawerOpen(true)} />
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} activePath={activePath} />
     </div>
   );
 }

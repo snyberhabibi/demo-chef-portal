@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChevronRight,
   ChevronLeft,
@@ -11,6 +12,7 @@ import {
   Lightbulb,
   ExternalLink,
 } from "lucide-react";
+import { useToast } from "@/components/ui/toast-provider";
 
 /* ------------------------------------------------------------------ */
 /*  Steps                                                              */
@@ -42,6 +44,8 @@ const TIPS: Record<number, string> = {
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function ProfilePage() {
+  const router = useRouter();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
 
   /* Step 1 */
@@ -95,8 +99,8 @@ export default function ProfilePage() {
             <ExternalLink size={12} />
             Preview My Store
           </Link>
-          <button className="btn btn-ghost btn-sm">Discard</button>
-          <button className="btn btn-dark btn-sm">Save</button>
+          <button className="btn btn-ghost btn-sm" onClick={() => router.push("/dashboard")}>Discard</button>
+          <button className="btn btn-dark btn-sm" onClick={() => toast("Profile saved")}>Save</button>
         </div>
       </div>
 
@@ -171,7 +175,6 @@ export default function ProfilePage() {
                     >
                       {s.label}
                     </span>
-                    {isCurrent && <div className="accent-line-sm" style={{ marginTop: 4 }} />}
                   </div>
                 </button>
               );
@@ -393,6 +396,11 @@ export default function ProfilePage() {
                     </div>
                   ))}
                 </div>
+                <p className="body-sm" style={{ marginTop: 12 }}>
+                  <Link href="/operations" style={{ color: "var(--color-red)", fontWeight: 500 }}>
+                    Manage your full schedule on the Operations page &rarr;
+                  </Link>
+                </p>
               </div>
             </div>
           )}
@@ -429,15 +437,23 @@ export default function ProfilePage() {
               ))}
             </div>
 
-            <button
-              className="btn btn-gradient"
-              onClick={goNext}
-              disabled={step >= 5}
-              style={{ opacity: step >= 5 ? 0.5 : 1 }}
-            >
-              Continue
-              <ChevronRight size={16} />
-            </button>
+            {step >= 5 ? (
+              <button
+                className="btn btn-gradient"
+                onClick={() => { toast("Profile complete!"); router.push("/dashboard"); }}
+              >
+                Finish
+                <ChevronRight size={16} />
+              </button>
+            ) : (
+              <button
+                className="btn btn-dark"
+                onClick={goNext}
+              >
+                Continue
+                <ChevronRight size={16} />
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@ import {
 
 interface BottomTabBarProps {
   activePath: string;
+  onMore?: () => void;
 }
 
 const tabs = [
@@ -21,7 +22,7 @@ const tabs = [
   { href: "/settings", label: "More", icon: MoreHorizontal },
 ];
 
-export function BottomTabBar({ activePath }: BottomTabBarProps) {
+export function BottomTabBar({ activePath, onMore }: BottomTabBarProps) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around glass"
@@ -32,8 +33,46 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
       }}
     >
       {tabs.map((tab) => {
-        const isActive = activePath === tab.href;
+        const isMore = tab.label === "More";
+        const isActive = isMore
+          ? false
+          : tab.href === "/dashboard"
+            ? activePath === "/dashboard" || activePath === "/"
+            : activePath.startsWith(tab.href);
         const Icon = tab.icon;
+
+        if (isMore) {
+          return (
+            <button
+              key={tab.href}
+              onClick={() => onMore?.()}
+              className="flex flex-col items-center justify-center relative"
+              style={{
+                flex: 1,
+                minHeight: 44,
+                gap: 2,
+                color: "var(--color-brown-soft-2)",
+                transition: "color var(--t-fast) var(--ease-spring)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <span className="relative">
+                <Icon size={20} strokeWidth={1.5} />
+              </span>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                {tab.label}
+              </span>
+            </button>
+          );
+        }
+
         return (
           <Link
             key={tab.href}
@@ -46,7 +85,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
               color: isActive
                 ? "var(--color-brown)"
                 : "var(--color-brown-soft-2)",
-              transition: `color var(--t-fast) var(--ease-spring)`,
+              transition: "color var(--t-fast) var(--ease-spring)",
             }}
           >
             <span className="relative">
@@ -77,7 +116,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
             </span>
             <span
               style={{
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: isActive ? 700 : 600,
               }}
             >

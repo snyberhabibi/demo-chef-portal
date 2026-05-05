@@ -718,7 +718,7 @@ function ModeA() {
 
       {/* Motivational sticker */}
       <div
-        className="card-sticker grain"
+        className="card-sticker"
         style={{ transform: "rotate(-1deg)", maxWidth: 340 }}
       >
         <div className="eyebrow" style={{ marginBottom: 8 }}>
@@ -740,7 +740,7 @@ function ModeA() {
 
       {/* Need help? — simple text link */}
       <Link
-        href="/help"
+        href="/tutorials"
         className="body-sm"
         style={{
           color: "var(--color-red)",
@@ -930,7 +930,6 @@ function ModeB() {
         <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
           <div>
             <span className="eyebrow">RECENT ORDERS</span>
-            <span className="accent-line" />
           </div>
           <Link
             href="/orders"
@@ -951,7 +950,7 @@ function ModeB() {
           {recentOrders.map((order, i) => (
             <Link
               key={order.hashId}
-              href="/orders"
+              href={`/orders/${order.hashId.replace("#", "")}`}
               style={{
                 display: "flex",
                 alignItems: "center",
