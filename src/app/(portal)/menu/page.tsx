@@ -944,6 +944,14 @@ export default function MenuPage() {
             })}
           </div>
 
+          <div className="card-cream" style={{ marginTop: 24, padding: 16 }}>
+            <div className="heading-sm">Bundle Customizations</div>
+            <div className="body-sm" style={{ marginTop: 4 }}>
+              Bundles support &ldquo;Pick Your Own&rdquo; quantity selection &mdash; customers choose N items from your options with +/- steppers.
+              <Link href="/menu/new" style={{ color: "var(--color-red)", fontWeight: 600 }}> Create a bundle with quantity selection &rarr;</Link>
+            </div>
+          </div>
+
         </>
       )}
 

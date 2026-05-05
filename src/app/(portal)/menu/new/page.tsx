@@ -13,6 +13,8 @@ import {
   Lightbulb,
   ChevronLeft,
   ChevronRight,
+  GripVertical,
+  X,
 } from "lucide-react";
 
 const STEPS = [
@@ -49,6 +51,24 @@ const cuisineOptions = [
 const spiceLevels = ["None", "Mild", "Medium", "Hot", "Extra Hot"];
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+interface Modifier {
+  id: number;
+  name: string;
+  priceAdjustment: string;
+  maxQuantity: string;
+}
+
+interface CustomGroup {
+  id: number;
+  name: string;
+  required: boolean;
+  selectionType: "single" | "multiple" | "quantity";
+  totalRequired: string;
+  minOptions: string;
+  maxOptions: string;
+  modifiers: Modifier[];
+}
+
 interface SizeRow {
   id: number;
   portionLabel: string;
@@ -83,7 +103,109 @@ export default function CreateDishPage() {
   ]);
 
   // Step 5: Customizations
-  const [customGroups] = useState<string[]>([]);
+  const [customGroups, setCustomGroups] = useState<CustomGroup[]>([
+    {
+      id: 1,
+      name: "Spice Level",
+      required: true,
+      selectionType: "single",
+      totalRequired: "",
+      minOptions: "",
+      maxOptions: "",
+      modifiers: [
+        { id: 1, name: "Mild", priceAdjustment: "+$0.00", maxQuantity: "" },
+        { id: 2, name: "Medium", priceAdjustment: "+$0.00", maxQuantity: "" },
+        { id: 3, name: "Hot", priceAdjustment: "+$0.00", maxQuantity: "" },
+        { id: 4, name: "Extra Hot", priceAdjustment: "+$1.00", maxQuantity: "" },
+      ],
+    },
+    {
+      id: 2,
+      name: "Extras",
+      required: false,
+      selectionType: "multiple",
+      totalRequired: "",
+      minOptions: "",
+      maxOptions: "",
+      modifiers: [
+        { id: 1, name: "Extra Pita", priceAdjustment: "+$2.00", maxQuantity: "" },
+        { id: 2, name: "Toum Sauce", priceAdjustment: "+$1.50", maxQuantity: "" },
+        { id: 3, name: "Pickles", priceAdjustment: "+$0.50", maxQuantity: "" },
+      ],
+    },
+  ]);
+  const [nextGroupId, setNextGroupId] = useState(3);
+  const [nextModifierId, setNextModifierId] = useState(10);
+
+  const addCustomGroup = () => {
+    setCustomGroups((prev) => [
+      ...prev,
+      {
+        id: nextGroupId,
+        name: "",
+        required: false,
+        selectionType: "single",
+        totalRequired: "",
+        minOptions: "",
+        maxOptions: "",
+        modifiers: [{ id: nextModifierId, name: "", priceAdjustment: "", maxQuantity: "" }],
+      },
+    ]);
+    setNextGroupId((prev) => prev + 1);
+    setNextModifierId((prev) => prev + 1);
+  };
+
+  const removeCustomGroup = (groupId: number) => {
+    setCustomGroups((prev) => prev.filter((g) => g.id !== groupId));
+  };
+
+  const updateCustomGroup = (groupId: number, field: keyof CustomGroup, value: unknown) => {
+    setCustomGroups((prev) =>
+      prev.map((g) => (g.id === groupId ? { ...g, [field]: value } : g))
+    );
+  };
+
+  const addModifier = (groupId: number) => {
+    setCustomGroups((prev) =>
+      prev.map((g) =>
+        g.id === groupId
+          ? {
+              ...g,
+              modifiers: [
+                ...g.modifiers,
+                { id: nextModifierId, name: "", priceAdjustment: "", maxQuantity: "" },
+              ],
+            }
+          : g
+      )
+    );
+    setNextModifierId((prev) => prev + 1);
+  };
+
+  const removeModifier = (groupId: number, modifierId: number) => {
+    setCustomGroups((prev) =>
+      prev.map((g) =>
+        g.id === groupId
+          ? { ...g, modifiers: g.modifiers.filter((m) => m.id !== modifierId) }
+          : g
+      )
+    );
+  };
+
+  const updateModifier = (groupId: number, modifierId: number, field: keyof Modifier, value: string) => {
+    setCustomGroups((prev) =>
+      prev.map((g) =>
+        g.id === groupId
+          ? {
+              ...g,
+              modifiers: g.modifiers.map((m) =>
+                m.id === modifierId ? { ...m, [field]: value } : m
+              ),
+            }
+          : g
+      )
+    );
+  };
 
   const addSizeRow = () => {
     setSizeRows((prev) => [
@@ -287,6 +409,11 @@ export default function CreateDishPage() {
                 <span className="pill pill-orange" style={{ fontSize: 10 }}>
                   {status === "published" ? "Published" : "Draft"}
                 </span>
+              </div>
+              <div className="caption" style={{ marginTop: 6 }}>
+                {customGroups.length > 0
+                  ? `${customGroups.length} customization group${customGroups.length > 1 ? "s" : ""}`
+                  : "No customizations"}
               </div>
             </div>
           </div>
@@ -842,11 +969,11 @@ export default function CreateDishPage() {
                 Step 5 &mdash; Customizations
               </div>
 
-              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+              <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
                 <p className="body-sm" style={{ margin: 0 }}>
                   Add customization groups for modifiers and add-ons
                 </p>
-                <button className="btn btn-ghost btn-sm">
+                <button className="btn btn-ghost btn-sm" onClick={addCustomGroup}>
                   <Plus size={14} strokeWidth={2.5} />
                   Add Group
                 </button>
@@ -866,6 +993,245 @@ export default function CreateDishPage() {
                   No customization groups yet
                 </div>
               )}
+
+              {customGroups.map((group) => (
+                <div
+                  key={group.id}
+                  style={{
+                    border: "1px solid rgba(51,31,46,0.1)",
+                    borderRadius: 16,
+                    padding: 20,
+                    background: "#fff",
+                    marginBottom: 16,
+                  }}
+                >
+                  {/* Group header row */}
+                  <div className="flex items-center gap-3" style={{ marginBottom: 14 }}>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="e.g., Spice Level, Size, Add-ons"
+                      value={group.name}
+                      onChange={(e) => updateCustomGroup(group.id, "name", e.target.value)}
+                      style={{ flex: 1, borderRadius: 10, fontSize: 14, fontWeight: 600 }}
+                    />
+                    <label
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 8,
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "var(--color-brown-soft)",
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <span
+                        onClick={() => updateCustomGroup(group.id, "required", !group.required)}
+                        style={{
+                          width: 36,
+                          height: 20,
+                          borderRadius: 10,
+                          background: group.required ? "var(--color-sage)" : "var(--color-cream-sunken)",
+                          position: "relative",
+                          display: "inline-block",
+                          transition: "background 0.2s ease",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <span
+                          style={{
+                            position: "absolute",
+                            top: 2,
+                            left: group.required ? 18 : 2,
+                            width: 16,
+                            height: 16,
+                            borderRadius: "50%",
+                            background: "#fff",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+                            transition: "left 0.2s ease",
+                          }}
+                        />
+                      </span>
+                      Required
+                    </label>
+                    <button
+                      onClick={() => removeCustomGroup(group.id)}
+                      style={{
+                        width: 36,
+                        height: 36,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 10,
+                        color: "var(--color-red)",
+                        background: "var(--color-red-soft)",
+                        border: "none",
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Trash2 size={14} strokeWidth={1.8} />
+                    </button>
+                  </div>
+
+                  {/* Selection type pills */}
+                  <div className="flex gap-2" style={{ marginBottom: 14 }}>
+                    {(["single", "multiple", "quantity"] as const).map((type) => {
+                      const isActive = group.selectionType === type;
+                      const labels = { single: "Single", multiple: "Multiple", quantity: "Quantity" };
+                      return (
+                        <button
+                          key={type}
+                          onClick={() => updateCustomGroup(group.id, "selectionType", type)}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "0 16px",
+                            height: 34,
+                            borderRadius: 9999,
+                            fontSize: 13,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            border: `1.5px solid ${isActive ? "var(--color-brown)" : "rgba(51,31,46,0.12)"}`,
+                            background: isActive ? "var(--color-brown)" : "transparent",
+                            color: isActive ? "var(--color-cream)" : "var(--color-brown-soft)",
+                            transition: "all var(--t-fast) var(--ease-spring)",
+                          }}
+                        >
+                          {labels[type]}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Quantity-specific fields */}
+                  {group.selectionType === "quantity" && (
+                    <div style={{ marginBottom: 14 }}>
+                      <div className="flex gap-2" style={{ marginBottom: 6 }}>
+                        <div style={{ flex: 1 }}>
+                          <label className="caption" style={{ display: "block", marginBottom: 4, fontWeight: 600 }}>
+                            Total Required
+                          </label>
+                          <input
+                            type="number"
+                            className="input tnum"
+                            placeholder="e.g., 7"
+                            value={group.totalRequired}
+                            onChange={(e) => updateCustomGroup(group.id, "totalRequired", e.target.value)}
+                            style={{ borderRadius: 10, fontSize: 13 }}
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label className="caption" style={{ display: "block", marginBottom: 4, fontWeight: 600 }}>
+                            Min Different Options
+                          </label>
+                          <input
+                            type="number"
+                            className="input tnum"
+                            placeholder="e.g., 1"
+                            value={group.minOptions}
+                            onChange={(e) => updateCustomGroup(group.id, "minOptions", e.target.value)}
+                            style={{ borderRadius: 10, fontSize: 13 }}
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label className="caption" style={{ display: "block", marginBottom: 4, fontWeight: 600 }}>
+                            Max Different Options
+                          </label>
+                          <input
+                            type="number"
+                            className="input tnum"
+                            placeholder="blank = no limit"
+                            value={group.maxOptions}
+                            onChange={(e) => updateCustomGroup(group.id, "maxOptions", e.target.value)}
+                            style={{ borderRadius: 10, fontSize: 13 }}
+                          />
+                        </div>
+                      </div>
+                      <div className="caption" style={{ color: "var(--color-brown-soft-2)", fontStyle: "italic" }}>
+                        Customer must select exactly {group.totalRequired || "[total]"} items, choosing from at least {group.minOptions || "[min]"} different options.
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Modifier options list */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    {group.modifiers.map((mod) => (
+                      <div
+                        key={mod.id}
+                        className="flex items-center gap-2"
+                        style={{
+                          padding: "6px 8px",
+                          borderRadius: 10,
+                          background: "var(--color-cream-deep)",
+                        }}
+                      >
+                        <GripVertical
+                          size={14}
+                          strokeWidth={1.8}
+                          style={{ color: "var(--color-brown-soft-2)", flexShrink: 0, cursor: "grab" }}
+                        />
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder="e.g., Mild, Medium, Hot"
+                          value={mod.name}
+                          onChange={(e) => updateModifier(group.id, mod.id, "name", e.target.value)}
+                          style={{ flex: 1, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                        />
+                        <input
+                          type="text"
+                          className="input tnum"
+                          placeholder="+$0.00"
+                          value={mod.priceAdjustment}
+                          onChange={(e) => updateModifier(group.id, mod.id, "priceAdjustment", e.target.value)}
+                          style={{ width: 100, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                        />
+                        {group.selectionType === "quantity" && (
+                          <input
+                            type="text"
+                            className="input tnum"
+                            placeholder="Max"
+                            value={mod.maxQuantity}
+                            onChange={(e) => updateModifier(group.id, mod.id, "maxQuantity", e.target.value)}
+                            style={{ width: 60, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                          />
+                        )}
+                        <button
+                          onClick={() => removeModifier(group.id, mod.id)}
+                          style={{
+                            width: 32,
+                            height: 32,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 8,
+                            color: "var(--color-brown-soft-2)",
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add Option button */}
+                  <button
+                    onClick={() => addModifier(group.id)}
+                    className="btn btn-ghost btn-sm"
+                    style={{ marginTop: 10, fontSize: 12 }}
+                  >
+                    <Plus size={13} strokeWidth={2.5} />
+                    Add Option
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
