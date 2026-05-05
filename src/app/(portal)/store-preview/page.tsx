@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Star, Truck, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -47,9 +47,27 @@ const desserts: Dish[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function StorePreviewPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const router = useRouter();
   const { toast } = useToast();
   const [bioExpanded, setBioExpanded] = useState(false);
+
+  if (!loaded) {
+    return (
+      <div className="content-default section-stack">
+        <div className="skeleton" style={{ height: 240, borderRadius: 16 }} />
+        <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="skeleton" style={{ height: 200, borderRadius: 16 }} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="content-default" style={{ margin: "-16px auto" }}>
       <style>{`

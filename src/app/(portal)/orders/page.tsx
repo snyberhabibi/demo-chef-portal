@@ -584,10 +584,16 @@ export default function OrdersPage() {
           </span>
 
           <div className="flex gap-1">
+            <style>{`
+              @media (max-width: 640px) {
+                .pagination-btn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }
+              }
+            `}</style>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
               <button
                 key={p}
                 onClick={() => setPage(p)}
+                className="pagination-btn"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -596,7 +602,7 @@ export default function OrdersPage() {
                   minHeight: 36,
                   width: 36,
                   height: 36,
-                  borderRadius: 6,
+                  borderRadius: 8,
                   fontSize: 12,
                   fontWeight: 600,
                   border: p === page ? "none" : "1px solid rgba(51,31,46,0.1)",

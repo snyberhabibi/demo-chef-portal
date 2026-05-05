@@ -3,65 +3,13 @@
 
 import Link from "next/link";
 import { X, LogOut } from "lucide-react";
-import {
-  Home,
-  Receipt,
-  Star,
-  UtensilsCrossed,
-  Zap,
-  Wallet,
-  Clock,
-  MapPin,
-  Settings,
-  User,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { navGroups } from "@/lib/constants/navigation";
 
 interface MobileDrawerProps {
   open: boolean;
   onClose: () => void;
   activePath: string;
 }
-
-interface NavItem {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-  badge?: string;
-}
-
-interface NavGroup {
-  label: string;
-  items: NavItem[];
-}
-
-const navGroups: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { href: "/dashboard", label: "Dashboard", icon: Home },
-      { href: "/orders", label: "Orders", icon: Receipt, badge: "2" },
-      { href: "/menu", label: "Menu", icon: UtensilsCrossed },
-      { href: "/flash-sales", label: "Flash Sales", icon: Zap },
-      { href: "/reviews", label: "Reviews", icon: Star },
-    ],
-  },
-  {
-    label: "Business",
-    items: [
-      { href: "/payments", label: "Earnings", icon: Wallet },
-      { href: "/operations", label: "Operations", icon: Clock },
-      { href: "/pickup-address", label: "Pickup Address", icon: MapPin },
-    ],
-  },
-  {
-    label: "Account",
-    items: [
-      { href: "/profile", label: "Profile", icon: User },
-      { href: "/settings", label: "Settings", icon: Settings },
-    ],
-  },
-];
 
 export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
   if (!open) return null;
@@ -115,8 +63,8 @@ export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
             position: "absolute",
             top: 12,
             right: 12,
-            width: 36,
-            height: 36,
+            width: 44,
+            height: 44,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -169,7 +117,7 @@ export function MobileDrawer({ open, onClose, activePath }: MobileDrawerProps) {
                       style={{
                         fontSize: 13,
                         fontWeight: isActive ? 600 : 500,
-                        height: 40,
+                        height: 44,
                         borderRadius: 10,
                         padding: isActive ? "0 10px 0 8px" : "0 10px",
                         gap: 10,

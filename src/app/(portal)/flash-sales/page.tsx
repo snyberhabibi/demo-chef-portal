@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Plus,
@@ -17,90 +17,12 @@ import {
   Ban,
   BarChart3,
 } from "lucide-react";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-type SaleStatus = "live" | "upcoming" | "draft" | "past";
-
-interface FlashSale {
-  id: string;
-  name: string;
-  status: SaleStatus;
-  items: string[];
-  orderCount?: number;
-  revenue?: number;
-  orderOpen?: string;
-  orderClose?: string;
-  fulfillmentLabel?: string;
-  pickupWindow?: string;
-  deliveryWindow?: string;
-  countdown?: string;
-  soldOutNote?: string;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Mock data                                                          */
-/* ------------------------------------------------------------------ */
-const flashSales: FlashSale[] = [
-  {
-    id: "fs-1",
-    name: "Weekend Special",
-    status: "live",
-    items: ["Mansaf", "Knafeh", "Shawarma"],
-    orderCount: 23,
-    revenue: 847,
-    orderClose: "Sat 8 PM",
-    pickupWindow: "Sat 12-4 PM",
-    deliveryWindow: "Sat 5-8 PM",
-    countdown: "6h 32m",
-  },
-  {
-    id: "fs-2",
-    name: "Meal Prep Monday",
-    status: "upcoming",
-    items: ["7-Meal Weekly Bundle", "Family Dinner"],
-    orderOpen: "Sun 6 PM",
-    orderClose: "Mon 11 PM",
-    fulfillmentLabel: "Wed 10 AM - 2 PM",
-    countdown: "2d 4h",
-  },
-  {
-    id: "fs-3",
-    name: "Eid Special Menu",
-    status: "draft",
-    items: ["Lamb Ouzi", "Kunafa Rolls", "Date Truffles"],
-  },
-  {
-    id: "fs-4",
-    name: "Last Weekend",
-    status: "past",
-    items: ["Shawarma", "Falafel", "Hummus", "Knafeh"],
-    orderCount: 45,
-    revenue: 1650,
-    soldOutNote: "Sold out in 3 hours",
-  },
-  {
-    id: "fs-5",
-    name: "Mother's Day Special",
-    status: "past",
-    items: ["Mansaf", "Baklava", "Rose Lemonade"],
-    orderCount: 32,
-    revenue: 1200,
-  },
-];
-
-/* Available dishes for the creation flow menu tab */
-const availableDishes = [
-  { id: "d1", name: "Mansaf", basePrice: 24 },
-  { id: "d2", name: "Shawarma", basePrice: 16 },
-  { id: "d3", name: "Knafeh", basePrice: 12 },
-  { id: "d4", name: "Falafel Wrap", basePrice: 10 },
-  { id: "d5", name: "Baklava", basePrice: 8 },
-  { id: "d6", name: "7-Meal Weekly Bundle", basePrice: 89 },
-  { id: "d7", name: "Family Dinner Bundle", basePrice: 65 },
-  { id: "d8", name: "Hummus", basePrice: 7 },
-];
+import {
+  flashSales,
+  flashSaleAvailableDishes as availableDishes,
+  type FlashSale,
+  type SaleStatus,
+} from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Tab config                                                         */
@@ -132,6 +54,9 @@ function statusDotColor(s: SaleStatus): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function FlashSalesPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [activeTab, setActiveTab] = useState<SaleStatus>("live");
   const [showCreate, setShowCreate] = useState(false);
 
@@ -145,6 +70,18 @@ export default function FlashSalesPage() {
     () => flashSales.filter((s) => s.status === activeTab),
     [activeTab]
   );
+
+  if (!loaded) {
+    return (
+      <div className="content-default section-stack">
+        <div className="skeleton" style={{ height: 36, width: 200, borderRadius: 10 }} />
+        <div className="skeleton" style={{ height: 40, borderRadius: 10 }} />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 140, borderRadius: 16 }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="content-default section-stack">
@@ -199,11 +136,11 @@ export default function FlashSalesPage() {
                 fontWeight: 600,
                 border: "none",
                 borderBottom: isActive
-                  ? "2px solid var(--color-brown)"
+                  ? "2px solid var(--color-red)"
                   : "2px solid transparent",
                 background: "transparent",
                 color: isActive
-                  ? "var(--color-brown)"
+                  ? "var(--color-red)"
                   : "var(--color-brown-soft-2)",
                 cursor: "pointer",
                 transition: "all var(--t-fast) var(--ease-spring)",
@@ -223,10 +160,10 @@ export default function FlashSalesPage() {
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
                   background: isActive
-                    ? "var(--color-brown)"
+                    ? "var(--color-red)"
                     : "var(--color-cream-sunken)",
                   color: isActive
-                    ? "var(--color-cream)"
+                    ? "#fff"
                     : "var(--color-brown-soft-2)",
                 }}
               >
@@ -789,7 +726,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
             {/* Order window */}
             <div>
               <label className="field-label">Order Window</label>
-              <div className="grid grid-cols-2 gap-3" style={{ marginTop: 4 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ marginTop: 4 }}>
                 <div>
                   <span className="caption" style={{ fontWeight: 600 }}>
                     Opens
@@ -1222,7 +1159,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                         </button>
                       </div>
                       <div
-                        className="grid grid-cols-3 gap-2"
+                        className="grid grid-cols-1 sm:grid-cols-3 gap-2"
                       >
                         <div>
                           <span
@@ -1246,14 +1183,13 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                             </span>
                             <input
                               type="text"
-                              className="input tnum"
+                              className="input tnum text-xs sm:text-xs"
                               value={item.flashPrice}
                               onChange={(e) =>
                                 updateItem(item.id, "flashPrice", e.target.value)
                               }
                               style={{
                                 paddingLeft: 20,
-                                fontSize: 12,
                                 height: 32,
                               }}
                             />
@@ -1268,7 +1204,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                           </span>
                           <input
                             type="text"
-                            className="input tnum"
+                            className="input tnum text-xs sm:text-xs"
                             placeholder="No limit"
                             value={item.quantityLimit}
                             onChange={(e) =>
@@ -1280,7 +1216,6 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                             }
                             style={{
                               marginTop: 3,
-                              fontSize: 12,
                               height: 32,
                             }}
                           />
@@ -1294,7 +1229,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                           </span>
                           <input
                             type="text"
-                            className="input tnum"
+                            className="input tnum text-xs sm:text-xs"
                             placeholder="No limit"
                             value={item.perCustomerLimit}
                             onChange={(e) =>
@@ -1306,7 +1241,6 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                             }
                             style={{
                               marginTop: 3,
-                              fontSize: 12,
                               height: 32,
                             }}
                           />

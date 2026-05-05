@@ -1,10 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Plus, Search, X, ClipboardList, Copy, MoreHorizontal } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import {
+  dishes,
+  menuCategories as categories,
+  bundles as BUNDLES,
+  menuSections as INITIAL_SECTIONS,
+  type DishStatus,
+  type Dish,
+  type Bundle,
+  type MenuSection,
+} from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -12,132 +22,7 @@ import { useToast } from "@/components/ui/toast-provider";
 
 type MenuTab = "dishes" | "bundles" | "sections";
 
-type DishStatus = "published" | "draft" | "archived";
-
-interface Dish {
-  id: string;
-  name: string;
-  price: number;
-  status: DishStatus;
-  image: string;
-  category: string;
-  cuisine: string;
-}
-
-const dishes: Dish[] = [
-  {
-    id: "mansaf",
-    name: "Homemade Mansaf",
-    price: 28,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
-    category: "Main Dishes",
-    cuisine: "Jordanian",
-  },
-  {
-    id: "knafeh",
-    name: "Pistachio Knafeh",
-    price: 18,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop",
-    category: "Desserts",
-    cuisine: "Palestinian",
-  },
-  {
-    id: "baklava",
-    name: "Walnut Baklava",
-    price: 14,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop",
-    category: "Desserts",
-    cuisine: "Turkish",
-  },
-  {
-    id: "shawarma",
-    name: "Chicken Shawarma",
-    price: 16,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop",
-    category: "Main Dishes",
-    cuisine: "Lebanese",
-  },
-  {
-    id: "hummus",
-    name: "Smoky Hummus",
-    price: 10,
-    status: "draft",
-    image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop",
-    category: "Appetizers",
-    cuisine: "Middle Eastern",
-  },
-  {
-    id: "falafel",
-    name: "Crispy Falafel",
-    price: 12,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop",
-    category: "Appetizers",
-    cuisine: "Egyptian",
-  },
-  {
-    id: "tabouleh",
-    name: "Tabouleh Salad",
-    price: 11,
-    status: "draft",
-    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop",
-    category: "Salads",
-    cuisine: "Lebanese",
-  },
-  {
-    id: "mandi",
-    name: "Chicken Mandi",
-    price: 22,
-    status: "archived",
-    image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop",
-    category: "Main Dishes",
-    cuisine: "Yemeni",
-  },
-  {
-    id: "fattoush",
-    name: "Garden Fattoush",
-    price: 10,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop",
-    category: "Salads",
-    cuisine: "Lebanese",
-  },
-  {
-    id: "kibbeh",
-    name: "Lamb Kibbeh",
-    price: 16,
-    status: "published",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop",
-    category: "Appetizers",
-    cuisine: "Syrian",
-  },
-  {
-    id: "manaqish",
-    name: "Manaqish",
-    price: 8,
-    status: "draft",
-    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop",
-    category: "Bakery",
-    cuisine: "Lebanese",
-  },
-];
-
-const categories = [
-  { label: "All", emoji: "" },
-  { label: "Appetizers", emoji: "\u{1F951}" },
-  { label: "Main Dishes", emoji: "\u{1F356}" },
-  { label: "Soups", emoji: "\u{1F372}" },
-  { label: "Salads", emoji: "\u{1F957}" },
-  { label: "Bakery", emoji: "\u{1F35E}" },
-  { label: "Pastries", emoji: "\u{1F353}" },
-  { label: "Desserts", emoji: "\u{1F370}" },
-  { label: "Coffee", emoji: "\u2615" },
-  { label: "Drinks", emoji: "\u{1F37A}" },
-];
+/* dishes, categories, BUNDLES, INITIAL_SECTIONS imported from @/lib/mock-data */
 
 function dishStatusBadge(status: DishStatus) {
   switch (status) {
@@ -150,24 +35,8 @@ function dishStatusBadge(status: DishStatus) {
   }
 }
 
-/* ── Bundles data ── */
+/* ── Bundles data — imported from @/lib/mock-data ── */
 type BundleStatus = "published" | "draft" | "archived";
-
-interface Bundle {
-  id: number;
-  name: string;
-  image: string;
-  items: number;
-  price: number;
-  status: BundleStatus;
-}
-
-const BUNDLES: Bundle[] = [
-  { id: 1, name: "Family Dinner for 4", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop", items: 5, price: 65, status: "published" },
-  { id: 2, name: "Weekly Meal Prep", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop", items: 7, price: 75, status: "published" },
-  { id: 3, name: "Mezze Tasting Plate", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop", items: 4, price: 42, status: "draft" },
-  { id: 4, name: "Sweet Tooth Box", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop", items: 3, price: 32, status: "published" },
-];
 
 function bundleStatusBadge(status: BundleStatus) {
   switch (status) {
@@ -180,20 +49,8 @@ function bundleStatusBadge(status: BundleStatus) {
   }
 }
 
-/* ── Sections data ── */
-interface Section {
-  id: number;
-  name: string;
-  dishCount: number;
-  active: boolean;
-}
-
-const INITIAL_SECTIONS: Section[] = [
-  { id: 1, name: "Ramadan Specials", dishCount: 5, active: true },
-  { id: 2, name: "Weekly Specials", dishCount: 3, active: true },
-  { id: 3, name: "Catering Menu", dishCount: 8, active: true },
-  { id: 4, name: "Limited Time", dishCount: 2, active: false },
-];
+/* ── Sections data — imported from @/lib/mock-data ── */
+type Section = MenuSection;
 
 let nextSectionId = 5;
 
@@ -229,6 +86,27 @@ export default function MenuPage() {
   const [openSectionMenuId, setOpenSectionMenuId] = useState<number | null>(null);
 
   const { toast } = useToast();
+  const menuPageRef = useRef<HTMLDivElement>(null);
+
+  /* Click-outside to close dish card and section row dropdown menus */
+  useEffect(() => {
+    if (openMenuId === null && openSectionMenuId === null) return;
+    const handler = (e: MouseEvent) => {
+      if (menuPageRef.current && !menuPageRef.current.contains(e.target as Node)) {
+        setOpenMenuId(null);
+        setOpenSectionMenuId(null);
+        return;
+      }
+      /* Close if clicked outside any dropdown trigger/menu */
+      const target = e.target as HTMLElement;
+      if (!target.closest("[data-menu-trigger]") && !target.closest("[data-menu-dropdown]")) {
+        setOpenMenuId(null);
+        setOpenSectionMenuId(null);
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => document.removeEventListener("click", handler, true);
+  }, [openMenuId, openSectionMenuId]);
 
   /* ── Dishes filtering ── */
   const filteredDishes = dishes.filter((dish) => {
@@ -702,6 +580,7 @@ export default function MenuPage() {
                       }}
                     >
                       <button
+                        data-menu-trigger="true"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -726,6 +605,7 @@ export default function MenuPage() {
 
                       {isMenuOpen && (
                         <div
+                          data-menu-dropdown="true"
                           style={{
                             position: "absolute",
                             top: 34,
@@ -1011,6 +891,7 @@ export default function MenuPage() {
                   </span>
                   <div style={{ position: "relative", flexShrink: 0 }}>
                     <button
+                      data-menu-trigger="true"
                       style={{
                         background: "none", border: "none", color: "var(--color-brown-soft-2)",
                         padding: 4, cursor: "pointer", width: 36, height: 36,
@@ -1026,6 +907,7 @@ export default function MenuPage() {
                     </button>
                     {openSectionMenuId === section.id && (
                       <div
+                        data-menu-dropdown="true"
                         style={{
                           position: "absolute", top: 38, right: 0, width: 140,
                           background: "#fff", borderRadius: 10,

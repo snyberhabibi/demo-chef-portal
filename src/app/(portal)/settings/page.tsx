@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Shield,
@@ -75,6 +75,9 @@ const GUIDE_TABS = ["Video Tutorials", "Chef Playbook"] as const;
 type GuideTab = (typeof GUIDE_TABS)[number];
 
 export default function SettingsPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
   const [name, setName] = useState("Amira Haddad");
   const [phone, setPhone] = useState("(469) 277-0767");
@@ -113,6 +116,18 @@ export default function SettingsPage() {
   const completedCount = tutorials.filter((t) => t.completed).length;
   const totalCount = tutorials.length;
   const progressPct = (completedCount / totalCount) * 100;
+
+  if (!loaded) {
+    return (
+      <div className="content-narrow section-stack">
+        <div className="skeleton" style={{ height: 40, borderRadius: 10 }} />
+        <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 50, borderRadius: 12 }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="content-narrow section-stack">

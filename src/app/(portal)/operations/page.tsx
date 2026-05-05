@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar, Copy, Ban } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
@@ -98,6 +98,9 @@ const INITIAL_OVERRIDES: DateOverride[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function OperationsPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const { toast } = useToast();
   const [state, setState] = useState<StoreState>("live");
   const [storeToggle, setStoreToggle] = useState(state === "live");
@@ -182,6 +185,17 @@ export default function OperationsPage() {
       return next;
     });
   };
+
+  if (!loaded) {
+    return (
+      <div className="content-narrow section-stack">
+        <div className="skeleton" style={{ height: 60, borderRadius: 12 }} />
+        <div className="skeleton" style={{ height: 300, borderRadius: 16 }} />
+        <div className="skeleton" style={{ height: 50, borderRadius: 12 }} />
+        <div className="skeleton" style={{ height: 200, borderRadius: 16 }} />
+      </div>
+    );
+  }
 
   return (
     <div className="content-narrow section-stack">
@@ -387,8 +401,8 @@ export default function OperationsPage() {
           return (
             <div key={day}>
               {di > 0 && <div className="divider" style={{ margin: "0 20px" }} />}
-              <div style={{ padding: "12px 20px", display: "flex", alignItems: "flex-start", gap: 12 }}>
-                {/* Day name */}
+              <div style={{ padding: "12px 20px", display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "8px 12px" }}>
+                {/* Day name + toggle + add button row */}
                 <span style={{ width: 80, flexShrink: 0, fontSize: 14, fontWeight: 600, paddingTop: 4, display: "flex", alignItems: "center", gap: 4 }}>
                   {day}
                   {day === "Monday" && (
@@ -423,8 +437,17 @@ export default function OperationsPage() {
                   <span className="toggle-thumb" />
                 </button>
 
-                {/* Time windows or Closed */}
-                <div style={{ flex: 1, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, minHeight: 32 }}>
+                {/* Add window button - on same row as day name */}
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => addWindow(day)}
+                  style={{ fontSize: 12, flexShrink: 0, gap: 4, marginLeft: "auto" }}
+                >
+                  <Plus size={12} /> Add
+                </button>
+
+                {/* Time windows or Closed - wraps to next row on mobile */}
+                <div style={{ flex: "1 1 100%", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, minHeight: daySchedule.enabled ? 32 : 0 }}>
                   {!daySchedule.enabled ? (
                     <span className="body-sm" style={{ color: "var(--color-brown-soft-2)", fontStyle: "italic" }}>Closed</span>
                   ) : (
@@ -499,15 +522,6 @@ export default function OperationsPage() {
                     </>
                   )}
                 </div>
-
-                {/* Add window button */}
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={() => addWindow(day)}
-                  style={{ fontSize: 12, flexShrink: 0, gap: 4 }}
-                >
-                  <Plus size={12} /> Add
-                </button>
               </div>
             </div>
           );

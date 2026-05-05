@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, CheckCircle, AlertTriangle, ChevronDown, ArrowRight, ExternalLink, Shield, Zap, Eye } from "lucide-react";
 
 type StripeState = "A" | "B" | "C";
@@ -26,8 +26,25 @@ const INFO_BLOCKS = [
 ];
 
 export default function PaymentsPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [state, setState] = useState<StripeState>("A");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+  if (!loaded) {
+    return (
+      <div className="content-narrow section-stack">
+        <div className="skeleton" style={{ height: 200, borderRadius: 16 }} />
+        <div className="grid grid-cols-3 gap-3">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="skeleton" style={{ height: 100, borderRadius: 16 }} />
+          ))}
+        </div>
+        <div className="skeleton" style={{ height: 160, borderRadius: 16 }} />
+      </div>
+    );
+  }
 
   return (
     <div className="content-narrow section-stack">

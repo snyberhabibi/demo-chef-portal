@@ -110,10 +110,24 @@ export default function PortalLayout({
   const twoSegmentKey = segments.slice(0, 2).join("/");
   const oneSegmentKey = segments[0] || "dashboard";
 
-  const config = routeMap[twoSegmentKey] || routeMap[oneSegmentKey] || {
-    title: "Dashboard",
-    breadcrumbs: [{ label: "Dashboard" }],
-  };
+  // Dynamic route handling for order detail pages (orders/[id])
+  let config: RouteConfig;
+  if (segments[0] === "orders" && segments[1] && !routeMap[twoSegmentKey]) {
+    const orderId = segments[1];
+    config = {
+      title: `Order #${orderId}`,
+      breadcrumbs: [
+        { label: "Dashboard", href: "/dashboard" },
+        { label: "Orders", href: "/orders" },
+        { label: `Order #${orderId}` },
+      ],
+    };
+  } else {
+    config = routeMap[twoSegmentKey] || routeMap[oneSegmentKey] || {
+      title: "Dashboard",
+      breadcrumbs: [{ label: "Dashboard" }],
+    };
+  }
 
   const activePath = `/${oneSegmentKey}`;
 
@@ -138,7 +152,7 @@ export default function PortalLayout({
               main { padding: 32px !important; }
             }
           `}</style>
-          <div className="pb-24 lg:pb-0">{children}</div>
+          <div className="pb-16 lg:pb-0">{children}</div>
         </main>
       </div>
       <BottomTabBar activePath={activePath} />

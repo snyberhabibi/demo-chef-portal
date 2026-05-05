@@ -3,8 +3,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Camera, X, Upload, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { Camera, X, Upload, ExternalLink } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { SectionCard } from "@/components/ui/section-card";
 
 const ALL_CUISINES = [
   "Palestinian", "Lebanese", "Jordanian", "Iraqi", "Syrian", "Egyptian",
@@ -12,6 +13,9 @@ const ALL_CUISINES = [
 ];
 
 export default function ProfilePage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const { toast } = useToast();
 
   // Form state
@@ -52,15 +56,27 @@ export default function ProfilePage() {
     (c) => !cuisines.includes(c) && c.toLowerCase().includes(cuisineSearch.toLowerCase())
   );
 
+  if (!loaded) {
+    return (
+      <div className="content-narrow section-stack">
+        <div className="skeleton" style={{ height: 36, width: 180, borderRadius: 10 }} />
+        <div className="skeleton" style={{ height: 100, borderRadius: 16 }} />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 60, borderRadius: 16 }} />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="content-narrow section-stack">
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <div>
           <h1 className="heading-lg">{businessName || "Your Kitchen"}</h1>
           <div className="body-sm" style={{ marginTop: 2 }}>Manage your kitchen profile and settings</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <Link href="/store-preview" className="btn btn-ghost btn-sm" style={{ gap: 4 }}>
             <ExternalLink size={14} /> Preview Store
           </Link>
@@ -248,40 +264,3 @@ export default function ProfilePage() {
   );
 }
 
-/* Collapsible section card */
-function SectionCard({
-  title, subtitle, open, onToggle, children,
-}: {
-  title: string; subtitle: string; open: boolean; onToggle: () => void; children: React.ReactNode;
-}) {
-  return (
-    <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-      <button
-        onClick={onToggle}
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          width: "100%", padding: "16px 20px", background: "none", border: "none",
-          cursor: "pointer", textAlign: "left",
-        }}
-      >
-        <div>
-          <div className="heading-sm">{title}</div>
-          <div className="caption" style={{ marginTop: 1 }}>{subtitle}</div>
-        </div>
-        {open ? <ChevronUp size={18} style={{ color: "var(--color-brown-soft-2)" }} /> : <ChevronDown size={18} style={{ color: "var(--color-brown-soft-2)" }} />}
-      </button>
-      <div
-        style={{
-          overflow: "hidden",
-          transition: "max-height 0.3s ease, opacity 0.3s ease",
-          maxHeight: open ? 1000 : 0,
-          opacity: open ? 1 : 0,
-        }}
-      >
-        <div style={{ padding: "0 20px 20px", borderTop: "1px solid rgba(51,31,46,0.04)" }}>
-          <div style={{ paddingTop: 16 }}>{children}</div>
-        </div>
-      </div>
-    </div>
-  );
-}

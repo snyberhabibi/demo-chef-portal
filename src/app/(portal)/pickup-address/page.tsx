@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { MapPin, Copy, Edit3, Clock, Check } from "lucide-react";
 
 export default function PickupAddressPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [copied, setCopied] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);
   const [editingInstructions, setEditingInstructions] = useState(false);
@@ -19,6 +22,16 @@ export default function PickupAddressPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  if (!loaded) {
+    return (
+      <div className="content-narrow section-stack">
+        <div className="skeleton" style={{ height: 200, borderRadius: 16 }} />
+        <div className="skeleton" style={{ height: 100, borderRadius: 16 }} />
+        <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+      </div>
+    );
+  }
 
   return (
     <div className="content-narrow section-stack">

@@ -3,6 +3,16 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Star, MessageSquare } from "lucide-react";
+import {
+  reviews as rawReviews,
+  averageRating,
+  ratingBreakdown,
+  dishReviews as DISH_REVIEWS,
+  bundleReviews as BUNDLE_REVIEWS,
+  type Review,
+  type DishReviewGroup,
+  type BundleReviewGroup,
+} from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -13,125 +23,20 @@ type Tab = (typeof TABS)[number];
 
 const SORT_OPTIONS = ["Newest", "Oldest", "Highest", "Lowest"];
 
-const breakdownData = [
-  { stars: 5, count: 4, pct: 100 },
-  { stars: 4, count: 0, pct: 0 },
-  { stars: 3, count: 0, pct: 0 },
-  { stars: 2, count: 0, pct: 0 },
-  { stars: 1, count: 0, pct: 0 },
-];
+const breakdownData = ratingBreakdown;
 
-const PROFILE_REVIEWS = [
-  {
-    id: 1,
-    initials: "SK",
-    name: "Sarah K.",
-    rating: 5,
-    date: "3 days ago",
-    text: "Amira's mansaf is the best I've had outside of Jordan. The jameed sauce is perfectly tangy and the lamb falls right off the bone. Already planning my next order!",
-    reply: null,
-    composerOpen: false,
-    composerText: "",
-  },
-  {
-    id: 2,
-    initials: "MT",
-    name: "Marcus T.",
-    rating: 5,
-    date: "1 week ago",
-    text: "First time trying knafeh and now I'm hooked. The cheese pull was incredible, and that syrup was just the right amount of sweet. Outstanding.",
-    reply: null,
-    composerOpen: false,
-    composerText: "",
-  },
-  {
-    id: 3,
-    initials: "PR",
-    name: "Priya R.",
-    rating: 5,
-    date: "2 weeks ago",
-    text: "Loved everything but baklava was a bit dry compared to last time. Still delicious overall. Will keep ordering!",
-    reply: null,
-    composerOpen: false,
-    composerText: "",
-  },
-  {
-    id: 4,
-    initials: "JL",
-    name: "Jordan L.",
-    rating: 5,
-    date: "3 weeks ago",
-    text: "Picked up for family dinner, everyone went back for seconds. The hummus and shawarma were a huge hit. Thank you Amira!",
-    reply: {
-      name: "Yalla Kitchen by Amira",
-      text: "So glad your family enjoyed it!",
-      time: "2 weeks ago",
-    },
-    composerOpen: false,
-    composerText: "",
-  },
-];
-
-interface DishReviewItem {
-  name: string;
-  rating: number;
-  count: number;
-  reviews: { initials: string; name: string; rating: number; text: string; date: string }[];
-}
-
-const DISH_REVIEWS: DishReviewItem[] = [
-  {
-    name: "Grandma's Mansaf",
-    rating: 5.0,
-    count: 8,
-    reviews: [
-      { initials: "SK", name: "Sarah K.", rating: 5, text: "Best mansaf I've had outside of Jordan.", date: "3 days ago" },
-      { initials: "AW", name: "Alex W.", rating: 5, text: "Incredible lamb and the rice was perfectly spiced.", date: "1 week ago" },
-    ],
-  },
-  {
-    name: "Knafeh",
-    rating: 4.8,
-    count: 5,
-    reviews: [
-      { initials: "MT", name: "Marcus T.", rating: 5, text: "The cheese pull was incredible.", date: "1 week ago" },
-    ],
-  },
-  {
-    name: "Baklava Box",
-    rating: 4.2,
-    count: 4,
-    reviews: [
-      { initials: "PR", name: "Priya R.", rating: 4, text: "Loved everything but a bit dry this time.", date: "2 weeks ago" },
-    ],
-  },
-];
-
-interface BundleReviewItem {
-  name: string;
-  rating: number;
-  count: number;
-  reviews: { initials: string; name: string; rating: number; text: string; date: string }[];
-}
-
-const BUNDLE_REVIEWS: BundleReviewItem[] = [
-  {
-    name: "Family Feast Bundle",
-    rating: 4.9,
-    count: 6,
-    reviews: [
-      { initials: "JL", name: "Jordan L.", rating: 5, text: "Everyone went back for seconds.", date: "3 weeks ago" },
-    ],
-  },
-  {
-    name: "Date Night Bundle",
-    rating: 4.7,
-    count: 3,
-    reviews: [
-      { initials: "LM", name: "Lisa M.", rating: 5, text: "Perfect portion for two. Romantic dinner sorted!", date: "1 week ago" },
-    ],
-  },
-];
+/* Transform centralized reviews into page-specific format with composer state */
+const PROFILE_REVIEWS = rawReviews.map((r) => ({
+  id: r.id,
+  initials: r.initials,
+  name: r.name,
+  rating: r.rating,
+  date: r.date,
+  text: r.text,
+  reply: r.reply,
+  composerOpen: false,
+  composerText: "",
+}));
 
 /* ------------------------------------------------------------------ */
 /*  Star row                                                           */
@@ -156,6 +61,9 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function ReviewsPage() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
   const [activeTab, setActiveTab] = useState<Tab>("Chef Profile");
   const [sortBy, setSortBy] = useState("Newest");
   const [sortOpen, setSortOpen] = useState(false);
@@ -233,6 +141,18 @@ export default function ReviewsPage() {
       )
     );
   }, []);
+
+  if (!loaded) {
+    return (
+      <div className="content-default section-stack">
+        <div className="skeleton" style={{ height: 40, borderRadius: 10 }} />
+        <div className="skeleton" style={{ height: 120, borderRadius: 16 }} />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton" style={{ height: 100, borderRadius: 16 }} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="content-default section-stack">
@@ -324,12 +244,12 @@ export default function ReviewsPage() {
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
               <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1 }}>
-                5.0
+                {averageRating.toFixed(1)}
               </div>
               <div style={{ marginTop: 8 }}>
-                <StarRow rating={5} size={18} />
+                <StarRow rating={Math.round(averageRating)} size={18} />
               </div>
-              <div className="caption" style={{ marginTop: 6 }}>4 ratings</div>
+              <div className="caption" style={{ marginTop: 6 }}>{rawReviews.length} ratings</div>
             </div>
 
             {/* Distribution bars */}
@@ -417,11 +337,11 @@ export default function ReviewsPage() {
                     <div style={{ marginTop: 16 }}>
                       <div style={{ position: "relative" }}>
                         <textarea
-                          className="textarea review-composer-textarea"
+                          className="textarea review-composer-textarea text-sm sm:text-sm"
                           value={review.composerText}
                           onChange={(e) => updateComposerText(review.id, e.target.value)}
                           placeholder="Write a reply..."
-                          style={{ minHeight: 64, fontSize: 14, transition: `border-color var(--t-fast)` }}
+                          style={{ minHeight: 64, transition: `border-color var(--t-fast)` }}
                         />
                         <span
                           className="tnum caption"
