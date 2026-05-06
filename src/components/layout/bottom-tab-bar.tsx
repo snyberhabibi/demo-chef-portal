@@ -29,12 +29,17 @@ const tabs = [
 export function BottomTabBar({ activePath }: BottomTabBarProps) {
   const { mode } = useDesignMode();
   const isB = mode === "b";
+
+  const activeColor = "#df4746";
+  const inactiveColor = "var(--color-brown-soft-2)";
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around glass"
       style={{
         minHeight: 56,
-        borderTop: "1px solid rgba(51,31,46,0.06)",
+        borderTop: "none",
+        boxShadow: "0 -1px 8px rgba(53,36,49,0.04), 0 -1px 0 rgba(51,31,46,0.06)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
@@ -54,22 +59,20 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
               flex: 1,
               minHeight: 44,
               gap: 2,
-              color: isActive
-                ? "var(--color-brown)"
-                : "var(--color-brown-soft-2)",
+              color: isActive ? activeColor : inactiveColor,
               transition: "color var(--t-fast) var(--ease-spring)",
             }}
           >
             <span className="relative">
               <Icon
                 size={20}
-                strokeWidth={1.5}
+                strokeWidth={isActive ? 1.8 : 1.5}
               />
               {"badge" in tab && tab.badge && (
                 <span
                   className="absolute flex items-center justify-center"
                   style={{
-                    top: -5,
+                    top: -6,
                     right: -10,
                     background: "#df4746",
                     color: "#fff",
@@ -78,8 +81,9 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
                     minWidth: 16,
                     height: 16,
                     borderRadius: 9999,
-                    padding: "0 4px",
+                    padding: "0 5px",
                     fontVariantNumeric: "tabular-nums",
+                    boxShadow: "0 1px 3px rgba(223,71,70,0.3)",
                   }}
                 >
                   {tab.badge}
@@ -88,27 +92,13 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
             </span>
             <span
               style={{
-                fontSize: 11,
-                fontWeight: isActive ? 700 : 600,
+                fontSize: 10,
+                fontWeight: isActive ? 700 : 500,
+                letterSpacing: isActive ? "0.01em" : "0.02em",
               }}
             >
               {tab.label}
             </span>
-            {/* Active indicator dot */}
-            {isActive && (
-              <span
-                style={{
-                  position: "absolute",
-                  bottom: 4,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: 4,
-                  height: 4,
-                  borderRadius: "50%",
-                  background: "#df4746",
-                }}
-              />
-            )}
           </Link>
         );
       })}

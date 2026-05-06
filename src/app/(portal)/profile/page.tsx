@@ -287,7 +287,7 @@ export default function ProfilePage() {
           .profile-save-bar {
             position: sticky !important;
             bottom: 56px !important;
-            background: rgba(255, 255, 255, 0.92) !important;
+            background: rgba(250, 249, 246, 0.92) !important;
             backdrop-filter: blur(16px) !important;
             -webkit-backdrop-filter: blur(16px) !important;
             padding: 12px 0 !important;

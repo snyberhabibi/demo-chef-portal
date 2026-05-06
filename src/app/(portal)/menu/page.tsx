@@ -170,21 +170,23 @@ export default function MenuPage() {
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 50,
+            zIndex: 60,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(51,31,46,0.4)",
-            backdropFilter: "blur(6px)",
-            animation: "fadeIn 0.15s ease-out both",
+            background: "rgba(51,31,46,0.45)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            animation: "fadeIn 0.18s ease-out both",
           }}
           onClick={() => setShowCreateModal(false)}
         >
+          {/* Desktop: centered card / Mobile: bottom-sheet style */}
           <div
-            className="card"
+            className="card create-dish-modal"
             style={{
               width: "100%",
-              maxWidth: 480,
+              maxWidth: 400,
               margin: "0 16px",
               position: "relative",
               animation: "scaleIn 0.2s var(--ease-spring) both",
@@ -195,19 +197,22 @@ export default function MenuPage() {
               onClick={() => setShowCreateModal(false)}
               style={{
                 position: "absolute",
-                top: 16,
-                right: 16,
-                background: "none",
+                top: 12,
+                right: 12,
+                background: "rgba(51,31,46,0.06)",
                 border: "none",
-                color: "var(--color-brown-soft-2)",
+                color: "var(--color-brown-soft)",
                 width: 32,
                 height: 32,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                borderRadius: 8,
-                transition: "color var(--t-fast)",
+                borderRadius: 10,
+                cursor: "pointer",
+                transition: "background var(--t-fast), color var(--t-fast)",
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.1)"; e.currentTarget.style.color = "var(--color-brown)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.06)"; e.currentTarget.style.color = "var(--color-brown-soft)"; }}
             >
               <X size={16} />
             </button>

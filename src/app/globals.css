@@ -422,6 +422,8 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes slideUpModal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUpSheet { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 @keyframes pulseSoft { 0%,100% { box-shadow: 0 0 0 0 rgba(229,65,65,0.2); } 50% { box-shadow: 0 0 0 6px rgba(229,65,65,0); } }
 @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(20px,-15px) scale(1.05); } 66% { transform: translate(-15px,20px) scale(0.96); } }
@@ -475,7 +477,7 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
 /* Glass effect — for sticky bars */
 .glass {
-  background: rgba(250,249,246,0.88);
+  background: rgba(250,249,246,0.92);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
@@ -789,6 +791,23 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
   /* Bottom sheet safe area */
   .bottom-sheet { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important; }
+
+}
+
+/* Create Dish modal — bottom-sheet on mobile (<768px) */
+@media (max-width: 767px) {
+  .create-dish-modal {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    animation: slideUpSheet 0.28s var(--ease-spring) both !important;
+  }
 }
 
 /* ========================================================================
