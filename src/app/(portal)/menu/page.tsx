@@ -16,6 +16,7 @@ import {
   type MenuSection,
 } from "@/lib/mock-data";
 import { dishStatusBadge } from "@/lib/utils/status-helpers";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -42,6 +43,9 @@ const TABS: { key: MenuTab; label: string }[] = [
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function MenuPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
 
@@ -335,14 +339,22 @@ export default function MenuPage() {
             <button
               onClick={() => setShowCreateModal(true)}
               className="btn btn-dark"
-              style={{ gap: 6, transition: "box-shadow var(--t-fast)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 0 20px rgba(51,31,46,0.25)"; }}
+              style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "linear-gradient(135deg, #8b5cf6, #ec4899)", border: "none" } : {}) }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(139,92,246,0.4)" : "0 0 20px rgba(51,31,46,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
               <Plus size={18} strokeWidth={2.5} />
               Create Dish
             </button>
           </div>
+
+          {/* Mode B — Dish count badge */}
+          {isB && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(236,72,153,0.06))", border: "1px solid rgba(139,92,246,0.12)" }}>
+              <span style={{ fontSize: 18 }}>{"\u{1F37D}\u{FE0F}"}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>{localDishes.length} dishes on your menu</span>
+            </div>
+          )}
 
           {/* Filters Row */}
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
@@ -393,7 +405,7 @@ export default function MenuPage() {
               }}
             >
               {categories.map((cat) => {
-                const isActive = cat.label === activeCategory;
+                const isCatActive = cat.label === activeCategory;
                 return (
                   <button
                     key={cat.label}
@@ -406,11 +418,15 @@ export default function MenuPage() {
                       height: 32,
                       borderRadius: 9999,
                       fontSize: 12,
-                      fontWeight: isActive ? 600 : 500,
+                      fontWeight: isCatActive ? 600 : 500,
                       cursor: "pointer",
-                      border: `1px solid ${isActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
-                      background: isActive ? "var(--color-terracotta-soft)" : "transparent",
-                      color: isActive ? "var(--color-terracotta)" : "var(--color-brown-soft)",
+                      border: isB ? "none" : `1px solid ${isCatActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
+                      background: isB
+                        ? (isCatActive ? "linear-gradient(135deg, #8b5cf6, #ec4899)" : "rgba(139,92,246,0.08)")
+                        : (isCatActive ? "var(--color-terracotta-soft)" : "transparent"),
+                      color: isB
+                        ? (isCatActive ? "#fff" : "var(--color-brown-soft)")
+                        : (isCatActive ? "var(--color-terracotta)" : "var(--color-brown-soft)"),
                       whiteSpace: "nowrap",
                       flexShrink: 0,
                       transition: "all var(--t-fast) var(--ease-spring)",
@@ -489,11 +505,15 @@ export default function MenuPage() {
                 return (
                   <div
                     key={dish.id}
-                    className="card-photo card-interactive group overflow-hidden rounded-[16px] relative"
+                    className={`card-photo card-interactive group overflow-hidden relative ${isB ? "rounded-[20px]" : "rounded-[16px]"}`}
                     style={{
                       padding: 0,
                       opacity: dish.status === "archived" ? 0.6 : 1,
+                      transition: "box-shadow 0.3s ease",
+                      ...(isB ? { borderLeft: "none" } : {}),
                     }}
+                    onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(139,92,246,0.25)"; }}
+                    onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
                   >
                     <Link
                       href={`/menu/new?edit=${dish.id}`}
@@ -505,7 +525,7 @@ export default function MenuPage() {
                           src={dish.image}
                           alt={dish.name}
                           className="w-full h-full object-cover group-hover:scale-[1.03]"
-                          style={{ borderRadius: "16px 16px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
+                          style={{ borderRadius: isB ? "20px 20px 0 0" : "16px 16px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
                         />
                         <div
                           className="absolute"
@@ -538,9 +558,9 @@ export default function MenuPage() {
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100"
                           style={{
-                            background: "rgba(51,31,46,0.05)",
+                            background: isB ? "rgba(139,92,246,0.06)" : "rgba(51,31,46,0.05)",
                             transition: "opacity var(--t-fast)",
-                            borderRadius: "16px 16px 0 0",
+                            borderRadius: isB ? "20px 20px 0 0" : "16px 16px 0 0",
                             pointerEvents: "none",
                           }}
                         />
