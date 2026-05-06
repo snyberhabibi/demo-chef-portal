@@ -112,7 +112,7 @@ function ToastContainer({
       <style>{`
         .toast-anchor {
           position: fixed;
-          top: 16px;
+          top: calc(16px + env(safe-area-inset-top, 0px));
           left: 50%;
           transform: translateX(-50%);
           z-index: 9999;

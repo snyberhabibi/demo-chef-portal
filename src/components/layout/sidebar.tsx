@@ -17,15 +17,17 @@ export function Sidebar({ activePath }: SidebarProps) {
 
   return (
     <aside
-      className="hidden lg:flex flex-col sticky top-0 h-screen"
+      className="hidden lg:flex flex-col sticky top-0"
       style={{
         width: collapsed ? 56 : 260,
+        height: "100dvh",
         background: "var(--color-cream-deep)",
         backgroundImage:
           "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(51,31,46,0.02) 100%)",
         borderRight: "1px solid rgba(51,31,46,0.06)",
         overflow: "hidden",
         transition: `width var(--t-base) var(--ease-spring)`,
+        paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
       {/* Logo */}

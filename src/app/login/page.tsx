@@ -14,8 +14,15 @@ export default function LoginPage() {
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen overflow-hidden px-5 grain"
-      style={{ background: "var(--color-cream)" }}
+      className="relative flex items-center justify-center overflow-hidden px-5 grain"
+      style={{
+        background: "var(--color-cream)",
+        minHeight: "100dvh",
+        paddingTop: "env(safe-area-inset-top, 20px)",
+        paddingBottom: "env(safe-area-inset-bottom, 20px)",
+        paddingLeft: "max(20px, env(safe-area-inset-left, 0px))",
+        paddingRight: "max(20px, env(safe-area-inset-right, 0px))",
+      }}
     >
       {/* Decorative blobs — 2 only, more subtle */}
       <div

@@ -353,7 +353,7 @@ function CreateDishPageInner() {
   const fulfillmentDayShort = fulfillmentDay.slice(0, 3);
 
   return (
-    <div className="page-fade" style={{ minHeight: "100vh" }}>
+    <div className="page-fade" style={{ minHeight: "100dvh" }}>
       {/* ── Top Bar ── */}
       <div
         className="flex items-center gap-3 flex-wrap"

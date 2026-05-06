@@ -30,7 +30,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
     <nav
       className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around glass"
       style={{
-        height: 56,
+        minHeight: 56,
         borderTop: "1px solid rgba(51,31,46,0.06)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}

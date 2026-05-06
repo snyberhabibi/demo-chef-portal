@@ -47,8 +47,15 @@ const steps = [
 export default function WelcomePage() {
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen overflow-hidden px-5 py-12"
-      style={{ background: "var(--color-cream)" }}
+      className="relative flex items-center justify-center overflow-hidden px-5 py-12"
+      style={{
+        background: "var(--color-cream)",
+        minHeight: "100dvh",
+        paddingTop: "max(48px, env(safe-area-inset-top, 48px))",
+        paddingBottom: "max(48px, env(safe-area-inset-bottom, 48px))",
+        paddingLeft: "max(20px, env(safe-area-inset-left, 0px))",
+        paddingRight: "max(20px, env(safe-area-inset-right, 0px))",
+      }}
     >
       {/* Decorative blobs — 2 only, subtle */}
       <div

@@ -52,8 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full`}>
-      <body className="min-h-full flex flex-col"><I18nProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></I18nProvider></body>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable}`} style={{ height: "100dvh" }}>
+      <body className="flex flex-col" style={{ minHeight: "100dvh" }}><I18nProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></I18nProvider></body>
     </html>
   );
 }

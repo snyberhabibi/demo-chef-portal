@@ -100,7 +100,7 @@ export function InstallPrompt() {
     <div
       style={{
         position: "fixed",
-        bottom: 80,
+        bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
         left: 16,
         right: 16,
         zIndex: 100,

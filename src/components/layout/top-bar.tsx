@@ -19,9 +19,10 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
     <header
       className="sticky top-0 z-30 flex items-center glass"
       style={{
-        height: 52,
+        minHeight: 52,
         borderBottom: "1px solid rgba(51,31,46,0.06)",
         padding: "0 16px",
+        paddingTop: "env(safe-area-inset-top, 0px)",
       }}
     >
       {/* Mobile: hamburger left, title center */}

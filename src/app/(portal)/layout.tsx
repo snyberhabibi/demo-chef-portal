@@ -140,7 +140,7 @@ export default function PortalLayout({
   const activePath = `/${oneSegmentKey}`;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex" style={{ minHeight: "100dvh" }}>
       <Sidebar activePath={activePath} />
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar

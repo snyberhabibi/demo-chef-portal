@@ -91,6 +91,7 @@ export function MobileDrawer({ open, onClose, activePath, triggerRef }: MobileDr
           transform: animating ? "translateX(0)" : "translateX(-100%)",
           transition: "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
           overflowY: "auto",
+          paddingTop: "env(safe-area-inset-top, 0px)",
         }}
       >
         {/* Close button */}
