@@ -26,6 +26,20 @@ export default function ProfilePage() {
   const [inspires, setInspires] = useState(chefProfile.inspires);
   const [experience, setExperience] = useState(chefProfile.experience);
   const [cuisines, setCuisines] = useState(chefProfile.cuisines);
+
+  /* ── Unsaved changes guard ── */
+  const [isDirty, setIsDirty] = useState(false);
+  const markDirty = () => { if (!isDirty) setIsDirty(true); };
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
   const [cuisineSearch, setCuisineSearch] = useState("");
   const [cuisineDropdownOpen, setCuisineDropdownOpen] = useState(false);
   const cuisineRef = useRef<HTMLDivElement>(null);
@@ -80,7 +94,7 @@ export default function ProfilePage() {
           <Link href="/store-preview" className="btn btn-ghost btn-sm" style={{ gap: 4 }}>
             <ExternalLink size={14} /> Preview Store
           </Link>
-          <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => toast("Profile saved")}>
+          <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>
             Save
           </button>
         </div>
@@ -127,12 +141,12 @@ export default function ProfilePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div>
             <label className="field-label">Business Name *</label>
-            <input className="input" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Your kitchen name" />
+            <input className="input" value={businessName} onChange={(e) => { setBusinessName(e.target.value); markDirty(); }} placeholder="Your kitchen name" />
             <div className="field-help">This is how customers will find you</div>
           </div>
           <div>
             <label className="field-label">Tagline</label>
-            <input className="input" value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="e.g., Authentic Palestinian home cooking" maxLength={80} />
+            <input className="input" value={tagline} onChange={(e) => { setTagline(e.target.value); markDirty(); }} placeholder="e.g., Authentic Palestinian home cooking" maxLength={80} />
             <div className="field-help" style={{ display: "flex", justifyContent: "space-between" }}>
               <span>A short line that appears under your name</span>
               <span className="tnum">{tagline.length}/80</span>
@@ -161,15 +175,15 @@ export default function ProfilePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div>
             <label className="field-label">Bio</label>
-            <textarea className="textarea" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="A short professional summary" rows={3} />
+            <textarea className="textarea" value={bio} onChange={(e) => { setBio(e.target.value); markDirty(); }} placeholder="A short professional summary" rows={3} />
           </div>
           <div>
             <label className="field-label">Your Story</label>
-            <textarea className="textarea" value={story} onChange={(e) => setStory(e.target.value)} placeholder="Share your culinary journey" rows={3} />
+            <textarea className="textarea" value={story} onChange={(e) => { setStory(e.target.value); markDirty(); }} placeholder="Share your culinary journey" rows={3} />
           </div>
           <div>
             <label className="field-label">What Inspires You</label>
-            <textarea className="textarea" value={inspires} onChange={(e) => setInspires(e.target.value)} placeholder="What drives your passion for cooking" rows={2} />
+            <textarea className="textarea" value={inspires} onChange={(e) => { setInspires(e.target.value); markDirty(); }} placeholder="What drives your passion for cooking" rows={2} />
           </div>
         </div>
       </SectionCard>
@@ -257,8 +271,8 @@ export default function ProfilePage() {
 
       {/* Bottom save */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>
-        <button className="btn btn-ghost" onClick={() => toast("Changes discarded", "info")}>Discard</button>
-        <button className="btn btn-dark" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => toast("Profile saved")}>Save Changes</button>
+        <button className="btn btn-ghost" onClick={() => { if (isDirty && !window.confirm("You have unsaved changes. Discard them?")) return; setIsDirty(false); toast("Changes discarded", "info"); }}>Discard</button>
+        <button className="btn btn-dark" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>Save Changes</button>
       </div>
     </div>
   );

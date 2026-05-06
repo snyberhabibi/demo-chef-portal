@@ -1349,10 +1349,11 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
                 <button
+                  type="button"
                   role="switch"
                   aria-checked={checkoutTimerEnabled}
                   aria-label="Enable checkout timer"
-                  className={`toggle ${checkoutTimerEnabled ? "toggle-on" : ""}`}
+                  className={`toggle ${checkoutTimerEnabled ? "is-on" : ""}`}
                   onClick={() => setCheckoutTimerEnabled(!checkoutTimerEnabled)}
                 >
                   <span className="toggle-thumb" />

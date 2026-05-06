@@ -50,7 +50,7 @@
   --color-cream-sunken: #efe9dc;
   --color-brown: #331f2e;
   --color-brown-soft: #5a4658;
-  --color-brown-soft-2: #8a7884;
+  --color-brown-soft-2: #6e5f6a;
   --color-red: #e54141;
   --color-red-deep: #c93232;
   --color-red-soft: #fce4e4;
@@ -193,6 +193,13 @@ html, body {
    ======================================================================== */
 
 :focus-visible { outline: 2px solid var(--color-orange); outline-offset: 2px; }
+button:focus-visible,
+[role="button"]:focus-visible,
+[role="switch"]:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-orange) !important;
+  outline-offset: 2px !important;
+}
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--color-orange) !important; box-shadow: 0 0 0 3px rgba(252,157,53,0.2) !important; }
 
 /* ========================================================================
@@ -982,4 +989,13 @@ main { overflow-x: hidden; }
 @keyframes xpFloat {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* ========================================================================
+   SCROLL AFFORDANCES — fade mask for horizontal scroll containers
+   ======================================================================== */
+
+.scroll-fade-right {
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }

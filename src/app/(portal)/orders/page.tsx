@@ -91,7 +91,7 @@ const PIPELINE_GRADIENTS: Record<string, string> = {
   new: "linear-gradient(135deg, #df4746, #f19e37)",
   preparing: "linear-gradient(135deg, #f59e0b, #fbbf24)",
   ready: "linear-gradient(135deg, #22c55e, #86efac)",
-  done: "linear-gradient(135deg, #6b7280, #a3a3a3)",
+  done: "linear-gradient(135deg, #a17861, #5a4658)",
 };
 
 /* ------------------------------------------------------------------ */
@@ -218,7 +218,7 @@ export default function OrdersPage() {
       {/* Filter bar + controls */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex-1 min-w-0" style={{ overflow: "hidden" }}>
-          <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none", paddingBottom: 2 }}>
+          <div className="scroll-fade-right" style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", msOverflowStyle: "none", paddingBottom: 2 }}>
             <div className="order-filter-tabs" style={{ display: "flex", gap: 4 }}>
               {filterTabs.map((tab) => {
                 const isActive = tab.label === activeTab && !showPrepList;
@@ -316,7 +316,7 @@ export default function OrdersPage() {
                     {order.urgency === "overdue" && (<><span className="caption" style={{ flexShrink: 0 }}>&middot;</span><span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" as const, color: "var(--color-red-deep)", flexShrink: 0 }}>OVERDUE</span></>)}
                     <span className="caption" style={{ display: "none" }}>{dateTime}</span>
                     <span style={{ flex: 1 }} />
-                    {label && (<span role="button" tabIndex={0} className="btn btn-sm btn-dark" style={{ minWidth: 80, transition: "all 0.2s ease" }} onClick={(e) => { e.stopPropagation(); handleOrderAction(order, effectiveStatus); }} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); handleOrderAction(order, effectiveStatus); } }}>{label} &rarr;</span>)}
+                    {label && (<span className="btn btn-sm btn-dark" style={{ minWidth: 80, transition: "all 0.2s ease" }} onClick={(e) => { e.stopPropagation(); handleOrderAction(order, effectiveStatus); }}>{label} &rarr;</span>)}
                   </div>
                 </button>
                 <div style={{ maxHeight: isExpanded ? 400 : 0, opacity: isExpanded ? 1 : 0, overflow: "hidden", transition: "max-height 0.3s ease, opacity 0.2s ease" }}>
@@ -390,7 +390,7 @@ export default function OrdersPage() {
 function PipelineView({ orders: allOrders, statusOverrides, onAction, getEffectiveStatus, isB }: { orders: Order[]; statusOverrides: Record<string, OrderStatus>; onAction: (order: Order, status: OrderStatus) => void; getEffectiveStatus: (order: Order) => OrderStatus; isB: boolean }) {
   const columns = useMemo(() => pipelineColumns.map((col) => ({ ...col, orders: allOrders.filter((o) => col.match(statusOverrides[o.hash] || o.status)) })), [allOrders, statusOverrides]);
   return (
-    <div className="pipeline-scroll" style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 4 }}>
+    <div className="pipeline-scroll scroll-fade-right" style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 4 }}>
       {columns.map((col) => (
         <div key={col.key} style={{ minWidth: 280, flex: "1 0 280px", display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 10, background: isB ? (PIPELINE_GRADIENTS[col.key] || "var(--color-cream-deep)") : "var(--color-cream-deep)" }}>

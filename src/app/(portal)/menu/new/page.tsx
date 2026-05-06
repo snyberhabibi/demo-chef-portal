@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { SectionCard } from "@/components/ui/section-card";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -123,6 +124,8 @@ export default function CreateDishPage() {
 }
 
 function CreateDishPageInner() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
   const router = useRouter();
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -336,7 +339,24 @@ function CreateDishPageInner() {
     );
   };
 
+  /* ── Unsaved changes guard ── */
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
+
+  // Mark dirty on any meaningful field change
+  const markDirty = () => { if (!isDirty) setIsDirty(true); };
+
   const handleSave = (asDraft: boolean) => {
+    setIsDirty(false);
     if (asDraft) {
       setStatus("draft");
       toast("Dish saved as draft");
@@ -346,6 +366,12 @@ function CreateDishPageInner() {
     }
     router.push("/menu");
   };
+
+  // Wrap state setters to auto-mark dirty
+  const setDishNameDirty = (v: string) => { setDishName(v); markDirty(); };
+  const setDescriptionDirty = (v: string) => { setDescription(v); markDirty(); };
+  const setCuisineDirty = (v: string) => { setCuisine(v); markDirty(); };
+  const setSelectedCategoryDirty = (v: string) => { setSelectedCategory(v); markDirty(); };
 
   /* ── Derived values ── */
   const firstPrice = sizeRows[0]?.price || "0.00";
@@ -363,7 +389,7 @@ function CreateDishPageInner() {
           marginBottom: 28,
         }}
       >
-        <h1 className="heading-md">{isEditMode ? `Edit: ${editDish.name}` : "Create New Dish"}</h1>
+        <h1 className={`heading-md${isB ? " heading-gradient" : ""}`}>{isEditMode ? `Edit: ${editDish.name}` : "Create New Dish"}</h1>
         <span
           className={`pill ${status === "published" ? "pill-sage" : "pill-orange"}`}
           style={{ fontSize: 11, transition: "all 0.2s ease" }}
@@ -374,6 +400,8 @@ function CreateDishPageInner() {
         <button
           className="btn btn-ghost btn-sm"
           onClick={() => {
+            if (isDirty && !window.confirm("You have unsaved changes. Discard them?")) return;
+            setIsDirty(false);
             toast("Changes discarded", "info");
             router.push("/menu");
           }}
@@ -382,6 +410,7 @@ function CreateDishPageInner() {
         </button>
         <button
           className="btn btn-dark btn-sm"
+          style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}}
           onClick={() => handleSave(false)}
         >
           Save Dish
@@ -419,7 +448,7 @@ function CreateDishPageInner() {
                   className="input"
                   placeholder="e.g., Homemade Mansaf"
                   value={dishName}
-                  onChange={(e) => setDishName(e.target.value)}
+                  onChange={(e) => setDishNameDirty(e.target.value)}
                   style={{ borderRadius: 10 }}
                 />
               </div>
@@ -431,7 +460,7 @@ function CreateDishPageInner() {
                   className="textarea"
                   placeholder="Describe your dish..."
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => setDescriptionDirty(e.target.value)}
                   rows={3}
                   style={{ borderRadius: 10 }}
                 />
@@ -457,9 +486,9 @@ function CreateDishPageInner() {
                           alignItems: "center",
                           justifyContent: "center",
                           borderRadius: 10,
-                          border: `1.5px solid ${isSelected ? "var(--color-orange)" : "rgba(51,31,46,0.1)"}`,
+                          border: `1.5px solid ${isSelected ? (isB ? "#df4746" : "var(--color-orange)") : "rgba(51,31,46,0.1)"}`,
                           background: isSelected
-                            ? "rgba(252,157,53,0.05)"
+                            ? (isB ? "rgba(223,71,70,0.06)" : "rgba(252,157,53,0.05)")
                             : "#fff",
                           cursor: "pointer",
                           transition:
@@ -492,7 +521,7 @@ function CreateDishPageInner() {
                   <select
                     className="select"
                     value={cuisine}
-                    onChange={(e) => setCuisine(e.target.value)}
+                    onChange={(e) => setCuisineDirty(e.target.value)}
                     style={{
                       appearance: "none",
                       paddingRight: 36,
@@ -1476,7 +1505,11 @@ function CreateDishPageInner() {
                       flexShrink: 0,
                     }}
                   >
-                    <span
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={group.required}
+                      aria-label={`${group.name || "Group"} required`}
                       onClick={() =>
                         updateCustomGroup(
                           group.id,
@@ -1495,6 +1528,8 @@ function CreateDishPageInner() {
                         display: "inline-block",
                         transition: "background 0.2s ease",
                         cursor: "pointer",
+                        border: "none",
+                        padding: 0,
                       }}
                     >
                       <span
@@ -1510,7 +1545,7 @@ function CreateDishPageInner() {
                           transition: "left 0.2s ease",
                         }}
                       />
-                    </span>
+                    </button>
                     Required
                   </label>
                   <button
@@ -1854,6 +1889,7 @@ function CreateDishPageInner() {
             </button>
             <button
               className="btn btn-dark"
+              style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}}
               onClick={() => handleSave(false)}
             >
               {status === "published" ? "Save" : "Publish"}
