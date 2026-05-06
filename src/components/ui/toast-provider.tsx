@@ -80,8 +80,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         return next;
       });
 
-      // Auto-dismiss: 6s for toasts with undo, 4s for others
-      const duration = undo ? 6000 : 4000;
+      // Auto-dismiss: 4s for toasts with undo, 2.5s for others
+      const duration = undo ? 4000 : 2500;
       setTimeout(() => dismiss(id), duration);
     },
     [dismiss]
@@ -193,33 +193,67 @@ function ToastItem({
   onDismiss: (id: number) => void;
 }) {
   const [mounted, setMounted] = useState(false);
+  const startX = useRef(0);
+  const currentX = useRef(0);
+  const toastRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
   }, []);
 
   const v = variantStyles[t.variant];
 
+  // Swipe-to-dismiss handlers
+  const onTouchStart = (e: React.TouchEvent) => {
+    startX.current = e.touches[0].clientX;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    currentX.current = e.touches[0].clientX;
+    const diff = currentX.current - startX.current;
+    if (toastRef.current && Math.abs(diff) > 10) {
+      toastRef.current.style.transform = `translateX(${diff}px)`;
+      toastRef.current.style.opacity = `${1 - Math.abs(diff) / 200}`;
+    }
+  };
+  const onTouchEnd = () => {
+    const diff = currentX.current - startX.current;
+    if (Math.abs(diff) > 80) {
+      onDismiss(t.id);
+    } else if (toastRef.current) {
+      toastRef.current.style.transform = "translateX(0)";
+      toastRef.current.style.opacity = "1";
+    }
+    startX.current = 0;
+    currentX.current = 0;
+  };
+
   return (
     <div
+      ref={toastRef}
       role="status"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onClick={() => onDismiss(t.id)}
       style={{
         display: "flex",
         alignItems: "center",
         gap: 10,
         padding: "12px 16px",
-        background: `linear-gradient(135deg, ${v.bg}, #fff)`,
-        borderRadius: 12,
-        borderLeft: `4px solid ${v.borderColor}`,
+        background: "#fff",
+        borderRadius: 14,
+        border: "none",
         boxShadow:
-          "0 8px 24px rgba(51,31,46,0.10), 0 2px 6px rgba(51,31,46,0.04)",
+          "0 6px 20px rgba(53,36,49,0.12), 0 2px 6px rgba(53,36,49,0.04)",
         pointerEvents: "auto",
+        cursor: "pointer",
+        transition: "transform 0.15s ease, opacity 0.15s ease",
         animation: t.exiting
           ? "toastSlideOut 0.2s ease-in forwards"
           : mounted
           ? "none"
           : "toastSlideIn 0.25s ease-out forwards",
         opacity: mounted && !t.exiting ? 1 : undefined,
-        transform: mounted && !t.exiting ? "translateY(0)" : undefined,
       }}
     >
       {/* Variant icon */}
