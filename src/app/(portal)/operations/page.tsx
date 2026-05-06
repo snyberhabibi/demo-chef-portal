@@ -492,11 +492,13 @@ export default function OperationsPage() {
                             style={{
                               background: "none",
                               border: "none",
-                              fontSize: 13,
+                              fontSize: 16,
                               fontWeight: 500,
                               color: "var(--color-brown)",
                               cursor: "pointer",
                               padding: 0,
+                              minWidth: 72,
+                              minHeight: 36,
                             }}
                           >
                             {TIME_OPTIONS.map((t) => (
@@ -510,11 +512,13 @@ export default function OperationsPage() {
                             style={{
                               background: "none",
                               border: "none",
-                              fontSize: 13,
+                              fontSize: 16,
                               fontWeight: 500,
                               color: "var(--color-brown)",
                               cursor: "pointer",
                               padding: 0,
+                              minWidth: 72,
+                              minHeight: 36,
                             }}
                           >
                             {TIME_OPTIONS.map((t) => (

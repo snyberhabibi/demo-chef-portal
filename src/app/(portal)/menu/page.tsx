@@ -453,7 +453,7 @@ export default function MenuPage() {
               aria-label="Search dishes"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="text-sm sm:text-sm"
+              className=""
               style={{
                 width: "100%",
                 height: 44,
@@ -699,10 +699,10 @@ export default function MenuPage() {
                 Create curated meal bundles to increase average order value
               </p>
             </div>
-            <Link href="/menu/new" className="btn btn-dark" style={{ gap: 6, textDecoration: "none" }}>
+            <button className="btn btn-dark" style={{ gap: 6 }} onClick={() => toast("Bundle creator — coming soon")}>
               <Plus size={18} strokeWidth={2.5} />
               Create Bundle
-            </Link>
+            </button>
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
@@ -760,7 +760,7 @@ export default function MenuPage() {
               aria-label="Search bundles"
               value={bundleSearch}
               onChange={(e) => setBundleSearch(e.target.value)}
-              className="text-sm sm:text-sm"
+              className=""
               style={{
                 width: "100%",
                 height: 44,

@@ -269,11 +269,35 @@ export default function ProfilePage() {
       </SectionCard>
 
 
-      {/* Bottom save */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>
+      {/* Bottom save — sticky on mobile, inline on desktop */}
+      <div
+        className="profile-save-bar"
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 8,
+          paddingBottom: 40,
+        }}
+      >
         <button className="btn btn-ghost" onClick={() => { if (isDirty && !window.confirm("You have unsaved changes. Discard them?")) return; setIsDirty(false); toast("Changes discarded", "info"); }}>Discard</button>
         <button className="btn btn-dark" style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>Save Changes</button>
       </div>
+      <style jsx>{`
+        @media (max-width: 1023px) {
+          .profile-save-bar {
+            position: sticky !important;
+            bottom: 56px !important;
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            padding: 12px 0 !important;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+            border-top: 1px solid rgba(53,36,49,0.06) !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -229,13 +229,13 @@ export default function OrdersPage() {
 
         <form role="search" onSubmit={(e) => e.preventDefault()} className="hidden lg:block" style={{ position: "relative", width: 280, flexShrink: 0 }}>
           <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-          <input type="text" placeholder="Search orders..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+          <input type="text" placeholder="Search orders..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
         </form>
       </div>
 
       <form role="search" onSubmit={(e) => e.preventDefault()} className="lg:hidden" style={{ position: "relative", marginTop: -8 }}>
         <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-        <input type="text" placeholder="Search by order ID, customer, or dish..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="text-[13px]" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+        <input type="text" placeholder="Search by order ID, customer, or dish..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
       </form>
 
       {showPrepList && <PrepListView orders={orders} />}

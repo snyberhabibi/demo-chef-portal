@@ -1030,7 +1030,6 @@ export default function OrderDetailPage() {
       <div
         className="fixed left-0 right-0 lg:hidden glass order-sticky-bar"
         style={{
-          bottom: 0,
           height: 64,
           padding: "8px 16px",
           paddingBottom: "calc(8px + env(safe-area-inset-bottom, 0px))",

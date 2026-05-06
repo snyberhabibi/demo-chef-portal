@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronDown,
@@ -153,6 +153,10 @@ function CreateDishPageInner() {
   const [cuisine, setCuisine] = useState(editDish?.cuisine ?? "");
   const [selectedCategory, setSelectedCategory] = useState(editDish?.category ?? "");
   const [status, setStatus] = useState<"draft" | "published">(editDish?.status ?? "draft");
+
+  /* ── Photo Upload ── */
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* ── Pricing & Sizes ── */
   const [sizeRows, setSizeRows] = useState<SizeRow[]>([
@@ -558,9 +562,24 @@ function CreateDishPageInner() {
             open={openSections.photos}
             onToggle={() => toggleSection("photos")}
           >
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setPhotoPreview(URL.createObjectURL(file));
+                }
+              }}
+            />
+
             {/* Upload zone */}
             <div
               className="flex flex-col items-center justify-center"
+              onClick={() => fileInputRef.current?.click()}
               style={{
                 border: "2px dashed rgba(51,31,46,0.18)",
                 borderRadius: 16,
@@ -602,27 +621,39 @@ function CreateDishPageInner() {
                 <div
                   key={i}
                   className="flex flex-col items-center justify-center"
+                  onClick={() => fileInputRef.current?.click()}
                   style={{
                     aspectRatio: "1/1",
-                    border: "2px dashed rgba(51,31,46,0.1)",
+                    border: photoPreview && i === 0 ? "2px solid var(--color-sage)" : "2px dashed rgba(51,31,46,0.1)",
                     borderRadius: 10,
                     background: "var(--color-cream-deep)",
                     cursor: "pointer",
                     position: "relative",
                     transition: "border-color var(--t-fast)",
+                    overflow: "hidden",
                   }}
                 >
-                  <Upload
-                    size={20}
-                    strokeWidth={1.8}
-                    style={{ color: "var(--color-brown-soft-2)" }}
-                  />
-                  <span
-                    className="caption"
-                    style={{ marginTop: 6, fontWeight: 500 }}
-                  >
-                    {i === 0 ? "Primary" : "Add photo"}
-                  </span>
+                  {photoPreview && i === 0 ? (
+                    <img
+                      src={photoPreview}
+                      alt="Dish preview"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <>
+                      <Upload
+                        size={20}
+                        strokeWidth={1.8}
+                        style={{ color: "var(--color-brown-soft-2)" }}
+                      />
+                      <span
+                        className="caption"
+                        style={{ marginTop: 6, fontWeight: 500 }}
+                      >
+                        {i === 0 ? "Primary" : "Add photo"}
+                      </span>
+                    </>
+                  )}
                   {i === 0 && (
                     <span
                       className="pill pill-sage"
@@ -703,7 +734,7 @@ function CreateDishPageInner() {
             </div>
 
             <div
-              className="flex items-center gap-2 eyebrow"
+              className="hidden sm:flex items-center gap-2 eyebrow"
               style={{
                 padding: "6px 12px",
                 fontSize: 10,
@@ -1618,7 +1649,7 @@ function CreateDishPageInner() {
                 {/* Quantity-specific fields */}
                 {group.selectionType === "quantity" && (
                   <div style={{ marginBottom: 14 }}>
-                    <div className="flex gap-2" style={{ marginBottom: 6 }}>
+                    <div className="flex flex-col sm:flex-row gap-2" style={{ marginBottom: 6 }}>
                       <div style={{ flex: 1 }}>
                         <label
                           className="caption"
@@ -1642,7 +1673,7 @@ function CreateDishPageInner() {
                               e.target.value
                             )
                           }
-                          style={{ borderRadius: 10, fontSize: 13 }}
+                          style={{ borderRadius: 10 }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -1668,7 +1699,7 @@ function CreateDishPageInner() {
                               e.target.value
                             )
                           }
-                          style={{ borderRadius: 10, fontSize: 13 }}
+                          style={{ borderRadius: 10 }}
                         />
                       </div>
                       <div style={{ flex: 1 }}>
@@ -1694,7 +1725,7 @@ function CreateDishPageInner() {
                               e.target.value
                             )
                           }
-                          style={{ borderRadius: 10, fontSize: 13 }}
+                          style={{ borderRadius: 10 }}
                         />
                       </div>
                     </div>
@@ -1998,11 +2029,10 @@ function CreateDishPageInner() {
           }
           .create-dish-bottom-bar {
             position: fixed !important;
-            bottom: 56px !important;
+            bottom: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
             left: 0 !important;
             right: 0 !important;
             padding: 12px 24px !important;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
             background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(16px) !important;
             -webkit-backdrop-filter: blur(16px) !important;
@@ -2016,7 +2046,7 @@ function CreateDishPageInner() {
         }
         @media (max-width: 639px) {
           .modifier-row {
-            grid-template-columns: 1fr 1fr !important;
+            grid-template-columns: 1fr !important;
           }
           .modifier-row > *:first-child {
             display: none !important;

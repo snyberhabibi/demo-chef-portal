@@ -1210,7 +1210,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                             </span>
                             <input
                               type="text"
-                              className="input tnum text-xs sm:text-xs"
+                              className="input tnum"
                               value={item.flashPrice}
                               onChange={(e) =>
                                 updateItem(item.id, "flashPrice", e.target.value)
@@ -1231,7 +1231,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                           </span>
                           <input
                             type="text"
-                            className="input tnum text-xs sm:text-xs"
+                            className="input tnum"
                             placeholder="No limit"
                             value={item.quantityLimit}
                             onChange={(e) =>
@@ -1256,7 +1256,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                           </span>
                           <input
                             type="text"
-                            className="input tnum text-xs sm:text-xs"
+                            className="input tnum"
                             placeholder="No limit"
                             value={item.perCustomerLimit}
                             onChange={(e) =>
@@ -1336,7 +1336,7 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
                   rows={2}
                   value={notificationText}
                   onChange={(e) => setNotificationText(e.target.value)}
-                  style={{ resize: "vertical", fontSize: 13 }}
+                  style={{ resize: "vertical" }}
                 />
               </div>
             </div>
@@ -1530,35 +1530,34 @@ function CreateFlashSalePanel({ onClose }: { onClose: () => void }) {
 
             {/* Actions */}
             <div
+              className="flex flex-col sm:flex-row"
               style={{
-                display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center",
+                alignItems: "stretch",
                 gap: 10,
-                flexWrap: "wrap",
               }}
             >
               <button
-                className="btn btn-ghost btn-sm"
+                className="btn btn-ghost btn-sm w-full sm:w-auto"
                 onClick={() => setTab("menu")}
               >
                 Back
               </button>
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="flex flex-col sm:flex-row" style={{ gap: 8 }}>
                 <button
-                  className="btn btn-ghost btn-sm"
+                  className="btn btn-ghost btn-sm w-full sm:w-auto"
                   onClick={() => { toast("Flash sale saved as draft"); onClose(); }}
                 >
                   Save as Draft
                 </button>
                 <button
-                  className="btn btn-gradient"
+                  className="btn btn-gradient w-full sm:w-auto"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: 6,
                     padding: "10px 20px",
-                    fontSize: 13,
                     fontWeight: 700,
                   }}
                   onClick={() => { toast("Flash sale scheduled!"); onClose(); }}
