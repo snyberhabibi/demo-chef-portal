@@ -217,9 +217,10 @@ export default function DashboardPage() {
 
   return (
     <div className="section-stack">
-      {/* Top row: mode toggle + demo toggle */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-      {!isNewApplicant ? (
+      {/* Demo mode toggle — top right */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+      {false ? (
+        /* Setup/Dashboard toggle removed — demo mode replaces it */
         <div
           style={{
             display: "inline-flex",

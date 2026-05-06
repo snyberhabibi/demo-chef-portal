@@ -44,21 +44,21 @@ export function dishStatusBadge(status: DishStatus): {
     case "published":
       return {
         dot: "var(--color-sage)",
-        bg: "rgba(121,173,99,0.15)",
+        bg: "#ffffff",
         color: "var(--color-sage-deep)",
         label: "Published",
       };
     case "draft":
       return {
         dot: "var(--color-orange)",
-        bg: "rgba(252,157,53,0.15)",
+        bg: "#ffffff",
         color: "var(--color-orange-text)",
         label: "Draft",
       };
     case "archived":
       return {
         dot: "var(--color-brown-soft-2)",
-        bg: "rgba(138,120,132,0.15)",
+        bg: "#ffffff",
         color: "var(--color-brown-soft)",
         label: "Archived",
       };
