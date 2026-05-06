@@ -93,31 +93,29 @@ function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
         justifyContent: "center",
       }}
     >
-      {/* Backdrop */}
+      {/* Backdrop — NO backdropFilter (causes iOS PWA rendering bugs) */}
       <div
         style={{
           position: "fixed",
           inset: 0,
           background: "rgba(53,36,49,0.4)",
-          backdropFilter: "blur(4px)",
-          WebkitBackdropFilter: "blur(4px)",
         }}
         onClick={onClose}
       />
-      {/* Content */}
+      {/* Content — fully inline-styled for iOS PWA compatibility */}
       <div
         style={{
-          position: "relative",
-          zIndex: 1,
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
           background: "#fff",
           borderRadius: "20px 20px 0 0",
-          padding: "20px",
-          paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
-          width: "100%",
-          maxWidth: 440,
-          maxHeight: "85dvh",
+          padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
+          maxHeight: "80dvh",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
+          zIndex: 1,
           animation: "slideUpSheet 0.3s cubic-bezier(0.22,1,0.36,1) both",
         }}
         onClick={(e) => e.stopPropagation()}

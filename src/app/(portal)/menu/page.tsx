@@ -236,208 +236,180 @@ export default function MenuPage() {
   return (
     <div className="content-wide section-stack page-fade page-enter">
       {/* ── Create Dish Modal ── */}
-      {showCreateModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 70,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-          }}
-        >
-          {/* Backdrop */}
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(53,36,49,0.4)",
-              backdropFilter: "blur(4px)",
-              WebkitBackdropFilter: "blur(4px)",
-            }}
-            onClick={() => setShowCreateModal(false)}
-          />
-
-          {/* Content */}
-          <div
-            className="card create-dish-modal"
-            style={{
-              position: "relative",
-              zIndex: 1,
-              background: "#fff",
-              borderRadius: "20px 20px 0 0",
-              padding: "20px",
-              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
-              width: "100%",
-              maxWidth: 440,
-              maxHeight: "85dvh",
-              overflowY: "auto",
-              WebkitOverflowScrolling: "touch",
-              animation: "scaleIn 0.2s var(--ease-spring) both",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Drag handle */}
-            <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
-
-            <button
-              onClick={() => setShowCreateModal(false)}
+      {showCreateModal && (() => {
+        return (
+          <div style={{ position: "fixed", inset: 0, zIndex: 70 }}>
+            {/* Backdrop — NO backdropFilter (causes iOS PWA rendering bugs) */}
+            <div
+              style={{ position: "fixed", inset: 0, background: "rgba(53,36,49,0.4)" }}
+              onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
+            />
+            {/* Content — fully inline-styled, NO CSS classes that could conflict */}
+            <div
               style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                background: "rgba(51,31,46,0.06)",
-                border: "none",
-                color: "var(--color-brown-soft)",
-                width: 32,
-                height: 32,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 10,
-                cursor: "pointer",
-                transition: "background var(--t-fast), color var(--t-fast)",
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: "#fff",
+                borderRadius: "20px 20px 0 0",
+                padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
+                maxHeight: "80dvh",
+                overflowY: "auto",
+                WebkitOverflowScrolling: "touch",
+                zIndex: 1,
+                animation: "slideUpSheet 0.28s var(--ease-spring) both",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.1)"; e.currentTarget.style.color = "var(--color-brown)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.06)"; e.currentTarget.style.color = "var(--color-brown-soft)"; }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <X size={16} />
-            </button>
-
-            <h2 className="heading-md" style={{ marginBottom: 4 }}>
-              Create New Dish
-            </h2>
-            <p className="body-sm" style={{ margin: "0 0 24px 0" }}>
-              Choose how you want to create your dish
-            </p>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <Link
-                href="/menu/new"
-                className="card card-hover"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "28px 16px",
-                  textDecoration: "none",
-                  color: "inherit",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 10,
-                    background: "var(--color-cream-deep)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 12,
-                    color: "var(--color-brown)",
-                  }}
-                >
-                  <ClipboardList size={22} strokeWidth={1.8} />
-                </div>
-                <div className="heading-sm" style={{ marginBottom: 4 }}>
-                  From Scratch
-                </div>
-                <div className="body-sm">
-                  Start with a blank canvas
-                </div>
-              </Link>
+              {/* Drag handle */}
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
 
               <button
-                onClick={() => {
-                  toast("Template library \u2014 coming soon", "info");
-                  setShowCreateModal(false);
-                }}
-                className="card card-hover"
+                onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
                 style={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                  background: "rgba(51,31,46,0.06)",
+                  border: "none",
+                  color: "var(--color-brown-soft)",
+                  width: 32,
+                  height: 32,
                   display: "flex",
-                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: "28px 16px",
-                  textDecoration: "none",
-                  color: "inherit",
-                  textAlign: "center",
+                  borderRadius: 10,
                   cursor: "pointer",
-                  border: "none",
-                  width: "100%",
                 }}
               >
-                <div
+                <X size={16} />
+              </button>
+
+              <h2 className="heading-md" style={{ marginBottom: 4 }}>
+                Create New Dish
+              </h2>
+              <p className="body-sm" style={{ margin: "0 0 24px 0" }}>
+                Choose how you want to create your dish
+              </p>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <Link
+                  href="/menu/new"
+                  onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
                   style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 10,
-                    background: "var(--color-cream-deep)",
                     display: "flex",
+                    flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    marginBottom: 12,
-                    color: "var(--color-brown)",
+                    padding: "28px 16px",
+                    textDecoration: "none",
+                    color: "inherit",
+                    textAlign: "center",
+                    borderRadius: 16,
+                    border: "1px solid rgba(51,31,46,0.08)",
+                    background: "#fff",
                   }}
                 >
-                  <Copy size={22} strokeWidth={1.8} />
-                </div>
-                <div className="heading-sm" style={{ marginBottom: 4 }}>
-                  From Template
-                </div>
-                <div className="body-sm">
-                  Use a pre-made template
-                </div>
-              </button>
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 10,
+                      background: "var(--color-cream-deep)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 12,
+                      color: "var(--color-brown)",
+                    }}
+                  >
+                    <ClipboardList size={22} strokeWidth={1.8} />
+                  </div>
+                  <div className="heading-sm" style={{ marginBottom: 4 }}>
+                    From Scratch
+                  </div>
+                  <div className="body-sm">
+                    Start with a blank canvas
+                  </div>
+                </Link>
+
+                <button
+                  onClick={() => {
+                    toast("Template library \u2014 coming soon", "info");
+                    setShowCreateModal(false);
+                    document.body.style.overflow = "";
+                  }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "28px 16px",
+                    textDecoration: "none",
+                    color: "inherit",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    border: "1px solid rgba(51,31,46,0.08)",
+                    width: "100%",
+                    borderRadius: 16,
+                    background: "#fff",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 10,
+                      background: "var(--color-cream-deep)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 12,
+                      color: "var(--color-brown)",
+                    }}
+                  >
+                    <Copy size={22} strokeWidth={1.8} />
+                  </div>
+                  <div className="heading-sm" style={{ marginBottom: 4 }}>
+                    From Template
+                  </div>
+                  <div className="body-sm">
+                    Use a pre-made template
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ── Create Bundle Modal ── */}
       {showBundleModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 70,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-          }}
-        >
-          {/* Backdrop */}
+        <div style={{ position: "fixed", inset: 0, zIndex: 70 }}>
+          {/* Backdrop — NO backdropFilter (causes iOS PWA rendering bugs) */}
+          <div
+            style={{ position: "fixed", inset: 0, background: "rgba(53,36,49,0.4)" }}
+            onClick={() => { setShowBundleModal(false); document.body.style.overflow = ""; }}
+          />
+
+          {/* Content — fully inline-styled for iOS PWA compatibility */}
           <div
             style={{
               position: "fixed",
-              inset: 0,
-              background: "rgba(53,36,49,0.4)",
-              backdropFilter: "blur(4px)",
-              WebkitBackdropFilter: "blur(4px)",
-            }}
-            onClick={() => setShowBundleModal(false)}
-          />
-
-          {/* Content */}
-          <div
-            style={{
-              position: "relative",
-              zIndex: 1,
+              bottom: 0,
+              left: 0,
+              right: 0,
               background: "#fff",
               borderRadius: "20px 20px 0 0",
-              padding: "20px",
-              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
-              width: "100%",
-              maxWidth: 440,
-              maxHeight: "85dvh",
+              padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
+              maxHeight: "80dvh",
               overflowY: "auto",
               WebkitOverflowScrolling: "touch",
+              zIndex: 1,
               display: "flex",
               flexDirection: "column",
-              animation: "scaleIn 0.2s var(--ease-spring) both",
+              animation: "slideUpSheet 0.28s var(--ease-spring) both",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -445,7 +417,7 @@ export default function MenuPage() {
             <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
 
             <button
-              onClick={() => setShowBundleModal(false)}
+              onClick={() => { setShowBundleModal(false); document.body.style.overflow = ""; }}
               style={{
                 position: "absolute",
                 top: 12,

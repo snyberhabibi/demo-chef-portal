@@ -795,27 +795,9 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
 }
 
-/* Create Dish modal — bottom-sheet on mobile (<768px) */
-@media (max-width: 767px) {
-  .create-dish-modal-container {
-    align-items: flex-end !important;
-    padding: 0 !important;
-  }
-  .create-dish-modal {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-    border-radius: 20px 20px 0 0 !important;
-    padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
-    animation: slideUpSheet 0.28s var(--ease-spring) both !important;
-    max-height: 80dvh !important;
-    overflow-y: auto !important;
-  }
-}
+/* Create Dish modal — now fully inline-styled (no CSS classes needed).
+   Removed .create-dish-modal and .create-dish-modal-container to prevent
+   CSS conflicts on iOS PWA. All modal styling is done via inline styles. */
 
 /* ========================================================================
    MICRO-INTERACTIONS — Premium hover/press feedback
