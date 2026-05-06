@@ -164,7 +164,7 @@ export default function SettingsPage() {
           <div className="section-stack" style={{ gap: 0 }}>
             <div className="flex items-center gap-4">
               <div style={{ borderRadius: '50%' }}>
-                <img src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop" alt="Profile" className="rounded-full object-cover" style={{ width: 64, height: 64 }} />
+                <img src="/food/chef-avatar.jpg" alt="Profile" className="rounded-full object-cover" style={{ width: 64, height: 64 }} />
               </div>
               <div>
                 <label className="btn btn-ghost btn-sm" style={{ cursor: "pointer" }}>

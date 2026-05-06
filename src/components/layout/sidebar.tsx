@@ -159,7 +159,7 @@ export function Sidebar({ activePath }: SidebarProps) {
           >
             <div className="relative flex-shrink-0">
               <img
-                src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
+                src="/food/chef-avatar.jpg"
                 alt="Chef avatar"
                 className="rounded-full object-cover"
                 style={{ width: 32, height: 32 }}

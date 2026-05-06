@@ -34,10 +34,10 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "confirmed",
     orderMethod: "delivery",
     items: [
-      { name: "Falafel Wrap", qty: 1, portion: "Regular", customizations: [{ label: "SPICE", value: "Mild" }], price: "$14.00", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop" },
-      { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop" },
+      { name: "Falafel Wrap", qty: 1, portion: "Regular", customizations: [{ label: "SPICE", value: "Mild" }], price: "$14.00", image: "/food/falafel.jpg" },
+      { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "/food/hummus.jpg" },
     ],
-    customer: { name: "Marcus Thompson", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550199", email: "marcus.t@email.com", address: "1200 Main St, Dallas", mapsQuery: "1200+Main+St+Dallas" },
+    customer: { name: "Marcus Thompson", avatar: "/food/avatar-male.jpg", phone: "+14695550199", email: "marcus.t@email.com", address: "1200 Main St, Dallas", mapsQuery: "1200+Main+St+Dallas" },
     timeline: [
       { time: "3:15 PM", label: "Order placed by Marcus Thompson", done: true },
       { time: "3:17 PM", label: "Order confirmed", done: true },
@@ -56,9 +56,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "preparing",
     orderMethod: "delivery",
     items: [
-      { name: "Pistachio Knafeh", qty: 1, portion: "Whole", customizations: [{ label: "EXTRAS", value: "Extra syrup on side" }], price: "$18.00", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop" },
+      { name: "Pistachio Knafeh", qty: 1, portion: "Whole", customizations: [{ label: "EXTRAS", value: "Extra syrup on side" }], price: "$18.00", image: "/food/knafeh.jpg" },
     ],
-    customer: { name: "Priya Ramirez", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550177", email: "priya.r@email.com", address: "890 Oak Lane, Plano", mapsQuery: "890+Oak+Lane+Plano" },
+    customer: { name: "Priya Ramirez", avatar: "/food/avatar-female.jpg", phone: "+14695550177", email: "priya.r@email.com", address: "890 Oak Lane, Plano", mapsQuery: "890+Oak+Lane+Plano" },
     timeline: [
       { time: "1:55 PM", label: "Order placed by Priya Ramirez", done: true },
       { time: "1:57 PM", label: "Order confirmed", done: true },
@@ -78,9 +78,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "ready",
     orderMethod: "pickup",
     items: [
-      { name: "Chicken Shawarma", qty: 3, portion: "Plate", customizations: [{ label: "SPICE", value: "Hot" }, { label: "EXTRAS", value: "Extra garlic sauce" }], price: "$48.00", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop" },
+      { name: "Chicken Shawarma", qty: 3, portion: "Plate", customizations: [{ label: "SPICE", value: "Hot" }, { label: "EXTRAS", value: "Extra garlic sauce" }], price: "$48.00", image: "/food/shawarma.jpg" },
     ],
-    customer: { name: "Jordan Lee", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550188", email: "jordan.l@email.com", address: "456 Cedar Ave, Frisco", mapsQuery: "456+Cedar+Ave+Frisco" },
+    customer: { name: "Jordan Lee", avatar: "/food/avatar-male.jpg", phone: "+14695550188", email: "jordan.l@email.com", address: "456 Cedar Ave, Frisco", mapsQuery: "456+Cedar+Ave+Frisco" },
     timeline: [
       { time: "3:02 PM", label: "Order placed by Jordan Lee", done: true },
       { time: "3:04 PM", label: "Order confirmed", done: true },
@@ -100,10 +100,10 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "cancelled",
     orderMethod: "delivery",
     items: [
-      { name: "Chicken Mandi", qty: 1, portion: "Regular", customizations: [], price: "$22.00", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop" },
-      { name: "Tabouleh Salad", qty: 1, portion: "Regular", customizations: [], price: "$11.00", image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop" },
+      { name: "Chicken Mandi", qty: 1, portion: "Regular", customizations: [], price: "$22.00", image: "/food/mandi.jpg" },
+      { name: "Tabouleh Salad", qty: 1, portion: "Regular", customizations: [], price: "$11.00", image: "/food/tabouleh.jpg" },
     ],
-    customer: { name: "Layla Mansour", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550166", email: "layla.m@email.com", address: "321 Elm St, Richardson", mapsQuery: "321+Elm+St+Richardson" },
+    customer: { name: "Layla Mansour", avatar: "/food/avatar-female.jpg", phone: "+14695550166", email: "layla.m@email.com", address: "321 Elm St, Richardson", mapsQuery: "321+Elm+St+Richardson" },
     timeline: [
       { time: "Yesterday", label: "Order placed by Layla Mansour", done: true },
       { time: "—", label: "Cancelled by customer", done: false },
@@ -121,9 +121,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
-      { name: "Family Dinner Bundle", qty: 1, portion: "Full", customizations: [], price: "$65.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
+      { name: "Family Dinner Bundle", qty: 1, portion: "Full", customizations: [], price: "$65.00", image: "/food/mansaf.jpg" },
     ],
-    customer: { name: "Daniel Baker", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550155", email: "daniel.b@email.com", address: "789 Oak Dr, Allen", mapsQuery: "789+Oak+Dr+Allen" },
+    customer: { name: "Daniel Baker", avatar: "/food/avatar-male.jpg", phone: "+14695550155", email: "daniel.b@email.com", address: "789 Oak Dr, Allen", mapsQuery: "789+Oak+Dr+Allen" },
     timeline: [
       { time: "Yesterday", label: "Order placed by Daniel Baker", done: true },
       { time: "Yesterday", label: "Order confirmed", done: true },
@@ -143,10 +143,10 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "pickedUp",
     orderMethod: "delivery",
     items: [
-      { name: "Walnut Baklava", qty: 2, portion: "Box of 12", customizations: [], price: "$28.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
-      { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop" },
+      { name: "Walnut Baklava", qty: 2, portion: "Box of 12", customizations: [], price: "$28.00", image: "/food/baklava.jpg" },
+      { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "/food/hummus.jpg" },
     ],
-    customer: { name: "Amina Hassan", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550144", email: "amina.h@email.com", address: "555 Maple Ln, McKinney", mapsQuery: "555+Maple+Ln+McKinney" },
+    customer: { name: "Amina Hassan", avatar: "/food/avatar-female.jpg", phone: "+14695550144", email: "amina.h@email.com", address: "555 Maple Ln, McKinney", mapsQuery: "555+Maple+Ln+McKinney" },
     timeline: [
       { time: "May 2", label: "Order placed by Amina Hassan", done: true },
       { time: "May 2", label: "Order confirmed", done: true },
@@ -166,9 +166,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "paid",
     orderMethod: "delivery",
     items: [
-      { name: "Mansaf (Full Tray)", qty: 1, portion: "Full Tray", customizations: [{ label: "SPICE", value: "Medium" }], price: "$100.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
+      { name: "Mansaf (Full Tray)", qty: 1, portion: "Full Tray", customizations: [{ label: "SPICE", value: "Medium" }], price: "$100.00", image: "/food/mansaf.jpg" },
     ],
-    customer: { name: "Omar Suleiman", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550133", email: "omar.s@email.com", address: "900 Pine Rd, Plano", mapsQuery: "900+Pine+Rd+Plano" },
+    customer: { name: "Omar Suleiman", avatar: "/food/avatar-male.jpg", phone: "+14695550133", email: "omar.s@email.com", address: "900 Pine Rd, Plano", mapsQuery: "900+Pine+Rd+Plano" },
     timeline: [
       { time: "May 2", label: "Order placed by Omar Suleiman", done: true },
       { time: "—", label: "Awaiting confirmation", done: false },
@@ -186,9 +186,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
-      { name: "Crispy Falafel", qty: 4, portion: "Regular", customizations: [], price: "$36.00", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop" },
+      { name: "Crispy Falafel", qty: 4, portion: "Regular", customizations: [], price: "$36.00", image: "/food/falafel.jpg" },
     ],
-    customer: { name: "Nadia Khalil", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550122", email: "nadia.k@email.com", address: "222 Birch St, Garland", mapsQuery: "222+Birch+St+Garland" },
+    customer: { name: "Nadia Khalil", avatar: "/food/avatar-female.jpg", phone: "+14695550122", email: "nadia.k@email.com", address: "222 Birch St, Garland", mapsQuery: "222+Birch+St+Garland" },
     timeline: [
       { time: "May 1", label: "Order placed by Nadia Khalil", done: true },
       { time: "May 1", label: "Order confirmed", done: true },
@@ -208,10 +208,10 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "delivered",
     orderMethod: "delivery",
     items: [
-      { name: "Homemade Mansaf", qty: 1, portion: "Regular", customizations: [], price: "$28.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
-      { name: "Pistachio Knafeh", qty: 2, portion: "Regular", customizations: [], price: "$36.00", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=450&fit=crop" },
+      { name: "Homemade Mansaf", qty: 1, portion: "Regular", customizations: [], price: "$28.00", image: "/food/mansaf.jpg" },
+      { name: "Pistachio Knafeh", qty: 2, portion: "Regular", customizations: [], price: "$36.00", image: "/food/knafeh.jpg" },
     ],
-    customer: { name: "Rami Abbas", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550111", email: "rami.a@email.com", address: "678 Walnut Blvd, Irving", mapsQuery: "678+Walnut+Blvd+Irving" },
+    customer: { name: "Rami Abbas", avatar: "/food/avatar-male.jpg", phone: "+14695550111", email: "rami.a@email.com", address: "678 Walnut Blvd, Irving", mapsQuery: "678+Walnut+Blvd+Irving" },
     timeline: [
       { time: "May 1", label: "Order placed by Rami Abbas", done: true },
       { time: "May 1", label: "Order confirmed", done: true },
@@ -231,9 +231,9 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "cancelled",
     orderMethod: "delivery",
     items: [
-      { name: "Bundle: Weekly Prep", qty: 1, portion: "Full", customizations: [], price: "$75.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
+      { name: "Bundle: Weekly Prep", qty: 1, portion: "Full", customizations: [], price: "$75.00", image: "/food/baklava.jpg" },
     ],
-    customer: { name: "Fatima Zahra", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550100", email: "fatima.z@email.com", address: "444 Spruce Way, Denton", mapsQuery: "444+Spruce+Way+Denton" },
+    customer: { name: "Fatima Zahra", avatar: "/food/avatar-female.jpg", phone: "+14695550100", email: "fatima.z@email.com", address: "444 Spruce Way, Denton", mapsQuery: "444+Spruce+Way+Denton" },
     timeline: [
       { time: "Apr 30", label: "Order placed by Fatima Zahra", done: true },
       { time: "—", label: "Rejected", done: false },
@@ -251,10 +251,10 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
-      { name: "Chicken Shawarma", qty: 2, portion: "Plate", customizations: [], price: "$32.00", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop" },
-      { name: "Tabouleh Salad", qty: 1, portion: "Regular", customizations: [], price: "$11.00", image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&h=450&fit=crop" },
+      { name: "Chicken Shawarma", qty: 2, portion: "Plate", customizations: [], price: "$32.00", image: "/food/shawarma.jpg" },
+      { name: "Tabouleh Salad", qty: 1, portion: "Regular", customizations: [], price: "$11.00", image: "/food/tabouleh.jpg" },
     ],
-    customer: { name: "Hassan Wahid", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550099", email: "hassan.w@email.com", address: "111 Ash Ct, Carrollton", mapsQuery: "111+Ash+Ct+Carrollton" },
+    customer: { name: "Hassan Wahid", avatar: "/food/avatar-male.jpg", phone: "+14695550099", email: "hassan.w@email.com", address: "111 Ash Ct, Carrollton", mapsQuery: "111+Ash+Ct+Carrollton" },
     timeline: [
       { time: "Apr 30", label: "Order placed by Hassan Wahid", done: true },
       { time: "Apr 30", label: "Order confirmed", done: true },

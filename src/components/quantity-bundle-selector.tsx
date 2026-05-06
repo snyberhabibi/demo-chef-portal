@@ -246,12 +246,12 @@ export function QuantityBundleSelector({
 /** Demo with sample data */
 export function QuantityBundleDemo() {
   const items: BundleItem[] = [
-    { id: "1", name: "Teriyaki & Rice", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop", basePrice: 12, priceAdjustment: 0, maxQty: 4 },
-    { id: "2", name: "Salmon & Rice", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop", basePrice: 15, priceAdjustment: 3, maxQty: 3 },
-    { id: "3", name: "Beef & Rice", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop", basePrice: 14, priceAdjustment: 2, maxQty: 4 },
-    { id: "4", name: "Veggie & Rice", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop", basePrice: 10, priceAdjustment: -2, maxQty: 4 },
-    { id: "5", name: "Chicken Mandi", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop", basePrice: 13, priceAdjustment: 1, maxQty: 3 },
-    { id: "6", name: "Falafel Bowl", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop", basePrice: 11, priceAdjustment: -1, maxQty: 4 },
+    { id: "1", name: "Teriyaki & Rice", image: "/food/mansaf.jpg", basePrice: 12, priceAdjustment: 0, maxQty: 4 },
+    { id: "2", name: "Salmon & Rice", image: "/food/shawarma.jpg", basePrice: 15, priceAdjustment: 3, maxQty: 3 },
+    { id: "3", name: "Beef & Rice", image: "/food/mansaf.jpg", basePrice: 14, priceAdjustment: 2, maxQty: 4 },
+    { id: "4", name: "Veggie & Rice", image: "/food/fattoush.jpg", basePrice: 10, priceAdjustment: -2, maxQty: 4 },
+    { id: "5", name: "Chicken Mandi", image: "/food/mandi.jpg", basePrice: 13, priceAdjustment: 1, maxQty: 3 },
+    { id: "6", name: "Falafel Bowl", image: "/food/falafel.jpg", basePrice: 11, priceAdjustment: -1, maxQty: 4 },
   ];
 
   return (

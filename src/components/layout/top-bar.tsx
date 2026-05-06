@@ -195,7 +195,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
             style={{ width: 28, height: 28 }}
           >
             <img
-              src="https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=200&h=200&fit=crop"
+              src="/food/chef-avatar.jpg"
               alt="Profile"
               className="w-full h-full object-cover"
             />

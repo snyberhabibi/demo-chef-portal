@@ -16,8 +16,8 @@ export function DesignModeToggle() {
   return (
     <button
       onClick={handleClick}
-      aria-label={`Switch to Mode ${mode === "a" ? "B" : "A"}`}
-      title={`Switch to Mode ${mode === "a" ? "B" : "A"}`}
+      aria-label={mode === "a" ? "Switch to Modern" : "Switch to Classic"}
+      title={mode === "a" ? "Switch to Modern" : "Switch to Classic"}
       className="design-mode-toggle-btn"
       style={{
         position: "fixed",

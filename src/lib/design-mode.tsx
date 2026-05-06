@@ -8,15 +8,15 @@ const DesignModeContext = createContext<{
   setMode: (mode: DesignMode) => void;
   toggle: () => void;
 }>({
-  mode: "a",
+  mode: "b",
   setMode: () => {},
   toggle: () => {},
 });
 
 export function DesignModeProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<DesignMode>(() => {
-    if (typeof window === "undefined") return "a";
-    return (localStorage.getItem("design-mode") as DesignMode) || "a";
+    if (typeof window === "undefined") return "b";
+    return (localStorage.getItem("design-mode") as DesignMode) || "b";
   });
 
   useEffect(() => {
