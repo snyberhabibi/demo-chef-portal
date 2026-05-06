@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import { I18nProvider } from "@/lib/i18n";
+import { DesignModeProvider } from "@/lib/design-mode";
+import { DesignModeToggle } from "@/components/ui/design-mode-toggle";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import "./globals.css";
@@ -53,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable}`} style={{ height: "100dvh" }}>
-      <body className="flex flex-col" style={{ minHeight: "100dvh" }}><I18nProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></I18nProvider></body>
+      <body className="flex flex-col" style={{ minHeight: "100dvh" }}><I18nProvider><DesignModeProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /><DesignModeToggle /></ToastProvider></DesignModeProvider></I18nProvider></body>
     </html>
   );
 }
