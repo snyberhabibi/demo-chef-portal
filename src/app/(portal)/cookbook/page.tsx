@@ -7,7 +7,7 @@ import { dishes, type Dish, type Recipe } from "@/lib/mock-data";
 import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
-/*  Cookbook Page — Private chef recipes per portion size               */
+/*  Cookbook Page — "My Cookbook" — grandma's kitchen notebook feel       */
 /* ------------------------------------------------------------------ */
 
 export default function CookbookPage() {
@@ -32,11 +32,14 @@ export default function CookbookPage() {
     return list;
   }, [search]);
 
+  /* Accent color — terracotta in Mode A, red in Mode B */
+  const accent = isB ? "#df4746" : "var(--color-terracotta)";
+
   if (!loaded) {
     return (
       <div className="content-default section-stack">
         <div className="skeleton" style={{ height: 40, borderRadius: 12, maxWidth: 260 }} />
-        <div className="skeleton" style={{ height: 44, borderRadius: 10 }} />
+        <div className="skeleton" style={{ height: 44, borderRadius: 14 }} />
         {[0, 1, 2].map((i) => (
           <div key={i} className="skeleton" style={{ height: 80, borderRadius: 16 }} />
         ))}
@@ -46,15 +49,34 @@ export default function CookbookPage() {
 
   return (
     <div className="content-default section-stack page-enter">
-      {/* Header */}
-      <div>
-        <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Cookbook</h1>
-        <p className="body-sm" style={{ marginTop: 2 }}>
-          Your private kitchen recipes
-        </p>
+      {/* ── Header — inside-cover-of-a-recipe-book feel ── */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+        <BookOpen
+          size={28}
+          strokeWidth={1.4}
+          style={{ color: accent, flexShrink: 0, marginTop: 2 }}
+        />
+        <div>
+          <h1
+            className="cookbook-title"
+            style={{
+              fontSize: 26,
+              lineHeight: 1.15,
+              color: "var(--color-brown)",
+            }}
+          >
+            My Cookbook
+          </h1>
+          <p
+            className="cookbook-subtitle"
+            style={{ marginTop: 4, fontSize: 14, lineHeight: 1.5 }}
+          >
+            Your private kitchen recipes — passed down, perfected, and ready to cook
+          </p>
+        </div>
       </div>
 
-      {/* Search + count */}
+      {/* ── Search bar — soft, rounded, italic placeholder ── */}
       <div className="flex items-center gap-3 flex-wrap">
         <form
           role="search"
@@ -66,7 +88,7 @@ export default function CookbookPage() {
             strokeWidth={2}
             style={{
               position: "absolute",
-              left: 12,
+              left: 14,
               top: "50%",
               transform: "translateY(-50%)",
               color: "var(--color-brown-soft-2)",
@@ -75,7 +97,7 @@ export default function CookbookPage() {
           />
           <input
             type="text"
-            placeholder="Search dishes..."
+            placeholder="Search your recipes..."
             aria-label="Search dishes with recipes"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -83,9 +105,11 @@ export default function CookbookPage() {
             style={{
               width: "100%",
               height: 44,
-              paddingLeft: 36,
+              paddingLeft: 38,
               paddingRight: 14,
-              borderRadius: 10,
+              borderRadius: 14,
+              border: "1px solid rgba(51,31,46,0.08)",
+              fontStyle: search ? "normal" : "italic",
             }}
           />
         </form>
@@ -93,30 +117,46 @@ export default function CookbookPage() {
           className="caption tnum"
           style={{ flexShrink: 0, fontWeight: 600 }}
         >
-          {dishesWithRecipes.length} {dishesWithRecipes.length === 1 ? "dish" : "dishes"} with recipes
+          {dishesWithRecipes.length}{" "}
+          {dishesWithRecipes.length === 1 ? "recipe" : "recipes"}
         </span>
       </div>
 
-      {/* Dish list */}
+      {/* ── Empty state — warm and inviting ── */}
       {dishesWithRecipes.length === 0 ? (
         <div
-          className="card"
-          style={{ textAlign: "center", padding: "80px 20px" }}
+          style={{
+            textAlign: "center",
+            padding: "80px 20px",
+            background: "#faf8f2",
+            borderRadius: 16,
+          }}
         >
           <BookOpen
             size={48}
             strokeWidth={1.2}
-            style={{ color: "var(--color-brown-soft-2)", margin: "0 auto 16px" }}
+            style={{ color: accent, margin: "0 auto 16px" }}
           />
-          <div className="heading-md" style={{ marginBottom: 6 }}>
-            No recipes found
+          <div
+            className="cookbook-title"
+            style={{
+              fontSize: 20,
+              color: "var(--color-brown)",
+              marginBottom: 6,
+              fontStyle: "italic",
+            }}
+          >
+            {search ? "No recipes found" : "Your cookbook is empty"}
           </div>
-          <div className="body-sm">
-            {search ? "Try a different search term" : "Add recipes to your dishes to see them here"}
+          <div className="body-sm" style={{ maxWidth: 280, margin: "0 auto" }}>
+            {search
+              ? "Try a different search term"
+              : "Add recipes to your dishes and they\u2019ll appear here"}
           </div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        /* ── Dish list — notebook pages ── */
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {dishesWithRecipes.map((dish) => (
             <DishRecipeCard
               key={dish.id}
@@ -126,6 +166,7 @@ export default function CookbookPage() {
                 setExpandedDish(expandedDish === dish.id ? null : dish.id)
               }
               isB={isB}
+              accent={accent}
             />
           ))}
         </div>
@@ -135,18 +176,20 @@ export default function CookbookPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Dish Recipe Card                                                    */
+/*  Dish Recipe Card — a page torn from a notebook                      */
 /* ------------------------------------------------------------------ */
 function DishRecipeCard({
   dish,
   isExpanded,
   onToggle,
   isB,
+  accent,
 }: {
   dish: Dish;
   isExpanded: boolean;
   onToggle: () => void;
   isB: boolean;
+  accent: string;
 }) {
   const recipes = dish.recipes || [];
   const [activePortionIdx, setActivePortionIdx] = useState(0);
@@ -154,15 +197,15 @@ function DishRecipeCard({
 
   return (
     <div
-      className="card"
       style={{
+        background: "#faf8f2",
+        borderRadius: 0,
+        borderBottom: "1px dashed rgba(51,31,46,0.12)",
         padding: 0,
         overflow: "hidden",
-        borderRadius: isB ? 16 : undefined,
-        ...(isB ? { boxShadow: "0 2px 12px rgba(161,120,97,0.08)" } : {}),
       }}
     >
-      {/* Collapsed header */}
+      {/* ── Collapsed header ── */}
       <button
         type="button"
         onClick={onToggle}
@@ -171,29 +214,29 @@ function DishRecipeCard({
           alignItems: "center",
           gap: 14,
           width: "100%",
-          padding: "14px 16px",
+          padding: "16px 4px",
           border: "none",
           background: "transparent",
           cursor: "pointer",
           textAlign: "left",
         }}
       >
+        {/* Round photo — like a sticker on a notebook page */}
         <img
           src={dish.image}
           alt={dish.name}
           style={{
             width: 60,
             height: 60,
-            borderRadius: 10,
+            borderRadius: "50%",
             objectFit: "cover",
             flexShrink: 0,
           }}
         />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
+            className="cookbook-dish-name"
             style={{
-              fontSize: 15,
-              fontWeight: 600,
               color: "var(--color-brown)",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -202,8 +245,14 @@ function DishRecipeCard({
           >
             {dish.name}
           </div>
-          <div className="caption" style={{ marginTop: 2 }}>
-            ${dish.price.toFixed(2)} &middot;{" "}
+          <div
+            className="caption"
+            style={{
+              marginTop: 2,
+              fontFamily: "var(--font-serif), Georgia, serif",
+            }}
+          >
+            {dish.cuisine} &middot;{" "}
             {recipes.length} {recipes.length === 1 ? "portion size" : "portion sizes"}
           </div>
         </div>
@@ -220,7 +269,7 @@ function DishRecipeCard({
         )}
       </button>
 
-      {/* Expanded recipe details */}
+      {/* ── Expanded recipe details ── */}
       <div
         style={{
           overflow: "hidden",
@@ -229,17 +278,17 @@ function DishRecipeCard({
           opacity: isExpanded ? 1 : 0,
         }}
       >
-        <div
-          style={{
-            borderTop: "1px solid rgba(51,31,46,0.06)",
-            padding: "16px 16px 20px",
-          }}
-        >
-          {/* Portion size tabs */}
+        <div style={{ padding: "4px 4px 24px" }}>
+          {/* ── Portion tabs — underline style, like chapter headings ── */}
           {recipes.length > 1 && (
             <div
-              className="flex gap-2 flex-wrap"
-              style={{ marginBottom: 20 }}
+              style={{
+                display: "flex",
+                gap: 20,
+                marginBottom: 24,
+                borderBottom: "1px solid rgba(51,31,46,0.06)",
+                paddingBottom: 0,
+              }}
             >
               {recipes.map((recipe, idx) => {
                 const isActive = idx === activePortionIdx;
@@ -250,29 +299,18 @@ function DishRecipeCard({
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
-                      padding: "0 16px",
-                      height: 34,
-                      borderRadius: 9999,
-                      fontSize: 13,
-                      fontWeight: 600,
+                      padding: "8px 4px",
+                      fontSize: 14,
+                      fontFamily: "var(--font-serif), Georgia, serif",
+                      fontWeight: isActive ? 600 : 400,
                       cursor: "pointer",
-                      border: `1.5px solid ${
-                        isActive
-                          ? isB
-                            ? "#df4746"
-                            : "var(--color-brown)"
-                          : "rgba(51,31,46,0.12)"
-                      }`,
-                      background: isActive
-                        ? isB
-                          ? "#df4746"
-                          : "var(--color-brown)"
-                        : "transparent",
-                      color: isActive
-                        ? isB
-                          ? "#fff"
-                          : "var(--color-cream)"
-                        : "var(--color-brown-soft)",
+                      border: "none",
+                      background: "transparent",
+                      color: isActive ? accent : "var(--color-brown-soft)",
+                      borderBottom: isActive
+                        ? `2px solid ${accent}`
+                        : "2px solid transparent",
+                      marginBottom: -1,
                       transition: "all var(--t-fast) var(--ease-spring)",
                     }}
                   >
@@ -283,9 +321,16 @@ function DishRecipeCard({
             </div>
           )}
 
-          {/* Single portion label when only one recipe */}
+          {/* Single portion label */}
           {recipes.length === 1 && (
-            <div className="eyebrow" style={{ marginBottom: 14 }}>
+            <div
+              className="cookbook-subtitle"
+              style={{
+                marginBottom: 18,
+                fontSize: 13,
+                fontWeight: 500,
+              }}
+            >
               {recipes[0].portionSize}
             </div>
           )}
@@ -295,23 +340,24 @@ function DishRecipeCard({
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr",
-                gap: 20,
+                gap: 24,
+                padding: "0 4px",
               }}
               className="cookbook-recipe-grid"
             >
-              {/* Ingredients */}
+              {/* ── Ingredients — bullet list with terracotta dots ── */}
               <div>
                 <div
-                  className="eyebrow"
-                  style={{ marginBottom: 10 }}
+                  className="cookbook-section-header"
+                  style={{ marginBottom: 12 }}
                 >
                   Ingredients
                 </div>
                 <div
                   style={{
-                    borderRadius: 10,
-                    border: "1px solid rgba(51,31,46,0.06)",
-                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
                   }}
                 >
                   {activeRecipe.ingredients.map((ing, i) => (
@@ -319,55 +365,55 @@ function DishRecipeCard({
                       key={i}
                       style={{
                         display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "8px 14px",
-                        fontSize: 13,
-                        borderBottom:
-                          i < activeRecipe.ingredients.length - 1
-                            ? "1px solid rgba(51,31,46,0.04)"
-                            : "none",
-                        background:
-                          i % 2 === 0 ? "#fff" : "var(--color-cream)",
+                        alignItems: "flex-start",
+                        gap: 10,
                       }}
                     >
+                      <span className="cookbook-ingredient-dot" />
                       <span
                         style={{
+                          fontSize: 14,
                           color: "var(--color-brown)",
-                          fontWeight: 500,
+                          lineHeight: 1.5,
                         }}
                       >
                         {ing.name}
-                      </span>
-                      <span
-                        className="tnum"
-                        style={{
-                          color: "var(--color-brown-soft)",
-                          fontWeight: 600,
-                          flexShrink: 0,
-                          marginLeft: 12,
-                        }}
-                      >
-                        {ing.quantity}
+                        {ing.quantity && (
+                          <>
+                            {" — "}
+                            <span style={{ fontWeight: 600 }}>{ing.quantity}</span>
+                          </>
+                        )}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Steps */}
+              {/* ── Divider — thin terracotta rule ── */}
+              <hr
+                style={{
+                  border: "none",
+                  height: 1,
+                  background: accent,
+                  opacity: 0.15,
+                  margin: 0,
+                }}
+              />
+
+              {/* ── Method — handwritten-style step numbers ── */}
               <div>
                 <div
-                  className="eyebrow"
-                  style={{ marginBottom: 10 }}
+                  className="cookbook-section-header"
+                  style={{ marginBottom: 12 }}
                 >
-                  Steps
+                  Method
                 </div>
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: 8,
+                    gap: 12,
                   }}
                 >
                   {activeRecipe.steps.map((step, i) => (
@@ -380,33 +426,22 @@ function DishRecipeCard({
                       }}
                     >
                       <span
+                        className="cookbook-step-number"
                         style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 24,
-                          height: 24,
-                          minWidth: 24,
-                          borderRadius: "50%",
-                          background: isB
-                            ? "rgba(223,71,70,0.08)"
-                            : "var(--color-cream-deep)",
-                          color: isB
-                            ? "#df4746"
-                            : "var(--color-brown-soft)",
-                          fontSize: 11,
-                          fontWeight: 700,
+                          fontSize: 16,
+                          lineHeight: 1.5,
+                          minWidth: 20,
+                          textAlign: "right",
                           flexShrink: 0,
-                          marginTop: 1,
                         }}
                       >
-                        {i + 1}
+                        {i + 1}.
                       </span>
                       <span
                         style={{
-                          fontSize: 13,
+                          fontSize: 14,
                           color: "var(--color-brown)",
-                          lineHeight: 1.5,
+                          lineHeight: 1.7,
                         }}
                       >
                         {step}
@@ -420,11 +455,14 @@ function DishRecipeCard({
         </div>
       </div>
 
-      {/* Responsive grid for ingredients + steps side-by-side on desktop */}
+      {/* Responsive grid — ingredients + method side-by-side on desktop */}
       <style jsx>{`
         @media (min-width: 768px) {
           .cookbook-recipe-grid {
             grid-template-columns: 1fr 1fr !important;
+          }
+          .cookbook-recipe-grid hr {
+            display: none;
           }
         }
       `}</style>

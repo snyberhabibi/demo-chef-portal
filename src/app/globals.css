@@ -1053,3 +1053,57 @@ main { overflow-x: hidden; }
   -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
+
+/* ========================================================================
+   COOKBOOK — Kitchen Notebook feel
+   Warm, personal, handwritten vibes — like a treasured recipe book
+   ======================================================================== */
+
+.cookbook-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.cookbook-subtitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  color: var(--color-terracotta);
+}
+.cookbook-section-header {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-terracotta);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.cookbook-step-number {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--color-terracotta);
+}
+.cookbook-ingredient-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.cookbook-dish-name {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+/* Mode B overrides — terracotta becomes red */
+[data-design-mode="b"] .cookbook-subtitle,
+[data-design-mode="b"] .cookbook-section-header,
+[data-design-mode="b"] .cookbook-step-number {
+  color: #df4746;
+}
+[data-design-mode="b"] .cookbook-ingredient-dot {
+  background: #df4746;
+}
