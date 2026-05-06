@@ -50,7 +50,7 @@ export default function WelcomePage() {
       className="relative flex items-center justify-center overflow-hidden px-5 py-12"
       style={{
         background: "var(--color-cream)",
-        minHeight: "100dvh",
+        minHeight: "100vh",
         paddingTop: "max(48px, env(safe-area-inset-top, 48px))",
         paddingBottom: "max(48px, env(safe-area-inset-bottom, 48px))",
         paddingLeft: "max(20px, env(safe-area-inset-left, 0px))",

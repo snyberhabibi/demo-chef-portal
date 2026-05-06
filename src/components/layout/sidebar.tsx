@@ -23,7 +23,7 @@ export function Sidebar({ activePath }: SidebarProps) {
       className="hidden lg:flex flex-col sticky top-0"
       style={{
         width: collapsed ? 56 : 260,
-        height: "100dvh",
+        height: "100vh",
         background: "var(--color-cream-deep)",
         backgroundImage:
           "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(51,31,46,0.02) 100%)",

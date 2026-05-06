@@ -18,15 +18,8 @@ export function MobileDrawer({ open, onClose, activePath, triggerRef }: MobileDr
   const [animating, setAnimating] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  /* Manage body overflow to prevent scroll behind drawer */
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
+  /* Body overflow lock REMOVED — causes iOS PWA standalone mode lock.
+     The fixed-position backdrop + drawer already prevent background interaction. */
 
   useEffect(() => {
     if (open) {
@@ -74,7 +67,7 @@ export function MobileDrawer({ open, onClose, activePath, triggerRef }: MobileDr
           position: "fixed",
           inset: 0,
           background: "rgba(51,31,46,0.4)",
-          backdropFilter: "blur(4px)",
+          /* backdropFilter REMOVED — causes iOS PWA rendering bugs on fixed elements */
           zIndex: 60,
           opacity: animating ? 1 : 0,
           transition: "opacity 0.3s ease",

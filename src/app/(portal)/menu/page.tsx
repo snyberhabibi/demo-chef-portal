@@ -234,7 +234,7 @@ export default function MenuPage() {
             {/* Backdrop — NO backdropFilter (causes iOS PWA rendering bugs) */}
             <div
               style={{ position: "fixed", inset: 0, background: "rgba(53,36,49,0.4)" }}
-              onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
+              onClick={() => { setShowCreateModal(false); }}
             />
             {/* Content — fully inline-styled, NO CSS classes that could conflict */}
             <div
@@ -246,7 +246,7 @@ export default function MenuPage() {
                 background: "#fff",
                 borderRadius: "20px 20px 0 0",
                 padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
-                maxHeight: "80dvh",
+                maxHeight: "80vh",
                 overflowY: "auto",
                 WebkitOverflowScrolling: "touch",
                 zIndex: 1,
@@ -258,7 +258,7 @@ export default function MenuPage() {
               <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
 
               <button
-                onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
+                onClick={() => { setShowCreateModal(false); }}
                 style={{
                   position: "absolute",
                   top: 16,
@@ -288,7 +288,7 @@ export default function MenuPage() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <Link
                   href="/menu/new"
-                  onClick={() => { setShowCreateModal(false); document.body.style.overflow = ""; }}
+                  onClick={() => { setShowCreateModal(false); }}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -381,7 +381,7 @@ export default function MenuPage() {
           {/* Backdrop — NO backdropFilter (causes iOS PWA rendering bugs) */}
           <div
             style={{ position: "fixed", inset: 0, background: "rgba(53,36,49,0.4)" }}
-            onClick={() => { setShowBundleModal(false); document.body.style.overflow = ""; }}
+            onClick={() => { setShowBundleModal(false); }}
           />
 
           {/* Content — fully inline-styled for iOS PWA compatibility */}
@@ -394,7 +394,7 @@ export default function MenuPage() {
               background: "#fff",
               borderRadius: "20px 20px 0 0",
               padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
-              maxHeight: "80dvh",
+              maxHeight: "80vh",
               overflowY: "auto",
               WebkitOverflowScrolling: "touch",
               zIndex: 1,
@@ -408,7 +408,7 @@ export default function MenuPage() {
             <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
 
             <button
-              onClick={() => { setShowBundleModal(false); document.body.style.overflow = ""; }}
+              onClick={() => { setShowBundleModal(false); }}
               style={{
                 position: "absolute",
                 top: 12,

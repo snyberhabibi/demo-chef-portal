@@ -104,7 +104,7 @@ function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
           background: "#fff",
           borderRadius: "20px 20px 0 0",
           padding: "20px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
-          maxHeight: "80dvh",
+          maxHeight: "80vh",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
           zIndex: 1,

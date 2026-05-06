@@ -481,7 +481,7 @@ function CreateDishPageInner() {
   const fulfillmentDayShort = fulfillmentDay.slice(0, 3);
 
   return (
-    <div className="page-fade" style={{ minHeight: "100dvh" }}>
+    <div className="page-fade" style={{ minHeight: "100vh" }}>
       {/* ── Top Bar ── */}
       <div
         className="flex items-center gap-3 flex-wrap"
@@ -2345,9 +2345,8 @@ function CreateDishPageInner() {
             left: 0 !important;
             right: 0 !important;
             padding: 12px 24px !important;
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
+            background: rgba(255, 255, 255, 0.97) !important;
+            /* backdrop-filter REMOVED — causes iOS PWA rendering bugs on fixed elements */
             border-top: 1px solid rgba(51, 31, 46, 0.06) !important;
             z-index: 30 !important;
             justify-content: stretch !important;

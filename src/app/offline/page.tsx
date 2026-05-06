@@ -5,7 +5,7 @@ export default function OfflinePage() {
     <div
       className="flex flex-col items-center justify-center text-center px-5"
       style={{
-        minHeight: "100dvh",
+        minHeight: "100vh",
         background: "var(--color-cream, #faf9f6)",
         paddingTop: "env(safe-area-inset-top, 0px)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",

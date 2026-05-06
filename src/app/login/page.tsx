@@ -17,7 +17,7 @@ export default function LoginPage() {
       className="relative flex items-center justify-center overflow-hidden px-5 grain"
       style={{
         background: "var(--color-cream)",
-        minHeight: "100dvh",
+        minHeight: "100vh",
         paddingTop: "env(safe-area-inset-top, 20px)",
         paddingBottom: "env(safe-area-inset-bottom, 20px)",
         paddingLeft: "max(20px, env(safe-area-inset-left, 0px))",
