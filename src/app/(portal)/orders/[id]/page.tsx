@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -94,7 +94,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "e5g7b9": {
     orderHash: "#e5g7b9",
-    orderStatus: "paid",
+    orderStatus: "cancelled",
     orderMethod: "delivery",
     items: [
       { name: "Chicken Mandi", qty: 1, portion: "Regular", customizations: [], price: "$22.00", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop" },
@@ -115,7 +115,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "f8h2c4": {
     orderHash: "#f8h2c4",
-    orderStatus: "ready",
+    orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
       { name: "Family Dinner Bundle", qty: 1, portion: "Full", customizations: [], price: "$65.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
@@ -137,7 +137,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "g1j3d5": {
     orderHash: "#g1j3d5",
-    orderStatus: "ready",
+    orderStatus: "pickedUp",
     orderMethod: "delivery",
     items: [
       { name: "Walnut Baklava", qty: 2, portion: "Box of 12", customizations: [], price: "$28.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
@@ -180,7 +180,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "i7l9f8": {
     orderHash: "#i7l9f8",
-    orderStatus: "ready",
+    orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
       { name: "Crispy Falafel", qty: 4, portion: "Regular", customizations: [], price: "$36.00", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop" },
@@ -202,7 +202,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "j2m4g1": {
     orderHash: "#j2m4g1",
-    orderStatus: "ready",
+    orderStatus: "delivered",
     orderMethod: "delivery",
     items: [
       { name: "Homemade Mansaf", qty: 1, portion: "Regular", customizations: [], price: "$28.00", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop" },
@@ -225,7 +225,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "k5n7h3": {
     orderHash: "#k5n7h3",
-    orderStatus: "paid",
+    orderStatus: "cancelled",
     orderMethod: "delivery",
     items: [
       { name: "Bundle: Weekly Prep", qty: 1, portion: "Full", customizations: [], price: "$75.00", image: "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=600&h=450&fit=crop" },
@@ -245,7 +245,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
   },
   "l8p2i5": {
     orderHash: "#l8p2i5",
-    orderStatus: "ready",
+    orderStatus: "delivered",
     orderMethod: "pickup",
     items: [
       { name: "Chicken Shawarma", qty: 2, portion: "Plate", customizations: [], price: "$32.00", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&h=450&fit=crop" },
@@ -285,8 +285,10 @@ function currentStepIndex(status: string): number {
     case "preparing":
       return 1;
     case "ready":
+    case "readyForPickup":
       return 2;
     case "delivered":
+    case "pickedUp":
       return 3;
     default:
       return -1;
@@ -374,18 +376,17 @@ export default function OrderDetailPage() {
   /* Read effective status from localStorage overrides (same pattern as orders list) */
   const [effectiveStatus, setEffectiveStatus] = useState<string>(order.orderStatus);
 
-  useState(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const saved = localStorage.getItem("order-status-overrides");
-      if (saved) {
+  useEffect(() => {
+    const saved = localStorage.getItem("order-status-overrides");
+    if (saved) {
+      try {
         const overrides = JSON.parse(saved);
         if (overrides[orderHash]) {
           setEffectiveStatus(overrides[orderHash]);
         }
-      }
-    } catch { /* ignore */ }
-  });
+      } catch {}
+    }
+  }, [orderHash]);
 
   const advanceStatus = () => {
     const nextMap: Record<string, string> = { paid: "confirmed", confirmed: "preparing", preparing: "ready", ready: "delivered", readyForPickup: "pickedUp" };

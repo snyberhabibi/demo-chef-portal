@@ -747,7 +747,7 @@ export const recentOrders = orders.slice(0, 3);
 export interface OrderDetailData {
   orderHash: string;
   orderId?: number;
-  orderStatus: "paid" | "confirmed" | "preparing" | "ready";
+  orderStatus: "paid" | "confirmed" | "preparing" | "ready" | "delivered" | "pickedUp" | "cancelled";
   orderMethod: "delivery" | "pickup";
   items: {
     name: string;

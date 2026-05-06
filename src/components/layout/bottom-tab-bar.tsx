@@ -105,7 +105,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
                   width: 4,
                   height: 4,
                   borderRadius: "50%",
-                  background: isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)",
+                  background: "#df4746",
                 }}
               />
             )}

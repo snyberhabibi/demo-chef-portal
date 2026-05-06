@@ -77,7 +77,7 @@ export default function FlashSalesPage() {
     <div className="content-default section-stack">
       {/* -------- Header -------- */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="heading-lg">Flash Sales</h1>
+        <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Flash Sales</h1>
         <button
           className="btn btn-dark btn-sm"
           style={{ display: "inline-flex", alignItems: "center", gap: 6, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}

@@ -334,7 +334,7 @@ export default function MenuPage() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="heading-lg">Dishes</h1>
+              <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Dishes</h1>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
@@ -350,7 +350,7 @@ export default function MenuPage() {
 
           {/* Mode B — Dish count badge */}
           {isB && (
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(223,71,70,0.08), rgba(241,158,55,0.06))", border: "1px solid rgba(223,71,70,0.12)" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 12, background: "rgba(53,36,49,0.04)", border: "1px solid rgba(53,36,49,0.08)" }}>
               <span style={{ fontSize: 18 }}>{"\u{1F37D}\u{FE0F}"}</span>
               <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>{localDishes.length} dishes on your menu</span>
             </div>
@@ -702,7 +702,7 @@ export default function MenuPage() {
         <>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="heading-lg">Bundles</h1>
+              <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Bundles</h1>
               <p className="body-sm" style={{ marginTop: 4 }}>
                 Create curated meal bundles to increase average order value
               </p>
@@ -867,7 +867,7 @@ export default function MenuPage() {
         <>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="heading-lg">Custom Menu Sections</h1>
+              <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Custom Menu Sections</h1>
               <p className="body-sm" style={{ marginTop: 4 }}>
                 Organize how sections appear on your store-front
               </p>

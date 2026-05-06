@@ -201,7 +201,7 @@ export default function SettingsPage() {
           <div>
             <div className="heading-sm" style={{ marginBottom: 4 }}>Notifications</div>
             <p className="body-sm" style={{ margin: "0 0 16px" }}>Choose how you want to be notified</p>
-            <div className="flex items-center" style={{ padding: "8px 0", borderBottom: "1px solid rgba(51,31,46,0.06)", ...(isB ? { background: "linear-gradient(90deg, rgba(223,71,70,0.06), rgba(241,158,55,0.06))", borderRadius: 8, padding: "8px 12px", marginBottom: 4 } : {}) }}>
+            <div className="flex items-center" style={{ padding: "8px 0", borderBottom: "1px solid rgba(51,31,46,0.06)", ...(isB ? { background: "rgba(53,36,49,0.03)", borderRadius: 8, padding: "8px 12px", marginBottom: 4 } : {}) }}>
               <span style={{ flex: 1 }} />
               {CHANNELS.map((ch) => (<span key={ch} className="eyebrow" style={{ width: 64, textAlign: "center" }}>{ch}</span>))}
             </div>

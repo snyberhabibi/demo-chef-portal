@@ -921,8 +921,8 @@ main { overflow-x: hidden; }
   --gradient-primary: linear-gradient(135deg, #df4746 0%, #f19e37 100%);
   --gradient-success: linear-gradient(135deg, #7daf62 0%, #a4d48a 100%);
   --gradient-warm: linear-gradient(135deg, #f19e37 0%, #df4746 100%);
-  --gradient-card: linear-gradient(135deg, rgba(223,71,70,0.04) 0%, rgba(241,158,55,0.04) 100%);
-  --shadow-glow: 0 0 20px rgba(223,71,70,0.12);
+  --gradient-card: none;
+  --shadow-glow: none;
 }
 
 /* Mode B button overrides */
@@ -939,26 +939,22 @@ main { overflow-x: hidden; }
   filter: brightness(1.05);
 }
 
-/* Mode B card style — no left borders, subtle gradient bg */
+/* Mode B card style — white backgrounds, gradients only as accents */
 [data-design-mode="b"] .card {
-  background: var(--gradient-card);
-  border: 1px solid rgba(223,71,70,0.1);
-  box-shadow: var(--shadow-glow);
+  background: #ffffff;
+  border: 1px solid rgba(53,36,49,0.08);
+  box-shadow: 0 1px 3px rgba(53,36,49,0.06), 0 1px 2px rgba(53,36,49,0.04);
 }
 
 [data-design-mode="b"] .card-interactive:hover {
-  box-shadow: 0 8px 30px rgba(223,71,70,0.2);
-  border-color: rgba(223,71,70,0.2);
+  box-shadow: 0 8px 25px rgba(223,71,70,0.12), 0 4px 10px rgba(53,36,49,0.06);
+  border-color: rgba(223,71,70,0.15);
 }
 
-/* Mode B removes ALL left-border accents (the "AI slop" pattern) */
-[data-design-mode="b"] [style*="borderLeft"],
-[data-design-mode="b"] [style*="border-left"] {
-  border-left: none !important;
-}
+/* Mode B left-border removal — handled per-component via isB conditionals */
 
-/* Mode B heading style — gradient text */
-[data-design-mode="b"] .heading-lg {
+/* Mode B heading style — gradient text (opt-in via .heading-gradient class) */
+[data-design-mode="b"] .heading-gradient {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -972,7 +968,7 @@ main { overflow-x: hidden; }
 }
 
 /* Mode B toggle */
-[data-design-mode="b"] .toggle-on {
+[data-design-mode="b"] .toggle.is-on {
   background: var(--gradient-primary);
 }
 

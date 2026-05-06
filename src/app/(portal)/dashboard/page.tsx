@@ -687,7 +687,7 @@ function ModeA() {
 
       {/* Need help? — simple caption link */}
       <Link
-        href="/settings"
+        href="/help"
         className="caption"
         style={{
           color: "var(--color-brown-soft-2)",
@@ -976,7 +976,7 @@ const gamifiedTasks = [
 const quickActions = [
   { emoji: "\uD83C\uDF7D\uFE0F", label: "Add Dish", href: "/menu/new", gradient: "linear-gradient(135deg, #fce4e4 0%, #fde4c0 100%)" },
   { emoji: "\u26A1", label: "Flash Sale", href: "/flash-sales", gradient: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
-  { emoji: "\uD83D\uDCE6", label: "View Orders", href: "/orders", gradient: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)" },
+  { emoji: "\uD83D\uDCE6", label: "View Orders", href: "/orders", gradient: "linear-gradient(135deg, #edf5e8 0%, #d5e8ca 100%)" },
   { emoji: "\u2B50", label: "Reviews", href: "/reviews", gradient: "linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)" },
 ];
 
@@ -985,9 +985,13 @@ function ModeBGamified() {
   const [tasks, setTasks] = useState(gamifiedTasks);
   const [animatedRevenue, setAnimatedRevenue] = useState(0);
 
+  // Derive revenue target from centralized stats
+  const revenueTarget = parseInt((stats.find(s => s.label === "Revenue This Month")?.value ?? "$2,184").replace(/[^0-9]/g, ""), 10) || 2184;
+  const ordersThisMonth = stats.find(s => s.label === "Orders This Month")?.value ?? "47";
+
   // Counting-up animation for revenue
   useEffect(() => {
-    const target = 2184;
+    const target = revenueTarget;
     const duration = 1200;
     const steps = 40;
     const increment = target / steps;
@@ -1000,7 +1004,7 @@ function ModeBGamified() {
       if (step >= steps) clearInterval(interval);
     }, duration / steps);
     return () => clearInterval(interval);
-  }, []);
+  }, [revenueTarget]);
 
   const toggleTask = useCallback((id: number) => {
     setTasks((prev) =>
@@ -1025,19 +1029,18 @@ function ModeBGamified() {
         }
         .gamified-card {
           border-radius: 20px;
-          border: none;
-          box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+          box-shadow: 0 1px 3px rgba(53,36,49,0.06), 0 1px 2px rgba(53,36,49,0.04);
           overflow: hidden;
         }
         .gamified-btn {
           border-radius: 16px;
-          border: none;
           cursor: pointer;
-          transition: transform 0.15s ease, box-shadow 0.15s ease;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
         }
         .gamified-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 16px rgba(53,36,49,0.08);
+          background: rgba(241,158,55,0.04) !important;
         }
         .gamified-btn:active {
           transform: translateY(0);
@@ -1045,7 +1048,7 @@ function ModeBGamified() {
       `}</style>
 
       {/* Greeting */}
-      <h1 className="heading-lg" style={{ margin: "0 0 8px 0" }}>
+      <h1 className="heading-lg heading-gradient" style={{ margin: "0 0 8px 0" }}>
         {greeting}, {chefProfile.name}{" "}
         <span role="img" aria-label="wave" className="animate-wave" style={{ display: "inline-block" }}>
           \uD83D\uDC4B
@@ -1087,7 +1090,7 @@ function ModeBGamified() {
               fontWeight: 600,
             }}
           >
-            <span className="tnum">47</span> Orders
+            <span className="tnum">{ordersThisMonth}</span> Orders
           </span>
           <span
             style={{
@@ -1120,9 +1123,9 @@ function ModeBGamified() {
       <div
         className="gamified-card"
         style={{
-          background: "linear-gradient(135deg, #f97316 0%, #ef4444 100%)",
+          background: "#fff",
           padding: "20px 24px",
-          color: "#fff",
+          border: "1px solid rgba(53,36,49,0.08)",
           display: "flex",
           alignItems: "center",
           gap: 14,
@@ -1130,7 +1133,7 @@ function ModeBGamified() {
       >
         <span style={{ fontSize: 28 }}>\uD83D\uDD25</span>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700 }}>7-week drop streak!</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#1f2937" }}>7-week drop streak!</div>
           <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
             {Array.from({ length: 7 }).map((_, i) => (
               <span
@@ -1139,8 +1142,7 @@ function ModeBGamified() {
                   width: 10,
                   height: 10,
                   borderRadius: "50%",
-                  background: "rgba(255,255,255,0.9)",
-                  border: "2px solid rgba(255,255,255,0.4)",
+                  background: "linear-gradient(135deg, #df4746, #f19e37)",
                 }}
               />
             ))}
@@ -1154,16 +1156,17 @@ function ModeBGamified() {
         style={{
           background: "#fff",
           padding: "20px 24px",
+          border: "1px solid rgba(53,36,49,0.08)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#1f2937" }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--color-brown)" }}>
             <span className="tnum">{xpToday}</span> XP Today
           </div>
           <span
             style={{
-              background: "#ecfdf5",
-              color: "#10b981",
+              background: "#edf5e8",
+              color: "#7daf62",
               borderRadius: 12,
               padding: "4px 10px",
               fontSize: 12,
@@ -1179,7 +1182,7 @@ function ModeBGamified() {
             marginTop: 12,
             height: 10,
             borderRadius: 5,
-            background: "#f3f4f6",
+            background: "var(--color-cream-deep)",
             overflow: "hidden",
           }}
         >
@@ -1187,13 +1190,13 @@ function ModeBGamified() {
             style={{
               height: "100%",
               borderRadius: 5,
-              background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
+              background: "linear-gradient(90deg, #7daf62 0%, #a4d48a 100%)",
               width: `${Math.min((xpToday / xpGoal) * 100, 100)}%`,
               transition: "width 0.6s ease",
             }}
           />
         </div>
-        <div className="tnum" style={{ marginTop: 6, fontSize: 12, color: "#6b7280" }}>
+        <div className="tnum" style={{ marginTop: 6, fontSize: 12, color: "var(--color-brown-soft)" }}>
           {xpToday}/{xpGoal} daily goal
         </div>
       </div>
@@ -1204,9 +1207,10 @@ function ModeBGamified() {
         style={{
           background: "#fff",
           padding: "20px 24px",
+          border: "1px solid rgba(53,36,49,0.08)",
         }}
       >
-        <div style={{ fontSize: 16, fontWeight: 700, color: "#1f2937", marginBottom: 14 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: "var(--color-brown)", marginBottom: 14 }}>
           Today&apos;s Tasks
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1222,7 +1226,7 @@ function ModeBGamified() {
                 padding: "10px 12px",
                 borderRadius: 14,
                 border: "none",
-                background: task.done ? "#f9fafb" : "#fafafa",
+                background: task.done ? "var(--color-cream)" : "var(--color-cream)",
                 cursor: "pointer",
                 textAlign: "left",
                 transition: "background 0.15s ease",
@@ -1236,7 +1240,7 @@ function ModeBGamified() {
                   width: 22,
                   height: 22,
                   borderRadius: 8,
-                  border: task.done ? "none" : "2px solid #d1d5db",
+                  border: task.done ? "none" : "2px solid rgba(53,36,49,0.15)",
                   background: task.done
                     ? "linear-gradient(135deg, #7daf62 0%, #a4d48a 100%)"
                     : "transparent",
@@ -1255,7 +1259,7 @@ function ModeBGamified() {
                   flex: 1,
                   fontSize: 14,
                   fontWeight: 500,
-                  color: task.done ? "#9ca3af" : "#1f2937",
+                  color: task.done ? "var(--color-brown-soft-2)" : "var(--color-brown)",
                   textDecoration: task.done ? "line-through" : "none",
                 }}
               >
@@ -1294,13 +1298,14 @@ function ModeBGamified() {
               justifyContent: "center",
               gap: 8,
               padding: "24px 16px",
-              background: action.gradient,
+              background: "#fff",
+              border: "1px solid rgba(53,36,49,0.08)",
               textDecoration: "none",
               borderRadius: 20,
             }}
           >
             <span style={{ fontSize: 32, lineHeight: 1 }}>{action.emoji}</span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: "#1f2937" }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>
               {action.label}
             </span>
           </Link>
