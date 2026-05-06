@@ -118,7 +118,7 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { mode } = useDesignMode();
+  const { mode: _mode } = useDesignMode(); // Always "b" now
   const [drawerOpen, setDrawerOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
@@ -149,7 +149,7 @@ export default function PortalLayout({
   const activePath = `/${oneSegmentKey}`;
 
   return (
-    <div className="flex" data-design-mode={mode} style={{ minHeight: "100dvh" }}>
+    <div className="flex" style={{ minHeight: "100dvh" }}>
       <Sidebar activePath={activePath} />
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar

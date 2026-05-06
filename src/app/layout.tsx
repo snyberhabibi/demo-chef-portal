@@ -3,7 +3,7 @@ import { Inter, Plus_Jakarta_Sans, Lora } from "next/font/google";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import { I18nProvider } from "@/lib/i18n";
 import { DesignModeProvider } from "@/lib/design-mode";
-import { DesignModeToggle } from "@/components/ui/design-mode-toggle";
+// Design mode toggle removed — Mode B is the only design
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import "./globals.css";
@@ -62,8 +62,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable} ${lora.variable}`} style={{ height: "100dvh" }}>
-      <body className="flex flex-col" style={{ minHeight: "100dvh" }}><I18nProvider><DesignModeProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /><DesignModeToggle /></ToastProvider></DesignModeProvider></I18nProvider></body>
+    <html lang="en" data-design-mode="b" className={`${inter.variable} ${jakarta.variable} ${lora.variable}`} style={{ height: "100dvh" }}>
+      <body className="flex flex-col" style={{ minHeight: "100dvh" }}><I18nProvider><DesignModeProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></DesignModeProvider></I18nProvider></body>
     </html>
   );
 }
