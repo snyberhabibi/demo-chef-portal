@@ -410,7 +410,7 @@ function CreateDishPageInner() {
         </button>
         <button
           className="btn btn-dark btn-sm"
-          style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}}
+          style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}}
           onClick={() => handleSave(false)}
         >
           Save Dish
@@ -1889,7 +1889,7 @@ function CreateDishPageInner() {
             </button>
             <button
               className="btn btn-dark"
-              style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}}
+              style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}}
               onClick={() => handleSave(false)}
             >
               {status === "published" ? "Save" : "Publish"}

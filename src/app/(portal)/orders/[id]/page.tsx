@@ -485,7 +485,7 @@ export default function OrderDetailPage() {
                       background: isDone
                         ? "var(--color-sage)"
                         : isCurrent
-                          ? (isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)")
+                          ? (isB ? "#df4746" : "var(--color-red)")
                           : "var(--color-cream-sunken)",
                       color:
                         isDone || isCurrent ? "#fff" : "var(--color-brown-soft-2)",
@@ -1042,7 +1042,7 @@ export default function OrderDetailPage() {
       >
         <button
           className={`btn btn-block ${actionBtnClass(orderStatus)}`}
-          style={{ minHeight: 48, borderRadius: 12, fontSize: 15, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none", color: "#fff" } : {}) }}
+          style={{ minHeight: 48, borderRadius: 12, fontSize: 15, ...(isB ? { background: "#df4746", border: "none", color: "#fff" } : {}) }}
           onClick={advanceStatus}
         >
           {actionButtonLabel(orderStatus)} &rarr;

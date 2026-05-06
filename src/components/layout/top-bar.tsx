@@ -126,7 +126,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
             height: 28,
             padding: "0 10px",
             background: isB ? "transparent" : "var(--color-cream-sunken)",
-            border: isB ? "1.5px solid #df4746" : "none",
+            border: isB ? "1px solid rgba(161,120,97,0.15)" : "none",
             borderRadius: 8,
             cursor: "pointer",
             fontSize: 12,

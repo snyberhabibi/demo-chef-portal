@@ -31,7 +31,7 @@ export function DesignModeToggle() {
         borderColor: mode === "a" ? "var(--color-brown-soft-2)" : "#df4746",
         background: mode === "a"
           ? "var(--color-cream-deep)"
-          : "linear-gradient(135deg, #df4746, #f19e37)",
+          : "#df4746",
         color: mode === "a" ? "var(--color-brown)" : "#fff",
         fontWeight: 800,
         fontSize: "16px",

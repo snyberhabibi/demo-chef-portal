@@ -71,7 +71,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
                   style={{
                     top: -5,
                     right: -10,
-                    background: isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)",
+                    background: "#df4746",
                     color: "#fff",
                     fontSize: 9,
                     fontWeight: 700,
