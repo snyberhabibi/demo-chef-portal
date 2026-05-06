@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -24,6 +24,7 @@ import {
   type OrderStatus,
 } from "@/lib/mock-data";
 import { statusDotColor } from "@/lib/utils/status-helpers";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Seed data                                                         */
@@ -701,8 +702,20 @@ function ModeA() {
 
 /* ------------------------------------------------------------------ */
 /*  Mode B — Fully set up (Active Dashboard)                          */
+/*  Checks design mode: "b" = gamified layout, "a" = standard         */
 /* ------------------------------------------------------------------ */
 function ModeB() {
+  const { mode: designMode } = useDesignMode();
+
+  if (designMode === "b") return <ModeBGamified />;
+
+  return <ModeBStandard />;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mode B Standard — Original active dashboard                       */
+/* ------------------------------------------------------------------ */
+function ModeBStandard() {
   const greeting = useMemo(() => getGreeting(), []);
   const [dashSearch, setDashSearch] = useState("");
 
@@ -944,6 +957,354 @@ function ModeB() {
             </Link>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mode B Gamified — XP, streaks, gradient cards, emoji actions       */
+/* ------------------------------------------------------------------ */
+
+const gamifiedTasks = [
+  { id: 1, label: "Review 3 new orders", done: false, xp: 15 },
+  { id: 2, label: "Update menu photos", done: true, xp: 15 },
+  { id: 3, label: "Prep list for Flash Sale", done: false, xp: 15 },
+  { id: 4, label: "Reply to 2 reviews", done: false, xp: 15 },
+];
+
+const quickActions = [
+  { emoji: "\uD83C\uDF7D\uFE0F", label: "Add Dish", href: "/menu/new", gradient: "linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%)" },
+  { emoji: "\u26A1", label: "Flash Sale", href: "/flash-sales", gradient: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
+  { emoji: "\uD83D\uDCE6", label: "View Orders", href: "/orders", gradient: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)" },
+  { emoji: "\u2B50", label: "Reviews", href: "/reviews", gradient: "linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)" },
+];
+
+function ModeBGamified() {
+  const greeting = useMemo(() => getGreeting(), []);
+  const [tasks, setTasks] = useState(gamifiedTasks);
+  const [animatedRevenue, setAnimatedRevenue] = useState(0);
+
+  // Counting-up animation for revenue
+  useEffect(() => {
+    const target = 2184;
+    const duration = 1200;
+    const steps = 40;
+    const increment = target / steps;
+    let current = 0;
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      current = Math.min(Math.round(increment * step), target);
+      setAnimatedRevenue(current);
+      if (step >= steps) clearInterval(interval);
+    }, duration / steps);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleTask = useCallback((id: number) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+    );
+  }, []);
+
+  const xpToday = tasks.filter((t) => t.done).reduce((sum, t) => sum + t.xp, 0) + 110;
+  const xpGoal = 200;
+
+  return (
+    <div className="content-wide section-stack page-enter">
+      <style>{`
+        @keyframes bounceCheck {
+          0% { transform: scale(1); }
+          30% { transform: scale(1.3); }
+          60% { transform: scale(0.9); }
+          100% { transform: scale(1); }
+        }
+        .task-check-bounce {
+          animation: bounceCheck 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .gamified-card {
+          border-radius: 20px;
+          border: none;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+          overflow: hidden;
+        }
+        .gamified-btn {
+          border-radius: 16px;
+          border: none;
+          cursor: pointer;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .gamified-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .gamified-btn:active {
+          transform: translateY(0);
+        }
+      `}</style>
+
+      {/* Greeting */}
+      <h1 className="heading-lg" style={{ margin: "0 0 8px 0" }}>
+        {greeting}, {chefProfile.name}{" "}
+        <span role="img" aria-label="wave" className="animate-wave" style={{ display: "inline-block" }}>
+          \uD83D\uDC4B
+        </span>
+      </h1>
+
+      {/* 1. Giant animated revenue counter */}
+      <div
+        className="gamified-card"
+        style={{
+          background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+          padding: "32px 28px 24px",
+          color: "#fff",
+        }}
+      >
+        <div
+          className="tnum"
+          style={{
+            fontSize: 48,
+            fontWeight: 800,
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          ${animatedRevenue.toLocaleString()}
+        </div>
+        <div style={{ fontSize: 14, opacity: 0.85, marginTop: 6, fontWeight: 500 }}>
+          Revenue this month
+        </div>
+        {/* Stat pills */}
+        <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
+          <span
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              backdropFilter: "blur(4px)",
+              borderRadius: 20,
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <span className="tnum">47</span> Orders
+          </span>
+          <span
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              backdropFilter: "blur(4px)",
+              borderRadius: 20,
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <span className="tnum">4.8</span> \u2B50
+          </span>
+          <span
+            style={{
+              background: "rgba(255,255,255,0.2)",
+              backdropFilter: "blur(4px)",
+              borderRadius: 20,
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <span className="tnum">8</span> Active Dishes
+          </span>
+        </div>
+      </div>
+
+      {/* 2. Streak counter */}
+      <div
+        className="gamified-card"
+        style={{
+          background: "linear-gradient(135deg, #f97316 0%, #ef4444 100%)",
+          padding: "20px 24px",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+      >
+        <span style={{ fontSize: 28 }}>\uD83D\uDD25</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 16, fontWeight: 700 }}>7-week drop streak!</div>
+          <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+            {Array.from({ length: 7 }).map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: "rgba(255,255,255,0.9)",
+                  border: "2px solid rgba(255,255,255,0.4)",
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. XP / Points card */}
+      <div
+        className="gamified-card"
+        style={{
+          background: "#fff",
+          padding: "20px 24px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "#1f2937" }}>
+            <span className="tnum">{xpToday}</span> XP Today
+          </div>
+          <span
+            style={{
+              background: "#ecfdf5",
+              color: "#10b981",
+              borderRadius: 12,
+              padding: "4px 10px",
+              fontSize: 12,
+              fontWeight: 700,
+            }}
+          >
+            +25 XP
+          </span>
+        </div>
+        {/* Progress bar */}
+        <div
+          style={{
+            marginTop: 12,
+            height: 10,
+            borderRadius: 5,
+            background: "#f3f4f6",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              borderRadius: 5,
+              background: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
+              width: `${Math.min((xpToday / xpGoal) * 100, 100)}%`,
+              transition: "width 0.6s ease",
+            }}
+          />
+        </div>
+        <div className="tnum" style={{ marginTop: 6, fontSize: 12, color: "#6b7280" }}>
+          {xpToday}/{xpGoal} daily goal
+        </div>
+      </div>
+
+      {/* 4. Today's tasks checklist */}
+      <div
+        className="gamified-card"
+        style={{
+          background: "#fff",
+          padding: "20px 24px",
+        }}
+      >
+        <div style={{ fontSize: 16, fontWeight: 700, color: "#1f2937", marginBottom: 14 }}>
+          Today&apos;s Tasks
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {tasks.map((task) => (
+            <button
+              key={task.id}
+              type="button"
+              onClick={() => toggleTask(task.id)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 12px",
+                borderRadius: 14,
+                border: "none",
+                background: task.done ? "#f9fafb" : "#fafafa",
+                cursor: "pointer",
+                textAlign: "left",
+                transition: "background 0.15s ease",
+                width: "100%",
+              }}
+            >
+              {/* Checkbox */}
+              <span
+                className={task.done ? "task-check-bounce" : ""}
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: 8,
+                  border: task.done ? "none" : "2px solid #d1d5db",
+                  background: task.done
+                    ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+                    : "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  transition: "all 0.2s ease",
+                }}
+              >
+                {task.done && <Check size={13} strokeWidth={3} color="#fff" />}
+              </span>
+              {/* Label */}
+              <span
+                style={{
+                  flex: 1,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: task.done ? "#9ca3af" : "#1f2937",
+                  textDecoration: task.done ? "line-through" : "none",
+                }}
+              >
+                {task.label}
+              </span>
+              {/* XP badge */}
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: task.done ? "#10b981" : "#8b5cf6",
+                  background: task.done ? "#ecfdf5" : "#f3e8ff",
+                  borderRadius: 8,
+                  padding: "3px 8px",
+                  flexShrink: 0,
+                }}
+              >
+                +{task.xp} XP
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 5. Quick actions as emoji cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        {quickActions.map((action) => (
+          <Link
+            key={action.label}
+            href={action.href}
+            className="gamified-btn"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "24px 16px",
+              background: action.gradient,
+              textDecoration: "none",
+              borderRadius: 20,
+            }}
+          >
+            <span style={{ fontSize: 32, lineHeight: 1 }}>{action.emoji}</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "#1f2937" }}>
+              {action.label}
+            </span>
+          </Link>
+        ))}
       </div>
     </div>
   );
