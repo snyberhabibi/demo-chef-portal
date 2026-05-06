@@ -274,11 +274,13 @@ export default function OperationsPage() {
           <div
             className="flex items-center justify-between gap-4 glow-sage"
             style={{
-              borderLeft: isB ? "none" : "3px solid var(--color-sage)",
-              borderTop: isB ? "3px solid transparent" : "none",
-              borderImage: isB ? "linear-gradient(90deg, #df4746, #f19e37) 1" : "none",
-              borderRadius: 8,
+              borderLeft: "none",
+              borderTop: "none",
+              borderImage: "none",
+              borderRadius: isB ? 16 : 8,
               padding: "14px 16px",
+              background: isB ? "#fff" : undefined,
+              boxShadow: isB ? "0 2px 8px rgba(161,120,97,0.08)" : undefined,
             }}
           >
             <div className="flex items-center gap-3">
@@ -448,7 +450,7 @@ export default function OperationsPage() {
                   aria-checked={daySchedule.enabled}
                   aria-label={`${day} availability`}
                   onClick={() => toggleDay(day)}
-                  style={{ flexShrink: 0, marginTop: 2, ...(isB && daySchedule.enabled ? { background: "linear-gradient(135deg, #df4746, #f19e37)" } : {}) }}
+                  style={{ flexShrink: 0, marginTop: 2, ...(isB && daySchedule.enabled ? { background: "#df4746" } : {}) }}
                 >
                   <span className="toggle-thumb" />
                 </button>
@@ -575,7 +577,7 @@ export default function OperationsPage() {
             onClick={() => setActiveSubTab("timeoff")}
             style={{
               padding: isB ? "8px 16px" : "12px 20px",
-              background: isB ? (activeSubTab === "timeoff" ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
+              background: isB ? (activeSubTab === "timeoff" ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "timeoff" ? 600 : 400,
@@ -593,7 +595,7 @@ export default function OperationsPage() {
             onClick={() => setActiveSubTab("overrides")}
             style={{
               padding: isB ? "8px 16px" : "12px 20px",
-              background: isB ? (activeSubTab === "overrides" ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
+              background: isB ? (activeSubTab === "overrides" ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "overrides" ? 600 : 400,
@@ -616,7 +618,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Block dates when you won&apos;t be cooking</div>
               </div>
-              <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: "Jan 10, 2026", endDate: "Jan 12, 2026", days: 3, note: "Personal day", autoPause: true }]); toast("Time off added"); }}>
+              <button className="btn btn-dark btn-sm" style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}} onClick={() => { setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: "Jan 10, 2026", endDate: "Jan 12, 2026", days: 3, note: "Personal day", autoPause: true }]); toast("Time off added"); }}>
                 <Plus size={14} /> Add time off
               </button>
             </div>
@@ -687,7 +689,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Different hours for a specific date</div>
               </div>
-              <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setOverrides((prev) => [...prev, { id: String(Date.now()), date: "January 15, 2026", monthAbbr: "JAN", dayNum: "15", windows: ["10:00 AM \u2013 2:00 PM"], note: "Special hours" }]); toast("Override added"); }}>
+              <button className="btn btn-dark btn-sm" style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}} onClick={() => { setOverrides((prev) => [...prev, { id: String(Date.now()), date: "January 15, 2026", monthAbbr: "JAN", dayNum: "15", windows: ["10:00 AM \u2013 2:00 PM"], note: "Special hours" }]); toast("Override added"); }}>
                 <Plus size={14} /> Add override
               </button>
             </div>

@@ -105,7 +105,7 @@ export default function PaymentsPage() {
 
             <button
               className="btn btn-gradient btn-block btn-lg"
-              style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)" } : {}}
+              style={isB ? { background: "#df4746", borderRadius: 12 } : {}}
               onClick={() => setState("C")}
             >
               <CreditCard size={18} />
@@ -234,33 +234,18 @@ export default function PaymentsPage() {
               <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px", ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>
+            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px", ...(isB ? { color: "#df4746" } : {}) }}>
               $2,184.50
             </div>
             <div className="body-sm">Total earnings</div>
           </div>
 
-          {/* Mode B — Earnings Milestone */}
-          {isB && (
-            <div className="card" style={{ padding: "16px 20px", border: "1px solid rgba(53,36,49,0.08)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: 18 }}>{"\uD83C\uDFAF"}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--color-brown)" }}>Next milestone: $2,500</div>
-                  <div style={{ fontSize: 12, color: "var(--color-brown-soft)" }}>$315.50 to go!</div>
-                </div>
-              </div>
-              <div style={{ height: 8, borderRadius: 4, background: "var(--color-cream-deep)", overflow: "hidden" }}>
-                <div style={{ height: "100%", borderRadius: 4, background: "linear-gradient(90deg, #df4746, #f19e37)", width: `${Math.round((2184.50 / 2500) * 100)}%`, transition: "width 0.6s ease" }} />
-              </div>
-              <div className="caption tnum" style={{ marginTop: 4 }}>$2,184.50 / $2,500</div>
-            </div>
-          )}
+          {/* (Mode B earnings milestone gamification removed — warm minimalism) */}
 
           <div className="card flex items-center justify-between">
             <div>
               <div className="eyebrow" style={{ marginBottom: 4 }}>Next Payout</div>
-              <div className="fraunces tnum" style={{ fontSize: 22, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>$342.00</div>
+              <div className="fraunces tnum" style={{ fontSize: 22, ...(isB ? { color: "#df4746" } : {}) }}>$342.00</div>
               <div className="body-sm" style={{ marginTop: 2 }}>Arriving Friday, May 9</div>
             </div>
             <div

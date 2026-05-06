@@ -121,7 +121,7 @@ export default function HelpPage() {
           <span className="tnum caption">{Math.round(progressPct)}%</span>
         </div>
         <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden", marginBottom: 20 }}>
-          <div style={{ height: "100%", borderRadius: 2, background: isB ? "linear-gradient(90deg, #df4746, #f19e37)" : "var(--color-sage)", width: `${progressPct}%`, transition: "width 0.3s var(--ease-spring)" }} />
+          <div style={{ height: "100%", borderRadius: 2, background: isB ? "#df4746" : "var(--color-sage)", width: `${progressPct}%`, transition: "width 0.3s var(--ease-spring)" }} />
         </div>
 
         {/* Tutorial grid */}
@@ -160,8 +160,8 @@ export default function HelpPage() {
                       {t.steps} steps
                     </span>
                   )}
-                  <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "var(--color-red)", ...(isB && !t.completed ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>
-                    {t.completed ? "Run again" : "Start"}<ArrowRight size={12} style={isB && !t.completed ? { color: "#df4746" } : {}} />
+                  <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "var(--color-red)" }}>
+                    {t.completed ? "Run again" : "Start"}<ArrowRight size={12} />
                   </span>
                 </div>
               </button>
@@ -244,7 +244,7 @@ export default function HelpPage() {
             <a
               href="mailto:support@yallabites.com"
               className="btn btn-dark"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", textDecoration: "none", ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center", textDecoration: "none", ...(isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}) }}
             >
               <Mail size={16} />
               Email Support

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -13,6 +13,7 @@ import {
   Truck,
   ShoppingBag,
   Zap,
+  Plus,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import {
@@ -702,12 +703,12 @@ function ModeA() {
 
 /* ------------------------------------------------------------------ */
 /*  Mode B — Fully set up (Active Dashboard)                          */
-/*  Checks design mode: "b" = gamified layout, "a" = standard         */
+/*  Checks design mode: "b" = clean warm minimalism, "a" = standard   */
 /* ------------------------------------------------------------------ */
 function ModeB() {
   const { mode: designMode } = useDesignMode();
 
-  if (designMode === "b") return <ModeBGamified />;
+  if (designMode === "b") return <ModeBClean />;
 
   return <ModeBStandard />;
 }
@@ -963,351 +964,247 @@ function ModeBStandard() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Mode B Gamified — XP, streaks, gradient cards, emoji actions       */
+/*  Mode B Clean — Warm Minimalism dashboard                           */
+/*  Notion meets Headspace meets Airbnb. No gamification.              */
 /* ------------------------------------------------------------------ */
 
-const gamifiedTasks = [
-  { id: 1, label: "Review 3 new orders", done: false, xp: 15 },
-  { id: 2, label: "Update menu photos", done: true, xp: 15 },
-  { id: 3, label: "Prep list for Flash Sale", done: false, xp: 15 },
-  { id: 4, label: "Reply to 2 reviews", done: false, xp: 15 },
+const STATUS_PILL_COLORS: Record<string, { bg: string; color: string }> = {
+  paid: { bg: "var(--color-orange-soft)", color: "var(--color-brown)" },
+  confirmed: { bg: "var(--color-sage-soft)", color: "var(--color-brown)" },
+  preparing: { bg: "rgba(147,197,253,0.3)", color: "var(--color-brown)" },
+  ready: { bg: "var(--color-sage-soft)", color: "var(--color-sage-deep)" },
+  readyForPickup: { bg: "var(--color-sage-soft)", color: "var(--color-sage-deep)" },
+  delivered: { bg: "var(--color-cream-sunken)", color: "var(--color-brown-soft-2)" },
+  pickedUp: { bg: "var(--color-cream-sunken)", color: "var(--color-brown-soft-2)" },
+  cancelled: { bg: "var(--color-red-soft)", color: "var(--color-red-deep)" },
+  rejected: { bg: "var(--color-red-soft)", color: "var(--color-red-deep)" },
+  outForDelivery: { bg: "rgba(147,197,253,0.3)", color: "var(--color-brown)" },
+};
+
+const cleanQuickLinks = [
+  { icon: "plus", label: "New Dish", href: "/menu/new" },
+  { icon: "zap", label: "Flash Sale", href: "/flash-sales" },
+  { icon: "package", label: "View Orders", href: "/orders" },
+  { icon: "eye", label: "Store Preview", href: "/profile" },
 ];
 
-const quickActions = [
-  { emoji: "\uD83C\uDF7D\uFE0F", label: "Add Dish", href: "/menu/new", gradient: "linear-gradient(135deg, #fce4e4 0%, #fde4c0 100%)" },
-  { emoji: "\u26A1", label: "Flash Sale", href: "/flash-sales", gradient: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
-  { emoji: "\uD83D\uDCE6", label: "View Orders", href: "/orders", gradient: "linear-gradient(135deg, #edf5e8 0%, #d5e8ca 100%)" },
-  { emoji: "\u2B50", label: "Reviews", href: "/reviews", gradient: "linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)" },
-];
-
-function ModeBGamified() {
+function ModeBClean() {
   const greeting = useMemo(() => getGreeting(), []);
-  const [tasks, setTasks] = useState(gamifiedTasks);
-  const [animatedRevenue, setAnimatedRevenue] = useState(0);
 
-  // Derive revenue target from centralized stats
-  const revenueTarget = parseInt((stats.find(s => s.label === "Revenue This Month")?.value ?? "$2,184").replace(/[^0-9]/g, ""), 10) || 2184;
-  const ordersThisMonth = stats.find(s => s.label === "Orders This Month")?.value ?? "47";
-
-  // Counting-up animation for revenue
-  useEffect(() => {
-    const target = revenueTarget;
-    const duration = 1200;
-    const steps = 40;
-    const increment = target / steps;
-    let current = 0;
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      current = Math.min(Math.round(increment * step), target);
-      setAnimatedRevenue(current);
-      if (step >= steps) clearInterval(interval);
-    }, duration / steps);
-    return () => clearInterval(interval);
-  }, [revenueTarget]);
-
-  const toggleTask = useCallback((id: number) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    );
-  }, []);
-
-  const xpToday = tasks.filter((t) => t.done).reduce((sum, t) => sum + t.xp, 0) + 110;
-  const xpGoal = 200;
+  const revenueValue = stats.find(s => s.label === "Revenue This Month")?.value ?? "$2,184";
+  const ordersValue = stats.find(s => s.label === "Orders This Month")?.value ?? "47";
+  const ratingValue = stats.find(s => s.label === "Avg Rating")?.value ?? "4.8";
+  const ratingDelta = stats.find(s => s.label === "Avg Rating")?.delta ?? "from 6 reviews";
 
   return (
     <div className="content-wide section-stack page-enter">
-      <style>{`
-        @keyframes bounceCheck {
-          0% { transform: scale(1); }
-          30% { transform: scale(1.3); }
-          60% { transform: scale(0.9); }
-          100% { transform: scale(1); }
-        }
-        .task-check-bounce {
-          animation: bounceCheck 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .gamified-card {
-          border-radius: 20px;
-          box-shadow: 0 1px 3px rgba(53,36,49,0.06), 0 1px 2px rgba(53,36,49,0.04);
-          overflow: hidden;
-        }
-        .gamified-btn {
-          border-radius: 16px;
-          cursor: pointer;
-          transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-        }
-        .gamified-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(53,36,49,0.08);
-          background: rgba(241,158,55,0.04) !important;
-        }
-        .gamified-btn:active {
-          transform: translateY(0);
-        }
-      `}</style>
-
-      {/* Greeting */}
-      <h1 className="heading-lg heading-gradient" style={{ margin: "0 0 8px 0" }}>
-        {greeting}, {chefProfile.name}{" "}
-        <span role="img" aria-label="wave" className="animate-wave" style={{ display: "inline-block" }}>
-          \uD83D\uDC4B
-        </span>
-      </h1>
-
-      {/* 1. Giant animated revenue counter */}
-      <div
-        className="gamified-card"
-        style={{
-          background: "linear-gradient(135deg, #df4746 0%, #f19e37 100%)",
-          padding: "32px 28px 24px",
-          color: "#fff",
-        }}
-      >
-        <div
-          className="tnum"
+      {/* Greeting — serif accent */}
+      <div style={{ marginBottom: 4 }}>
+        <h1
+          className="heading-lg"
           style={{
-            fontSize: 48,
-            fontWeight: 800,
-            lineHeight: 1,
-            letterSpacing: "-0.02em",
+            margin: 0,
+            fontFamily: "var(--font-serif, Georgia, serif)",
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
           }}
         >
-          ${animatedRevenue.toLocaleString()}
-        </div>
-        <div style={{ fontSize: 14, opacity: 0.85, marginTop: 6, fontWeight: 500 }}>
-          Revenue this month
-        </div>
-        {/* Stat pills */}
-        <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
-          <span
-            style={{
-              background: "rgba(255,255,255,0.2)",
-              backdropFilter: "blur(4px)",
-              borderRadius: 20,
-              padding: "6px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            <span className="tnum">{ordersThisMonth}</span> Orders
-          </span>
-          <span
-            style={{
-              background: "rgba(255,255,255,0.2)",
-              backdropFilter: "blur(4px)",
-              borderRadius: 20,
-              padding: "6px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            <span className="tnum">4.8</span> \u2B50
-          </span>
-          <span
-            style={{
-              background: "rgba(255,255,255,0.2)",
-              backdropFilter: "blur(4px)",
-              borderRadius: 20,
-              padding: "6px 14px",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            <span className="tnum">8</span> Active Dishes
-          </span>
-        </div>
+          {greeting}, {chefProfile.name}
+        </h1>
+        <p className="body-sm" style={{ marginTop: 6 }}>
+          Here&apos;s what&apos;s happening with your kitchen today
+        </p>
       </div>
 
-      {/* 2. Streak counter */}
-      <div
-        className="gamified-card"
-        style={{
-          background: "#fff",
-          padding: "20px 24px",
-          border: "1px solid rgba(53,36,49,0.08)",
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-        }}
-      >
-        <span style={{ fontSize: 28 }}>\uD83D\uDD25</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#352431" }}>7-week drop streak!</div>
-          <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-            {Array.from({ length: 7 }).map((_, i) => (
-              <span
-                key={i}
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #df4746, #f19e37)",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 3. XP / Points card */}
-      <div
-        className="gamified-card"
-        style={{
-          background: "#fff",
-          padding: "20px 24px",
-          border: "1px solid rgba(53,36,49,0.08)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--color-brown)" }}>
-            <span className="tnum">{xpToday}</span> XP Today
-          </div>
-          <span
-            style={{
-              background: "#edf5e8",
-              color: "#7daf62",
-              borderRadius: 12,
-              padding: "4px 10px",
-              fontSize: 12,
-              fontWeight: 700,
-            }}
-          >
-            +25 XP
-          </span>
-        </div>
-        {/* Progress bar */}
+      {/* Stats row — 3 big numbers */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Revenue */}
         <div
           style={{
-            marginTop: 12,
-            height: 10,
-            borderRadius: 5,
-            background: "var(--color-cream-deep)",
+            background: "#ffffff",
+            borderRadius: 16,
+            padding: "24px",
+            boxShadow: "0 2px 8px rgba(161,120,97,0.08)",
+            border: "none",
+          }}
+        >
+          <div className="eyebrow" style={{ marginBottom: 10 }}>Revenue</div>
+          <div className="tnum" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1, color: "var(--color-brown)" }}>
+            {revenueValue}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+            <span className="caption">this month</span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "2px 8px",
+                borderRadius: 9999,
+                fontSize: 11,
+                fontWeight: 600,
+                background: "rgba(125,175,98,0.12)",
+                color: "var(--color-sage-deep)",
+              }}
+            >
+              +12%
+            </span>
+          </div>
+        </div>
+
+        {/* Orders */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: 16,
+            padding: "24px",
+            boxShadow: "0 2px 8px rgba(161,120,97,0.08)",
+            border: "none",
+          }}
+        >
+          <div className="eyebrow" style={{ marginBottom: 10 }}>Orders</div>
+          <div className="tnum" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1, color: "var(--color-brown)" }}>
+            {ordersValue}
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <span className="caption">this month</span>
+          </div>
+        </div>
+
+        {/* Rating */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: 16,
+            padding: "24px",
+            boxShadow: "0 2px 8px rgba(161,120,97,0.08)",
+            border: "none",
+          }}
+        >
+          <div className="eyebrow" style={{ marginBottom: 10 }}>Rating</div>
+          <div className="tnum" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1, color: "var(--color-brown)" }}>
+            {ratingValue}
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <span className="caption">{ratingDelta}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent orders — simple list */}
+      <div>
+        <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+          <span className="eyebrow">RECENT ORDERS</span>
+          <Link
+            href="/orders"
+            className="caption"
+            style={{
+              color: "var(--color-red)",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            View all <ArrowUpRight size={12} />
+          </Link>
+        </div>
+
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: 16,
+            boxShadow: "0 2px 8px rgba(161,120,97,0.08)",
             overflow: "hidden",
           }}
         >
-          <div
-            style={{
-              height: "100%",
-              borderRadius: 5,
-              background: "linear-gradient(90deg, #7daf62 0%, #a4d48a 100%)",
-              width: `${Math.min((xpToday / xpGoal) * 100, 100)}%`,
-              transition: "width 0.6s ease",
-            }}
-          />
-        </div>
-        <div className="tnum" style={{ marginTop: 6, fontSize: 12, color: "var(--color-brown-soft)" }}>
-          {xpToday}/{xpGoal} daily goal
+          {recentOrders.map((order, idx) => {
+            const statusKey = rawRecentOrders[idx]?.status ?? "paid";
+            const pillStyle = STATUS_PILL_COLORS[statusKey] ?? STATUS_PILL_COLORS.paid;
+            const statusText = statusKey.charAt(0).toUpperCase() + statusKey.slice(1);
+            const orderItems = rawRecentOrders[idx]?.items ?? [];
+            const itemsSummary = orderItems.map(i => i.name).join(", ");
+
+            return (
+              <div key={order.hashId}>
+                {idx > 0 && <div style={{ height: 1, background: "rgba(51,31,46,0.06)", marginLeft: 16, marginRight: 16 }} />}
+                <Link
+                  href={`/orders/${order.hashId.replace("#", "")}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "14px 16px",
+                    textDecoration: "none",
+                    color: "inherit",
+                    transition: "background 0.12s ease",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(161,120,97,0.03)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>
+                      {order.customer}
+                    </div>
+                    <div className="caption" style={{ marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {itemsSummary}
+                    </div>
+                  </div>
+                  <span className="tnum" style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flexShrink: 0 }}>
+                    {order.price}
+                  </span>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "3px 10px",
+                      borderRadius: 9999,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      background: pillStyle.bg,
+                      color: pillStyle.color,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {statusText}
+                  </span>
+                  <ChevronRight size={14} style={{ color: "var(--color-brown-soft-2)", flexShrink: 0 }} />
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* 4. Today's tasks checklist */}
-      <div
-        className="gamified-card"
-        style={{
-          background: "#fff",
-          padding: "20px 24px",
-          border: "1px solid rgba(53,36,49,0.08)",
-        }}
-      >
-        <div style={{ fontSize: 16, fontWeight: 700, color: "var(--color-brown)", marginBottom: 14 }}>
-          Today&apos;s Tasks
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {tasks.map((task) => (
-            <button
-              key={task.id}
-              type="button"
-              onClick={() => toggleTask(task.id)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "10px 12px",
-                borderRadius: 14,
-                border: "none",
-                background: task.done ? "var(--color-cream)" : "var(--color-cream)",
-                cursor: "pointer",
-                textAlign: "left",
-                transition: "background 0.15s ease",
-                width: "100%",
-              }}
-            >
-              {/* Checkbox */}
-              <span
-                className={task.done ? "task-check-bounce" : ""}
-                style={{
-                  width: 22,
-                  height: 22,
-                  borderRadius: 8,
-                  border: task.done ? "none" : "2px solid rgba(53,36,49,0.15)",
-                  background: task.done
-                    ? "linear-gradient(135deg, #7daf62 0%, #a4d48a 100%)"
-                    : "transparent",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  transition: "all 0.2s ease",
-                }}
-              >
-                {task.done && <Check size={13} strokeWidth={3} color="#fff" />}
-              </span>
-              {/* Label */}
-              <span
-                style={{
-                  flex: 1,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: task.done ? "var(--color-brown-soft-2)" : "var(--color-brown)",
-                  textDecoration: task.done ? "line-through" : "none",
-                }}
-              >
-                {task.label}
-              </span>
-              {/* XP badge */}
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: task.done ? "#7daf62" : "#df4746",
-                  background: task.done ? "#d5e8ca" : "#fce4e4",
-                  borderRadius: 8,
-                  padding: "3px 8px",
-                  flexShrink: 0,
-                }}
-              >
-                +{task.xp} XP
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. Quick actions as emoji cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        {quickActions.map((action) => (
+      {/* Quick links — horizontal row of 4 subtle buttons */}
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        {cleanQuickLinks.map((link) => (
           <Link
-            key={action.label}
-            href={action.href}
-            className="gamified-btn"
+            key={link.label}
+            href={link.href}
+            className="btn btn-ghost"
             style={{
-              display: "flex",
-              flexDirection: "column",
+              flex: "1 1 0",
+              minWidth: 120,
+              display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              padding: "24px 16px",
-              background: "#fff",
-              border: "1px solid rgba(53,36,49,0.08)",
+              borderRadius: 12,
+              padding: "10px 16px",
+              fontSize: 13,
+              fontWeight: 600,
               textDecoration: "none",
-              borderRadius: 20,
+              border: "1px solid rgba(51,31,46,0.1)",
+              background: "#fff",
+              color: "var(--color-brown)",
+              transition: "all 0.12s ease",
             }}
           >
-            <span style={{ fontSize: 32, lineHeight: 1 }}>{action.emoji}</span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>
-              {action.label}
-            </span>
+            {link.icon === "plus" && <Plus size={15} strokeWidth={2} />}
+            {link.icon === "zap" && <Zap size={15} strokeWidth={2} />}
+            {link.icon === "package" && <ShoppingBag size={15} strokeWidth={2} />}
+            {link.icon === "eye" && <Search size={15} strokeWidth={2} />}
+            {link.label}
           </Link>
         ))}
       </div>

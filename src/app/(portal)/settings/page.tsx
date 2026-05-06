@@ -144,7 +144,7 @@ export default function SettingsPage() {
               key={t.key}
               onClick={() => setActiveTab(t.key)}
               style={{
-                padding: isB ? "8px 20px" : "10px 20px", background: isB ? (tabActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14,
+                padding: isB ? "8px 20px" : "10px 20px", background: isB ? (tabActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14,
                 fontWeight: tabActive ? 600 : 400,
                 color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-red)" : "var(--color-brown-soft)"),
                 borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-red)" : "2px solid transparent"),
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                   </div>
                   {CHANNELS.map((ch) => (
                     <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
-                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} role="switch" aria-checked={notifs[cat.label][ch]} aria-label={`${cat.label} ${ch} notifications`} onClick={() => toggleNotif(cat.label, ch)} style={isB && notifs[cat.label][ch] ? { background: "linear-gradient(135deg, #df4746, #f19e37)" } : {}}>
+                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} role="switch" aria-checked={notifs[cat.label][ch]} aria-label={`${cat.label} ${ch} notifications`} onClick={() => toggleNotif(cat.label, ch)} style={isB && notifs[cat.label][ch] ? { background: "#df4746" } : {}}>
                         <span className="toggle-thumb" />
                       </button>
                     </div>
@@ -385,7 +385,7 @@ export default function SettingsPage() {
                 const Icon = t === "Video Tutorials" ? Video : BookOpen;
                 const guideActive = activeGuideTab === t;
                 return (
-                  <button key={t} onClick={() => setActiveGuideTab(t)} className="flex items-center gap-1.5" style={{ padding: isB ? "8px 16px" : "10px 20px", background: isB ? (guideActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14, fontWeight: guideActive ? 600 : 400, color: isB ? (guideActive ? "#fff" : "var(--color-brown-soft)") : (guideActive ? "var(--color-red)" : "var(--color-brown-soft)"), borderBottom: isB ? "none" : (guideActive ? "2px solid var(--color-red)" : "2px solid transparent"), borderRadius: isB ? 9999 : 0, marginBottom: isB ? 0 : -1, cursor: "pointer", transition: `all var(--t-fast) var(--ease-spring)` }}>
+                  <button key={t} onClick={() => setActiveGuideTab(t)} className="flex items-center gap-1.5" style={{ padding: isB ? "8px 16px" : "10px 20px", background: isB ? (guideActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14, fontWeight: guideActive ? 600 : 400, color: isB ? (guideActive ? "#fff" : "var(--color-brown-soft)") : (guideActive ? "var(--color-red)" : "var(--color-brown-soft)"), borderBottom: isB ? "none" : (guideActive ? "2px solid var(--color-red)" : "2px solid transparent"), borderRadius: isB ? 9999 : 0, marginBottom: isB ? 0 : -1, cursor: "pointer", transition: `all var(--t-fast) var(--ease-spring)` }}>
                     <Icon size={16} />{t}
                   </button>
                 );

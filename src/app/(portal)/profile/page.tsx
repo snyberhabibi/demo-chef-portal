@@ -94,19 +94,19 @@ export default function ProfilePage() {
           <Link href="/store-preview" className="btn btn-ghost btn-sm" style={{ gap: 4 }}>
             <ExternalLink size={14} /> Preview Store
           </Link>
-          <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>
+          <button className="btn btn-dark btn-sm" style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>
             Save
           </button>
         </div>
       </div>
 
       {/* Profile Photo + Name — always visible */}
-      <div className="card" style={{ display: "flex", alignItems: "center", gap: 20, ...(isB ? { borderLeft: "none", boxShadow: "0 0 20px rgba(223,71,70,0.08)" } : {}) }}>
+      <div className="card" style={{ display: "flex", alignItems: "center", gap: 20, ...(isB ? { borderLeft: "none", boxShadow: "0 2px 8px rgba(161,120,97,0.08)", borderRadius: 16 } : {}) }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <img
             src={chefProfile.avatar}
             alt="Chef"
-            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", ...(isB ? { border: "3px solid transparent", backgroundClip: "padding-box", boxShadow: "0 0 0 3px #df4746, 0 0 0 6px #f19e37" } : {}) }}
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", ...(isB ? { border: "3px solid #df4746" } : {}) }}
           />
           <label
             style={{
@@ -272,7 +272,7 @@ export default function ProfilePage() {
       {/* Bottom save */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>
         <button className="btn btn-ghost" onClick={() => { if (isDirty && !window.confirm("You have unsaved changes. Discard them?")) return; setIsDirty(false); toast("Changes discarded", "info"); }}>Discard</button>
-        <button className="btn btn-dark" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>Save Changes</button>
+        <button className="btn btn-dark" style={isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}} onClick={() => { setIsDirty(false); toast("Profile saved"); }}>Save Changes</button>
       </div>
     </div>
   );

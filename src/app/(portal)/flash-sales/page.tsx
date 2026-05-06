@@ -80,7 +80,7 @@ export default function FlashSalesPage() {
         <h1 className={`heading-lg${isB ? " heading-gradient" : ""}`}>Flash Sales</h1>
         <button
           className="btn btn-dark btn-sm"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, ...(isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}) }}
           onClick={() => setShowCreate(!showCreate)}
         >
           <Plus size={14} strokeWidth={2.5} />
@@ -120,7 +120,7 @@ export default function FlashSalesPage() {
                   : "2px solid transparent"),
                 borderRadius: isB ? 9999 : 0,
                 background: isB
-                  ? (isActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)")
+                  ? (isActive ? "#df4746" : "rgba(223,71,70,0.08)")
                   : "transparent",
                 color: isB
                   ? (isActive ? "#fff" : "var(--color-brown-soft-2)")
@@ -157,21 +157,7 @@ export default function FlashSalesPage() {
         })}
       </div>
 
-      {/* Mode B — Flash Sale Pro badge */}
-      {isB && activeTab === "live" && (
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 14, background: "linear-gradient(135deg, rgba(241,158,55,0.1), rgba(223,71,70,0.08))", border: "1px solid rgba(223,71,70,0.12)" }}>
-          <span style={{ fontSize: 20 }}>{"\u26A1"}</span>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--color-brown)" }}>Flash Sale Pro</div>
-            <div style={{ fontSize: 12, color: "var(--color-brown-soft)" }}>{counts.past} sales completed</div>
-          </div>
-          <div style={{ display: "flex", gap: 3, marginLeft: 4 }}>
-            {[1, 2, 3].map((s) => (
-              <span key={s} style={{ fontSize: 12, color: s <= counts.past ? "#f19e37" : "rgba(53,36,49,0.15)" }}>{"\u2605"}</span>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* (Mode B gamification badge removed — warm minimalism) */}
 
       {/* -------- Sale cards -------- */}
       {filtered.length === 0 ? (
@@ -242,7 +228,7 @@ function FlashSaleCard({ sale, isB }: { sale: FlashSale; isB: boolean }) {
       style={{
         padding: "16px 18px",
         opacity: isPast ? 0.85 : 1,
-        ...(isB ? { borderRadius: 20, borderLeft: "none" } : {}),
+        ...(isB ? { borderRadius: 16, borderLeft: "none", boxShadow: "0 2px 8px rgba(161,120,97,0.08)" } : {}),
       }}
       onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.18)"; }}
       onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
@@ -255,7 +241,7 @@ function FlashSaleCard({ sale, isB }: { sale: FlashSale; isB: boolean }) {
             width: 8,
             height: 8,
             borderRadius: "50%",
-            background: isB && isLive ? "linear-gradient(135deg, #df4746, #f19e37)" : dotColor,
+            background: isB && isLive ? "#df4746" : dotColor,
             flexShrink: 0,
             ...(isB && isLive ? { boxShadow: "0 0 8px rgba(223,71,70,0.5)" } : {}),
           }}
@@ -366,7 +352,7 @@ function FlashSaleCard({ sale, isB }: { sale: FlashSale; isB: boolean }) {
                   </span>
                 </div>
                 <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden", opacity: isSoldOut ? 0.4 : 1 }}>
-                  <div style={{ height: "100%", borderRadius: 2, background: isB ? "linear-gradient(90deg, #df4746, #f19e37)" : (isLowStock ? "var(--color-red)" : "var(--color-red)"), width: `${Math.min(pct, 100)}%`, transition: "width 0.6s ease" }} />
+                  <div style={{ height: "100%", borderRadius: 2, background: "#df4746", width: `${Math.min(pct, 100)}%`, transition: "width 0.6s ease" }} />
                 </div>
                 {isLowStock && !isSoldOut && (
                   <span style={{ display: "inline-block", marginTop: 4, fontSize: 11, fontWeight: 700, color: "var(--color-red-deep)" }}>Almost gone!</span>

@@ -174,7 +174,7 @@ export default function ReviewsPage() {
                 className="body text-[12px] sm:text-[13px]"
                 style={{
                   padding: isB ? "8px 16px" : "10px 14px",
-                  background: isB ? (tabActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
+                  background: isB ? (tabActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
                   border: "none",
                   fontWeight: tabActive ? 600 : 400,
                   color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-red)" : "var(--color-brown-soft)"),
@@ -247,27 +247,7 @@ export default function ReviewsPage() {
 
       <div className="accent-line" />
 
-      {/* Mode B — Reply Streak */}
-      {isB && activeTab === "Chef Profile" && (() => {
-        const repliedCount = reviews.filter(r => r.reply).length;
-        const totalReviews = reviews.length;
-        const responsePct = totalReviews > 0 ? Math.round((repliedCount / totalReviews) * 100) : 0;
-        return (
-          <div className="card" style={{ padding: "16px 20px", border: "1px solid rgba(53,36,49,0.08)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: 20 }}>{"\uD83D\uDCAC"}</span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--color-brown)" }}>Reply streak: {repliedCount} reviews replied!</div>
-                <div style={{ fontSize: 12, color: "#7daf62", fontWeight: 700, marginTop: 2 }}>+5 XP per reply</div>
-              </div>
-            </div>
-            <div style={{ height: 6, borderRadius: 3, background: "var(--color-cream-deep)", overflow: "hidden" }}>
-              <div style={{ height: "100%", borderRadius: 3, background: "linear-gradient(90deg, #7daf62, #a4d48a)", width: `${responsePct}%`, transition: "width 0.6s ease" }} />
-            </div>
-            <div className="caption tnum" style={{ marginTop: 4 }}>{responsePct}% response rate</div>
-          </div>
-        );
-      })()}
+      {/* (Mode B reply streak gamification removed — warm minimalism) */}
 
       {/* Chef Profile tab */}
       {activeTab === "Chef Profile" && (
@@ -275,7 +255,7 @@ export default function ReviewsPage() {
           {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>
+              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1, ...(isB ? { color: "#df4746" } : {}) }}>
                 {averageRating.toFixed(1)}
               </div>
               <div style={{ marginTop: 8 }}>
@@ -298,7 +278,7 @@ export default function ReviewsPage() {
                         width: `${row.pct}%`,
                         height: "100%",
                         borderRadius: 3,
-                        background: isB ? "linear-gradient(90deg, #df4746, #f19e37)" : "var(--color-sage)",
+                        background: isB ? "#df4746" : "var(--color-sage)",
                         transition: `width 0.3s var(--ease-spring)`,
                       }}
                     />
@@ -353,7 +333,7 @@ export default function ReviewsPage() {
                         padding: 14,
                         borderRadius: 10,
                         background: "var(--color-cream-deep)",
-                        borderLeft: isB ? "none" : "3px solid var(--color-sage)",
+                        borderLeft: "none",
                       }}
                     >
                       <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
@@ -406,7 +386,7 @@ export default function ReviewsPage() {
                   {!review.reply && !review.composerOpen && (
                     <button
                       className={isB ? "btn btn-sm" : "btn btn-ghost btn-sm"}
-                      style={{ marginTop: 12, gap: 6, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", border: "none" } : {}) }}
+                      style={{ marginTop: 12, gap: 6, ...(isB ? { background: "#df4746", color: "#fff", border: "none", borderRadius: 12 } : {}) }}
                       onClick={() => toggleComposer(review.id)}
                     >
                       <MessageSquare size={14} />

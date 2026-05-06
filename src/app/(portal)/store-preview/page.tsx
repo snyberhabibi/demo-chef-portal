@@ -90,7 +90,7 @@ export default function StorePreviewPage() {
                 left: 0,
                 right: 0,
                 height: 80,
-                background: isB ? "linear-gradient(to top, rgba(223,71,70,0.25), transparent)" : "linear-gradient(to top, rgba(51,31,46,0.25), transparent)",
+                background: "linear-gradient(to top, rgba(51,31,46,0.25), transparent)",
               }}
             />
           </div>
@@ -270,7 +270,7 @@ function DishCard({ dish, onAdd, isB = false }: { dish: StoreDish; onAdd?: () =>
             </div>
             <button
               className="btn btn-sm btn-dark"
-              style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
+              style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999, ...(isB ? { background: "#df4746", border: "none" } : {}) }}
               onClick={(e) => { e.preventDefault(); onAdd?.(); }}
             >
               <ShoppingCart size={12} strokeWidth={2} />

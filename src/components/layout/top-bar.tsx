@@ -119,30 +119,6 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
 
       {/* Right actions */}
       <div className="flex items-center gap-2">
-        {/* Mode B — XP pill */}
-        {isB && (
-          <button
-            className="hidden lg:flex items-center gap-1"
-            style={{
-              height: 26,
-              padding: "0 10px",
-              borderRadius: 9999,
-              background: "rgba(125,175,98,0.1)",
-              border: "1px solid rgba(125,175,98,0.2)",
-              fontSize: 12,
-              fontWeight: 700,
-              color: "#7daf62",
-              cursor: "pointer",
-              transition: "all var(--t-fast)",
-            }}
-            onClick={() => toast("Your daily progress: 110 XP earned today!", "info")}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(125,175,98,0.15)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(125,175,98,0.1)"; }}
-          >
-            {"\u2B50"} 110 XP
-          </button>
-        )}
-
         {/* Cmd+K search pill — desktop only */}
         <button
           className="hidden lg:flex items-center gap-1.5 rounded-lg"
@@ -201,9 +177,8 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)",
+              background: "#df4746",
               border: "1.5px solid rgba(250,249,246,0.88)",
-              ...(isB ? { boxShadow: "0 0 6px rgba(223,71,70,0.5)" } : {}),
             }}
           />
         </Link>

@@ -61,37 +61,11 @@ function urgencyBackground(u: Urgency): string | undefined {
 }
 function itemCount(items: { qty: number; name: string }[]): number { return items.reduce((sum, i) => sum + i.qty, 0); }
 
-/* ------------------------------------------------------------------ */
-/*  Mode B — Gamified helpers                                          */
-/* ------------------------------------------------------------------ */
-const STATUS_EMOJI: Record<string, string> = {
-  paid: "\u{1F4B0}",
-  confirmed: "\u2705",
-  preparing: "\u{1F373}",
-  ready: "\u{1F4E6}",
-  readyForPickup: "\u{1F4E6}",
-  delivered: "\u{1F389}",
-  pickedUp: "\u{1F3C3}",
-  cancelled: "\u274C",
-  rejected: "\u274C",
-  outForDelivery: "\u{1F69A}",
-};
-
-const TAB_EMOJI: Record<string, string> = {
-  All: "\u{1F4CB}",
-  Paid: "\u{1F4B0}",
-  Confirmed: "\u2705",
-  Preparing: "\u{1F373}",
-  Ready: "\u{1F4E6}",
-  Delivered: "\u{1F389}",
-  Cancelled: "\u274C",
-};
-
-const PIPELINE_GRADIENTS: Record<string, string> = {
-  new: "linear-gradient(135deg, #df4746, #f19e37)",
-  preparing: "linear-gradient(135deg, #f59e0b, #fbbf24)",
-  ready: "linear-gradient(135deg, #22c55e, #86efac)",
-  done: "linear-gradient(135deg, #a17861, #5a4658)",
+const PIPELINE_COLORS: Record<string, string> = {
+  new: "#df4746",
+  preparing: "#f19e37",
+  ready: "#7daf62",
+  done: "#a17861",
 };
 
 /* ------------------------------------------------------------------ */
@@ -130,7 +104,6 @@ export default function OrdersPage() {
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const { toast } = useToast();
-  const [xpFloats, setXpFloats] = useState<Record<string, boolean>>({});
   const [statusOverrides, setStatusOverrides] = useState<Record<string, OrderStatus>>(() => {
     if (typeof window === "undefined") return {};
     try {
@@ -189,12 +162,8 @@ export default function OrdersPage() {
     const next = nextMap[currentStatus];
     if (next) {
       setStatusOverrides((prev) => ({ ...prev, [hash]: next }));
-      if (isB && (next === "delivered" || next === "pickedUp")) {
-        setXpFloats((prev) => ({ ...prev, [hash]: true }));
-        setTimeout(() => setXpFloats((prev) => ({ ...prev, [hash]: false })), 1200);
-      }
     }
-  }, [isB]);
+  }, []);
 
   const handleOrderAction = useCallback((order: Order, effectiveStatus: OrderStatus) => {
     if (isMobile) { setBottomSheetOrder(order); }
@@ -224,7 +193,7 @@ export default function OrdersPage() {
                 const isActive = tab.label === activeTab && !showPrepList;
                 const count = tabCounts[tab.label];
                 const pillActiveStyle = isB
-                  ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", borderRadius: 9999 }
+                  ? { background: "#df4746", color: "#fff", borderRadius: 9999 }
                   : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 };
                 const pillInactiveStyle = isB
                   ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 }
@@ -233,13 +202,12 @@ export default function OrdersPage() {
                   <button key={tab.label} onClick={() => { setActiveTab(tab.label); setShowPrepList(false); setPage(1); }} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(isActive ? pillActiveStyle : pillInactiveStyle) }}
                     onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
                     onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
-                    {isB && TAB_EMOJI[tab.label] && <span style={{ fontSize: 13 }}>{TAB_EMOJI[tab.label]}</span>}
                     {tab.label}
                     {count > 0 && tab.label !== "All" && (<span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 16, height: 16, padding: "0 4px", borderRadius: 9999, fontSize: 10, fontWeight: 700, fontVariantNumeric: "tabular-nums", background: isActive ? "rgba(255,255,255,0.2)" : "var(--color-cream-sunken)", color: isActive ? (isB ? "#fff" : "var(--color-cream)") : "var(--color-brown-soft-2)" }}>{count}</span>)}
                   </button>
                 );
               })}
-              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
+              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "#df4746", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
                 onMouseEnter={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
                 onMouseLeave={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
                 <ClipboardList size={13} strokeWidth={2} /> Prep List
@@ -293,17 +261,9 @@ export default function OrdersPage() {
             const isExpanded = expandedOrder === order.hash;
             return (
               <div key={order.hash} className="card card-interactive" style={{ display: "block", padding: 0, opacity: isTerminal ? 0.5 : 1, background: bg || "#fff", position: "relative" }}>
-                {/* XP Float animation for Mode B */}
-                {isB && xpFloats[order.hash] && (
-                  <span style={{ position: "absolute", top: 8, right: 16, fontSize: 14, fontWeight: 800, color: "#df4746", pointerEvents: "none", animation: "xpFloat 1.2s ease-out forwards", zIndex: 10 }}>+25 XP</span>
-                )}
                 <button type="button" onClick={() => setExpandedOrder(isExpanded ? null : order.hash)} style={{ display: "block", width: "100%", padding: "14px 16px", border: "none", background: "transparent", cursor: "pointer", textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {isB ? (
-                      <span style={{ fontSize: 15, flexShrink: 0, lineHeight: 1 }}>{STATUS_EMOJI[effectiveStatus] || "\u{1F4CB}"}</span>
-                    ) : (
-                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
-                    )}
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: statusDotColor(effectiveStatus), flexShrink: 0, transition: "background 0.3s ease" }} />
                     <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{order.customer}</span>
                     <span className="caption tnum" style={{ flexShrink: 0 }}>{order.readyBy ? `Ready ${order.readyBy}` : order.date}</span>
                     <span className="tnum" style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)", flexShrink: 0 }}>{order.price}</span>
@@ -393,7 +353,7 @@ function PipelineView({ orders: allOrders, statusOverrides, onAction, getEffecti
     <div className="pipeline-scroll scroll-fade-right" style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 4 }}>
       {columns.map((col) => (
         <div key={col.key} style={{ minWidth: 280, flex: "1 0 280px", display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 10, background: isB ? (PIPELINE_GRADIENTS[col.key] || "var(--color-cream-deep)") : "var(--color-cream-deep)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 10, background: isB ? (PIPELINE_COLORS[col.key] || "var(--color-cream-deep)") : "var(--color-cream-deep)" }}>
             {!isB && <span style={{ width: 8, height: 8, borderRadius: "50%", background: col.color, flexShrink: 0 }} />}
             <span style={{ fontSize: 13, fontWeight: 700, color: isB ? "#fff" : "var(--color-brown)", flex: 1 }}>{col.label}</span>
             <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 20, height: 20, padding: "0 6px", borderRadius: 9999, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", background: isB ? "rgba(255,255,255,0.25)" : "rgba(51,31,46,0.06)", color: isB ? "#fff" : "var(--color-brown-soft)" }}>{col.orders.length}</span>
@@ -403,9 +363,8 @@ function PipelineView({ orders: allOrders, statusOverrides, onAction, getEffecti
             const label = actionLabel(es);
             const summary = order.items.map((i) => i.qty > 1 ? `${i.qty}× ${i.name}` : i.name).join(", ");
             return (
-              <div key={order.hash} className="card" style={{ padding: "12px 14px", borderLeft: isB ? "none" : `3px solid ${col.color}` }}>
+              <div key={order.hash} className="card" style={{ padding: "12px 14px", borderLeft: isB ? "none" : `3px solid ${col.color}`, ...(isB ? { borderRadius: 16, boxShadow: "0 2px 8px rgba(161,120,97,0.08)" } : {}) }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                  {isB && <span style={{ fontSize: 14 }}>{STATUS_EMOJI[es] || "\u{1F4CB}"}</span>}
                   <span style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{order.customer}</span>
                   <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)", flexShrink: 0 }}>{order.price}</span>
                 </div>

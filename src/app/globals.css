@@ -904,17 +904,18 @@ main { overflow-x: hidden; }
 }
 
 /* ========================================================================
-   MODE B — Gamified Design System (MePlus + Duolingo inspired)
+   MODE B — Warm Minimalism (Notion meets Headspace meets Airbnb)
+   Clean, curved, simple, elegant, modern. NO gamification.
    ======================================================================== */
 
 [data-design-mode="b"] {
-  /* Override brand palette — warm gamified, NOT purple */
-  --color-cream: #faf8f4;
-  --color-cream-deep: #f0ebe0;
-  --color-cream-sunken: #e0d6bc;
+  /* Warm Minimalism palette */
+  --color-cream: #fafaf8;
+  --color-cream-deep: #f5f0e8;
+  --color-cream-sunken: #ede6d8;
   --color-brown: #352431;
   --color-brown-soft: #5a4658;
-  --color-brown-soft-2: #a17861;
+  --color-brown-soft-2: #6e5f6a;
   --color-red: #df4746;
   --color-red-deep: #c93232;
   --color-red-soft: #fce4e4;
@@ -923,49 +924,64 @@ main { overflow-x: hidden; }
   --color-sage-soft: #d5e8ca;
   --color-orange: #f19e37;
   --color-orange-soft: #fde4c0;
+  --color-terracotta: #a17861;
 
-  /* Mode B gradients — red-to-orange, not purple-to-pink */
+  /* Warm Minimalism tokens */
   --gradient-primary: linear-gradient(135deg, #df4746 0%, #f19e37 100%);
-  --gradient-success: linear-gradient(135deg, #7daf62 0%, #a4d48a 100%);
-  --gradient-warm: linear-gradient(135deg, #f19e37 0%, #df4746 100%);
   --gradient-card: none;
-  --shadow-glow: none;
+  --shadow-card-warm: 0 2px 8px rgba(161,120,97,0.08);
+  --shadow-card-hover: 0 8px 24px rgba(161,120,97,0.12);
+  --radius-card: 16px;
+  --radius-button: 12px;
+  --radius-modal: 24px;
 }
 
-/* Mode B button overrides */
+/* Warm Minimalism cards — NO borders, warm shadows */
+[data-design-mode="b"] .card {
+  background: #ffffff;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(161,120,97,0.08);
+}
+
+[data-design-mode="b"] .card-interactive:hover {
+  box-shadow: 0 8px 24px rgba(161,120,97,0.12);
+  transform: translateY(-1px);
+}
+
+/* Buttons — solid fills, not gradients, generous radius */
+[data-design-mode="b"] .btn {
+  border-radius: 12px;
+}
+
 [data-design-mode="b"] .btn-red,
 [data-design-mode="b"] .btn-dark {
-  background: var(--gradient-primary);
+  background: #df4746;
   border: none;
-  box-shadow: 0 4px 14px rgba(223,71,70,0.3);
+  box-shadow: 0 2px 8px rgba(223,71,70,0.2);
+  border-radius: 12px;
 }
 
 [data-design-mode="b"] .btn-red:hover,
 [data-design-mode="b"] .btn-dark:hover {
-  box-shadow: 0 6px 20px rgba(223,71,70,0.4);
-  filter: brightness(1.05);
+  background: #c93232;
+  box-shadow: 0 4px 12px rgba(223,71,70,0.25);
 }
 
-/* Mode B card style — white backgrounds, gradients only as accents */
-[data-design-mode="b"] .card {
-  background: #ffffff;
-  border: 1px solid rgba(53,36,49,0.08);
-  box-shadow: 0 1px 3px rgba(53,36,49,0.06), 0 1px 2px rgba(53,36,49,0.04);
-}
-
-[data-design-mode="b"] .card-interactive:hover {
-  box-shadow: 0 8px 25px rgba(223,71,70,0.12), 0 4px 10px rgba(53,36,49,0.06);
-  border-color: rgba(223,71,70,0.15);
-}
-
-/* Mode B left-border removal — handled per-component via isB conditionals */
-
-/* Mode B heading style — gradient text (opt-in via .heading-gradient class) */
+/* Remove gradient text on headings — use solid color */
 [data-design-mode="b"] .heading-gradient {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  color: var(--color-brown);
+}
+
+/* Inputs — more rounded */
+[data-design-mode="b"] .input,
+[data-design-mode="b"] .select,
+[data-design-mode="b"] .textarea {
+  border-radius: 12px;
 }
 
 /* Mode B pill/badge — brand red */
@@ -974,21 +990,17 @@ main { overflow-x: hidden; }
   color: #df4746;
 }
 
-/* Mode B toggle */
+/* Mode B toggle — solid sage, not gradient */
 [data-design-mode="b"] .toggle.is-on {
-  background: var(--gradient-primary);
+  background: var(--color-sage);
 }
 
-/* Mode B tab active state */
-[data-design-mode="b"] [style*="border-bottom: 2px solid var(--color-red)"],
-[data-design-mode="b"] [style*="borderBottom"][style*="color-red"] {
-  border-image: var(--gradient-primary) 1 !important;
-}
-
-/* Mode B — XP float animation */
-@keyframes xpFloat {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-30px); }
+/* Serif accent headings — editorial/Notion feel */
+[data-design-mode="b"] .heading-lg,
+[data-design-mode="b"] .heading-md {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 /* ========================================================================

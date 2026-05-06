@@ -339,7 +339,7 @@ export default function MenuPage() {
             <button
               onClick={() => setShowCreateModal(true)}
               className="btn btn-dark"
-              style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
+              style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}) }}
               onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(223,71,70,0.4)" : "0 0 20px rgba(51,31,46,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
@@ -347,30 +347,6 @@ export default function MenuPage() {
               Create Dish
             </button>
           </div>
-
-          {/* Mode B — Menu Completeness Card */}
-          {isB && (() => {
-            const publishedCount = localDishes.filter(d => d.status === "published").length;
-            const totalCount = localDishes.length;
-            const pct = totalCount > 0 ? Math.round((publishedCount / totalCount) * 100) : 0;
-            const circumference = 2 * Math.PI * 36;
-            const dashOffset = circumference - (pct / 100) * circumference;
-            return (
-              <div className="card" style={{ padding: "20px 24px", display: "flex", alignItems: "center", gap: 20, border: "1px solid rgba(53,36,49,0.08)" }}>
-                <svg width="80" height="80" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
-                  <circle cx="40" cy="40" r="36" fill="none" stroke="rgba(53,36,49,0.08)" strokeWidth="6" />
-                  <circle cx="40" cy="40" r="36" fill="none" stroke="#7daf62" strokeWidth="6" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={dashOffset} style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dashoffset 0.6s ease" }} />
-                  <text x="40" y="38" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 18, fontWeight: 800, fill: "#352431" }}>{pct}%</text>
-                  <text x="40" y="52" textAnchor="middle" dominantBaseline="middle" style={{ fontSize: 9, fontWeight: 600, fill: "#5a4658" }}>complete</text>
-                </svg>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "var(--color-brown)", marginBottom: 4 }}>Menu Completeness</div>
-                  <div style={{ fontSize: 13, color: "var(--color-brown-soft)", marginBottom: 6 }}>{publishedCount} of {totalCount} dishes published</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#7daf62" }}>+10 XP for each published dish</div>
-                </div>
-              </div>
-            );
-          })()}
 
           {/* Filters Row */}
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
@@ -438,7 +414,7 @@ export default function MenuPage() {
                       cursor: "pointer",
                       border: isB ? "none" : `1px solid ${isCatActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
                       background: isB
-                        ? (isCatActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)")
+                        ? (isCatActive ? "#df4746" : "rgba(223,71,70,0.08)")
                         : (isCatActive ? "var(--color-terracotta-soft)" : "transparent"),
                       color: isB
                         ? (isCatActive ? "#fff" : "var(--color-brown-soft)")
@@ -521,7 +497,7 @@ export default function MenuPage() {
                 return (
                   <div
                     key={dish.id}
-                    className={`card-photo card-interactive group overflow-hidden relative ${isB ? "rounded-[20px]" : "rounded-[16px]"}`}
+                    className={`card-photo card-interactive group overflow-hidden relative rounded-[16px]`}
                     style={{
                       padding: 0,
                       opacity: dish.status === "archived" ? 0.6 : 1,
@@ -541,7 +517,7 @@ export default function MenuPage() {
                           src={dish.image}
                           alt={dish.name}
                           className="w-full h-full object-cover group-hover:scale-[1.03]"
-                          style={{ borderRadius: isB ? "20px 20px 0 0" : "16px 16px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
+                          style={{ borderRadius: "16px 16px 0 0", transition: "transform 0.4s var(--ease-spring)" }}
                         />
                         <div
                           className="absolute"
@@ -576,7 +552,7 @@ export default function MenuPage() {
                           style={{
                             background: isB ? "rgba(223,71,70,0.06)" : "rgba(51,31,46,0.05)",
                             transition: "opacity var(--t-fast)",
-                            borderRadius: isB ? "20px 20px 0 0" : "16px 16px 0 0",
+                            borderRadius: "16px 16px 0 0",
                             pointerEvents: "none",
                           }}
                         />
