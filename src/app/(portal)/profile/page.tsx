@@ -7,8 +7,12 @@ import { Camera, X, Upload, ExternalLink } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { SectionCard } from "@/components/ui/section-card";
 import { chefProfile, allCuisines as ALL_CUISINES } from "@/lib/mock-data";
+import { useDesignMode } from "@/lib/design-mode";
 
 export default function ProfilePage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -76,19 +80,19 @@ export default function ProfilePage() {
           <Link href="/store-preview" className="btn btn-ghost btn-sm" style={{ gap: 4 }}>
             <ExternalLink size={14} /> Preview Store
           </Link>
-          <button className="btn btn-dark btn-sm" onClick={() => toast("Profile saved")}>
+          <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => toast("Profile saved")}>
             Save
           </button>
         </div>
       </div>
 
       {/* Profile Photo + Name — always visible */}
-      <div className="card" style={{ display: "flex", alignItems: "center", gap: 20 }}>
+      <div className="card" style={{ display: "flex", alignItems: "center", gap: 20, ...(isB ? { borderLeft: "none", boxShadow: "0 0 20px rgba(223,71,70,0.08)" } : {}) }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <img
             src={chefProfile.avatar}
             alt="Chef"
-            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", ...(isB ? { border: "3px solid transparent", backgroundClip: "padding-box", boxShadow: "0 0 0 3px #df4746, 0 0 0 6px #f19e37" } : {}) }}
           />
           <label
             style={{
@@ -254,7 +258,7 @@ export default function ProfilePage() {
       {/* Bottom save */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingBottom: 40 }}>
         <button className="btn btn-ghost" onClick={() => toast("Changes discarded", "info")}>Discard</button>
-        <button className="btn btn-dark" onClick={() => toast("Profile saved")}>Save Changes</button>
+        <button className="btn btn-dark" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => toast("Profile saved")}>Save Changes</button>
       </div>
     </div>
   );

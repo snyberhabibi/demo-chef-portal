@@ -8,11 +8,14 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { navGroups } from "@/lib/constants/navigation";
+import { useDesignMode } from "@/lib/design-mode";
 
 interface SidebarProps {
   activePath: string;
 }
 export function Sidebar({ activePath }: SidebarProps) {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -36,6 +39,7 @@ export function Sidebar({ activePath }: SidebarProps) {
         style={{
           padding: 20,
           justifyContent: collapsed ? "center" : "flex-start",
+          ...(isB ? { background: "linear-gradient(135deg, rgba(223,71,70,0.04), rgba(241,158,55,0.04))" } : {}),
         }}
       >
         <Link href="/dashboard" className="flex-shrink-0">
@@ -87,25 +91,29 @@ export function Sidebar({ activePath }: SidebarProps) {
                       height: 40,
                       borderRadius: 10,
                       padding: collapsed ? "0" : isActive ? "0 10px 0 8px" : "0 10px",
-                      paddingLeft: collapsed ? 0 : isActive ? 8 : 10,
+                      paddingLeft: collapsed ? 0 : isActive ? (isB ? 10 : 8) : 10,
                       justifyContent: collapsed ? "center" : "flex-start",
                       gap: collapsed ? 0 : 10,
                       color: isActive
-                        ? "var(--color-brown)"
+                        ? (isB ? "#fff" : "var(--color-brown)")
                         : "rgba(51,31,46,0.55)",
-                      background: isActive ? "var(--color-cream)" : "transparent",
-                      borderLeft: isActive
-                        ? "2px solid var(--color-red)"
-                        : "2px solid transparent",
+                      background: isActive
+                        ? (isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-cream)")
+                        : "transparent",
+                      borderLeft: isB
+                        ? "none"
+                        : (isActive
+                          ? "2px solid var(--color-red)"
+                          : "2px solid transparent"),
                       boxShadow: isActive
-                        ? "0 1px 2px rgba(51,31,46,0.04)"
+                        ? (isB ? "0 2px 8px rgba(223,71,70,0.25)" : "0 1px 2px rgba(51,31,46,0.04)")
                         : "none",
                       transition: `all var(--t-fast) var(--ease-spring)`,
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
                         const el = e.currentTarget as HTMLElement;
-                        el.style.background = "rgba(250,249,246,0.5)";
+                        el.style.background = isB ? "rgba(223,71,70,0.08)" : "rgba(250,249,246,0.5)";
                         el.style.color = "var(--color-brown)";
                       }
                     }}

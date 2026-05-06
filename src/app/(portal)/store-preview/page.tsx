@@ -12,6 +12,7 @@ import {
   reviews,
   getDish,
 } from "@/lib/mock-data";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Derived store-preview data from centralized mock-data              */
@@ -41,6 +42,9 @@ const desserts: StoreDish[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function StorePreviewPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -86,7 +90,7 @@ export default function StorePreviewPage() {
                 left: 0,
                 right: 0,
                 height: 80,
-                background: "linear-gradient(to top, rgba(51,31,46,0.25), transparent)",
+                background: isB ? "linear-gradient(to top, rgba(223,71,70,0.25), transparent)" : "linear-gradient(to top, rgba(51,31,46,0.25), transparent)",
               }}
             />
           </div>
@@ -199,7 +203,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Popular Dishes</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {popularDishes.map((dish) => (
-                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} isB={isB} />
               ))}
             </div>
           </div>
@@ -209,7 +213,7 @@ export default function StorePreviewPage() {
             <div className="heading-md" style={{ marginBottom: 14 }}>Desserts</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {desserts.map((dish) => (
-                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} />
+                <DishCard key={dish.name} dish={dish} onAdd={() => toast("Preview only — customers will see this", "info")} isB={isB} />
               ))}
             </div>
           </div>
@@ -237,9 +241,14 @@ export default function StorePreviewPage() {
 /* ------------------------------------------------------------------ */
 /*  Dish card                                                          */
 /* ------------------------------------------------------------------ */
-function DishCard({ dish, onAdd }: { dish: StoreDish; onAdd?: () => void }) {
+function DishCard({ dish, onAdd, isB = false }: { dish: StoreDish; onAdd?: () => void; isB?: boolean }) {
   return (
-    <div className="card-photo" style={{ padding: 0 }}>
+    <div
+      className="card-photo"
+      style={{ padding: 0, transition: "box-shadow 0.3s ease" }}
+      onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.18)"; }}
+      onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
+    >
       <div style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative" }}>
         <img
           src={dish.image}
@@ -261,7 +270,7 @@ function DishCard({ dish, onAdd }: { dish: StoreDish; onAdd?: () => void }) {
             </div>
             <button
               className="btn btn-sm btn-dark"
-              style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999 }}
+              style={{ fontSize: 11, gap: 3, padding: "6px 14px", minHeight: 0, borderRadius: 9999, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
               onClick={(e) => { e.preventDefault(); onAdd?.(); }}
             >
               <ShoppingCart size={12} strokeWidth={2} />

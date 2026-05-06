@@ -13,6 +13,7 @@ import {
   type DishReviewGroup,
   type BundleReviewGroup,
 } from "@/lib/mock-data";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -41,15 +42,17 @@ const PROFILE_REVIEWS = rawReviews.map((r) => ({
 /* ------------------------------------------------------------------ */
 /*  Star row                                                           */
 /* ------------------------------------------------------------------ */
-function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
+function StarRow({ rating, size = 14, isB = false }: { rating: number; size?: number; isB?: boolean }) {
+  const fillColor = isB ? "#f19e37" : "var(--color-sage)";
+  const strokeColor = isB ? "#f19e37" : "var(--color-sage)";
   return (
     <span className="inline-flex gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
           size={size}
-          fill={s <= rating ? "var(--color-sage)" : "none"}
-          stroke={s <= rating ? "var(--color-sage)" : "var(--color-brown-soft-2)"}
+          fill={s <= rating ? fillColor : "none"}
+          stroke={s <= rating ? strokeColor : "var(--color-brown-soft-2)"}
           strokeWidth={1.8}
         />
       ))}
@@ -61,6 +64,9 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function ReviewsPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -159,27 +165,31 @@ export default function ReviewsPage() {
       {/* Header row: tabs + sort */}
       <div className="flex items-end justify-between flex-wrap gap-4">
         {/* Underline tabs */}
-        <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
-          {TABS.map((t) => (
-            <button
-              key={t}
-              className="body text-[12px] sm:text-[13px]"
-              style={{
-                padding: "10px 14px",
-                background: "none",
-                border: "none",
-                fontWeight: activeTab === t ? 600 : 400,
-                color: activeTab === t ? "var(--color-red)" : "var(--color-brown-soft)",
-                borderBottom: activeTab === t ? "2px solid var(--color-red)" : "2px solid transparent",
-                marginBottom: -1,
-                cursor: "pointer",
-                transition: `color var(--t-fast) var(--ease-spring)`,
-              }}
-              onClick={() => setActiveTab(t)}
-            >
-              {t}
-            </button>
-          ))}
+        <div className="flex gap-0" style={{ borderBottom: isB ? "none" : "1px solid rgba(51,31,46,0.06)", gap: isB ? 6 : 0 }}>
+          {TABS.map((t) => {
+            const tabActive = activeTab === t;
+            return (
+              <button
+                key={t}
+                className="body text-[12px] sm:text-[13px]"
+                style={{
+                  padding: isB ? "8px 16px" : "10px 14px",
+                  background: isB ? (tabActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
+                  border: "none",
+                  fontWeight: tabActive ? 600 : 400,
+                  color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-red)" : "var(--color-brown-soft)"),
+                  borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-red)" : "2px solid transparent"),
+                  borderRadius: isB ? 9999 : 0,
+                  marginBottom: isB ? 0 : -1,
+                  cursor: "pointer",
+                  transition: `all var(--t-fast) var(--ease-spring)`,
+                }}
+                onClick={() => setActiveTab(t)}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
 
         {/* Sort dropdown */}
@@ -243,11 +253,11 @@ export default function ReviewsPage() {
           {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1 }}>
+              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>
                 {averageRating.toFixed(1)}
               </div>
               <div style={{ marginTop: 8 }}>
-                <StarRow rating={Math.round(averageRating)} size={18} />
+                <StarRow rating={Math.round(averageRating)} size={18} isB={isB} />
               </div>
               <div className="caption" style={{ marginTop: 6 }}>{rawReviews.length} ratings</div>
             </div>
@@ -259,14 +269,14 @@ export default function ReviewsPage() {
                   <span className="tnum caption" style={{ width: 20, textAlign: "right" }}>
                     {row.stars}
                   </span>
-                  <Star size={12} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <Star size={12} fill={isB ? "#f19e37" : "var(--color-sage)"} stroke={isB ? "#f19e37" : "var(--color-sage)"} />
                   <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--color-cream-sunken)", overflow: "hidden" }}>
                     <div
                       style={{
                         width: `${row.pct}%`,
                         height: "100%",
                         borderRadius: 3,
-                        background: "var(--color-sage)",
+                        background: isB ? "linear-gradient(90deg, #df4746, #f19e37)" : "var(--color-sage)",
                         transition: `width 0.3s var(--ease-spring)`,
                       }}
                     />
@@ -305,7 +315,7 @@ export default function ReviewsPage() {
                         <span className="caption">{review.date}</span>
                       </div>
                       <div style={{ marginTop: 2 }}>
-                        <StarRow rating={review.rating} />
+                        <StarRow rating={review.rating} isB={isB} />
                       </div>
                     </div>
                   </div>
@@ -321,7 +331,7 @@ export default function ReviewsPage() {
                         padding: 14,
                         borderRadius: 10,
                         background: "var(--color-cream-deep)",
-                        borderLeft: "3px solid var(--color-sage)",
+                        borderLeft: isB ? "none" : "3px solid var(--color-sage)",
                       }}
                     >
                       <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
@@ -373,8 +383,8 @@ export default function ReviewsPage() {
                   {/* Reply button */}
                   {!review.reply && !review.composerOpen && (
                     <button
-                      className="btn btn-ghost btn-sm"
-                      style={{ marginTop: 12, gap: 6 }}
+                      className={isB ? "btn btn-sm" : "btn btn-ghost btn-sm"}
+                      style={{ marginTop: 12, gap: 6, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", border: "none" } : {}) }}
                       onClick={() => toggleComposer(review.id)}
                     >
                       <MessageSquare size={14} />
@@ -408,7 +418,7 @@ export default function ReviewsPage() {
                   <span className="heading-sm" style={{ fontSize: 14 }}>{dish.name}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <Star size={14} fill={isB ? "#f19e37" : "var(--color-sage)"} stroke={isB ? "#f19e37" : "var(--color-sage)"} />
                   <span className="tnum body" style={{ fontWeight: 600 }}>{dish.rating.toFixed(1)}</span>
                 </div>
                 <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>{dish.count} reviews</span>
@@ -449,7 +459,7 @@ export default function ReviewsPage() {
                               <span className="body" style={{ fontWeight: 600 }}>{r.name}</span>
                               <span className="caption">{r.date}</span>
                             </div>
-                            <StarRow rating={r.rating} size={12} />
+                            <StarRow rating={r.rating} size={12} isB={isB} />
                           </div>
                         </div>
                         <p className="body-sm" style={{ margin: "8px 0 0 40px" }}>{r.text}</p>
@@ -483,7 +493,7 @@ export default function ReviewsPage() {
                   <span className="heading-sm" style={{ fontSize: 14 }}>{bundle.name}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Star size={14} fill="var(--color-sage)" stroke="var(--color-sage)" />
+                  <Star size={14} fill={isB ? "#f19e37" : "var(--color-sage)"} stroke={isB ? "#f19e37" : "var(--color-sage)"} />
                   <span className="tnum body" style={{ fontWeight: 600 }}>{bundle.rating.toFixed(1)}</span>
                 </div>
                 <span className="pill pill-mute tnum" style={{ fontSize: 11 }}>{bundle.count} reviews</span>
@@ -524,7 +534,7 @@ export default function ReviewsPage() {
                               <span className="body" style={{ fontWeight: 600 }}>{r.name}</span>
                               <span className="caption">{r.date}</span>
                             </div>
-                            <StarRow rating={r.rating} size={12} />
+                            <StarRow rating={r.rating} size={12} isB={isB} />
                           </div>
                         </div>
                         <p className="body-sm" style={{ margin: "8px 0 0 40px" }}>{r.text}</p>

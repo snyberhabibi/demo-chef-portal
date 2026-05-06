@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { CreditCard, CheckCircle, AlertTriangle, ChevronDown, ArrowRight, ExternalLink, Shield, Zap, Eye } from "lucide-react";
 import { transactions as TRANSACTIONS } from "@/lib/mock-data";
+import { useDesignMode } from "@/lib/design-mode";
 
 type StripeState = "A" | "B" | "C";
 
@@ -19,6 +20,9 @@ const INFO_BLOCKS = [
 ];
 
 export default function PaymentsPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -101,6 +105,7 @@ export default function PaymentsPage() {
 
             <button
               className="btn btn-gradient btn-block btn-lg"
+              style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)" } : {}}
               onClick={() => setState("C")}
             >
               <CreditCard size={18} />
@@ -229,7 +234,7 @@ export default function PaymentsPage() {
               <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px" }}>
+            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px", ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>
               $2,184.50
             </div>
             <div className="body-sm">Total earnings</div>
@@ -238,7 +243,7 @@ export default function PaymentsPage() {
           <div className="card flex items-center justify-between">
             <div>
               <div className="eyebrow" style={{ marginBottom: 4 }}>Next Payout</div>
-              <div className="fraunces tnum" style={{ fontSize: 22 }}>$342.00</div>
+              <div className="fraunces tnum" style={{ fontSize: 22, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" } : {}) }}>$342.00</div>
               <div className="body-sm" style={{ marginTop: 2 }}>Arriving Friday, May 9</div>
             </div>
             <div
@@ -269,7 +274,7 @@ export default function PaymentsPage() {
                   <span className="tnum caption" style={{ minWidth: 90, whiteSpace: "nowrap" }}>{tx.date}</span>
                   <div className="flex-1 flex items-center gap-2 min-w-0">
                     <span className="body-sm truncate" style={{ color: "var(--color-brown)" }}>{tx.desc}</span>
-                    <span className={`pill ${tx.type === "order" ? "pill-sage" : tx.type === "payout" ? "pill-mute" : "pill-orange"}`} style={{ fontSize: 10, padding: "2px 6px" }}>
+                    <span className={`pill ${tx.type === "order" ? "pill-sage" : tx.type === "payout" ? "pill-mute" : "pill-orange"}`} style={{ fontSize: 10, padding: "2px 6px", ...(isB && tx.type === "order" ? { background: "rgba(125,175,98,0.15)", color: "#7daf62" } : {}), ...(isB && tx.type === "payout" ? { background: "rgba(161,120,97,0.12)", color: "#a17861" } : {}), ...(isB && tx.type === "fee" ? { background: "rgba(223,71,70,0.1)", color: "#df4746" } : {}) }}>
                       {tx.type}
                     </span>
                   </div>

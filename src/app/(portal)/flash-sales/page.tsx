@@ -25,6 +25,7 @@ import {
 } from "@/lib/mock-data";
 import { useToast } from "@/components/ui/toast-provider";
 import { saleStatusDotColor } from "@/lib/utils/status-helpers";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Tab config                                                         */
@@ -40,6 +41,9 @@ const tabs: { key: SaleStatus; label: string }[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function FlashSalesPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
 
@@ -76,7 +80,7 @@ export default function FlashSalesPage() {
         <h1 className="heading-lg">Flash Sales</h1>
         <button
           className="btn btn-dark btn-sm"
-          style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 6, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
           onClick={() => setShowCreate(!showCreate)}
         >
           <Plus size={14} strokeWidth={2.5} />
@@ -93,8 +97,8 @@ export default function FlashSalesPage() {
       <div
         style={{
           display: "flex",
-          gap: 0,
-          borderBottom: "1px solid rgba(51,31,46,0.08)",
+          gap: isB ? 6 : 0,
+          borderBottom: isB ? "none" : "1px solid rgba(51,31,46,0.08)",
         }}
       >
         {tabs.map((tab) => {
@@ -107,17 +111,20 @@ export default function FlashSalesPage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                padding: "10px 16px",
+                padding: isB ? "8px 16px" : "10px 16px",
                 fontSize: 13,
                 fontWeight: 600,
                 border: "none",
-                borderBottom: isActive
+                borderBottom: isB ? "none" : (isActive
                   ? "2px solid var(--color-red)"
-                  : "2px solid transparent",
-                background: "transparent",
-                color: isActive
-                  ? "var(--color-red)"
-                  : "var(--color-brown-soft-2)",
+                  : "2px solid transparent"),
+                borderRadius: isB ? 9999 : 0,
+                background: isB
+                  ? (isActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)")
+                  : "transparent",
+                color: isB
+                  ? (isActive ? "#fff" : "var(--color-brown-soft-2)")
+                  : (isActive ? "var(--color-red)" : "var(--color-brown-soft-2)"),
                 cursor: "pointer",
                 transition: "all var(--t-fast) var(--ease-spring)",
               }}
@@ -135,12 +142,12 @@ export default function FlashSalesPage() {
                   fontSize: 10,
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
-                  background: isActive
-                    ? "var(--color-red)"
-                    : "var(--color-cream-sunken)",
-                  color: isActive
-                    ? "#fff"
-                    : "var(--color-brown-soft-2)",
+                  background: isB
+                    ? (isActive ? "rgba(255,255,255,0.25)" : "rgba(223,71,70,0.1)")
+                    : (isActive ? "var(--color-red)" : "var(--color-cream-sunken)"),
+                  color: isB
+                    ? (isActive ? "#fff" : "var(--color-brown-soft-2)")
+                    : (isActive ? "#fff" : "var(--color-brown-soft-2)"),
                 }}
               >
                 {counts[tab.key]}
@@ -187,7 +194,7 @@ export default function FlashSalesPage() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {filtered.map((sale) => (
-            <FlashSaleCard key={sale.id} sale={sale} />
+            <FlashSaleCard key={sale.id} sale={sale} isB={isB} />
           ))}
         </div>
       )}
@@ -205,7 +212,7 @@ const stockData: Record<string, { claimed: number; total: number }> = {
   "Shawarma": { claimed: 12, total: 50 },
 };
 
-function FlashSaleCard({ sale }: { sale: FlashSale }) {
+function FlashSaleCard({ sale, isB }: { sale: FlashSale; isB: boolean }) {
   const { toast } = useToast();
   const dotColor = saleStatusDotColor(sale.status);
   const isLive = sale.status === "live";
@@ -219,7 +226,10 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
       style={{
         padding: "16px 18px",
         opacity: isPast ? 0.85 : 1,
+        ...(isB ? { borderRadius: 20, borderLeft: "none" } : {}),
       }}
+      onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.18)"; }}
+      onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
     >
       {/* Row 1: status dot + name + time info */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -229,8 +239,9 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
             width: 8,
             height: 8,
             borderRadius: "50%",
-            background: dotColor,
+            background: isB && isLive ? "linear-gradient(135deg, #df4746, #f19e37)" : dotColor,
             flexShrink: 0,
+            ...(isB && isLive ? { boxShadow: "0 0 8px rgba(223,71,70,0.5)" } : {}),
           }}
         />
         <span className="heading-sm" style={{ flex: 1 }}>
@@ -339,7 +350,7 @@ function FlashSaleCard({ sale }: { sale: FlashSale }) {
                   </span>
                 </div>
                 <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden", opacity: isSoldOut ? 0.4 : 1 }}>
-                  <div style={{ height: "100%", borderRadius: 2, background: isLowStock ? "var(--color-red)" : "var(--color-red)", width: `${Math.min(pct, 100)}%`, transition: "width 0.6s ease" }} />
+                  <div style={{ height: "100%", borderRadius: 2, background: isB ? "linear-gradient(90deg, #df4746, #f19e37)" : (isLowStock ? "var(--color-red)" : "var(--color-red)"), width: `${Math.min(pct, 100)}%`, transition: "width 0.6s ease" }} />
                 </div>
                 {isLowStock && !isSoldOut && (
                   <span style={{ display: "inline-block", marginTop: 4, fontSize: 11, fontWeight: 700, color: "var(--color-red-deep)" }}>Almost gone!</span>

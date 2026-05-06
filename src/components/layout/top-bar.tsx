@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { Bell, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { useDesignMode } from "@/lib/design-mode";
 
 interface TopBarProps {
   title: string;
@@ -13,6 +14,8 @@ interface TopBarProps {
 }
 
 export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }: TopBarProps) {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
   const { toast } = useToast();
 
   return (
@@ -122,8 +125,10 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
           style={{
             height: 28,
             padding: "0 10px",
-            background: "var(--color-cream-sunken)",
-            border: "none",
+            background: isB ? "transparent" : "var(--color-cream-sunken)",
+            border: isB ? "1.5px solid transparent" : "none",
+            borderImage: isB ? "linear-gradient(135deg, #df4746, #f19e37) 1" : "none",
+            borderRadius: isB ? 8 : undefined,
             cursor: "pointer",
             fontSize: 12,
             fontFamily: "var(--font-mono)",
@@ -133,11 +138,11 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.background =
-              "rgba(51,31,46,0.08)";
+              isB ? "rgba(223,71,70,0.06)" : "rgba(51,31,46,0.08)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background =
-              "var(--color-cream-sunken)";
+              isB ? "transparent" : "var(--color-cream-sunken)";
           }}
           aria-label="Search"
           onClick={() => toast("Search coming soon", "info")}
@@ -173,8 +178,9 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: "var(--color-red)",
+              background: isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)",
               border: "1.5px solid rgba(250,249,246,0.88)",
+              ...(isB ? { boxShadow: "0 0 6px rgba(223,71,70,0.5)" } : {}),
             }}
           />
         </Link>

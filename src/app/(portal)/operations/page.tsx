@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Clock, AlertTriangle, CheckCircle, XCircle, Plus, X, Trash2, Calendar, Copy, Ban } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
+import { useDesignMode } from "@/lib/design-mode";
 
 type StoreState = "pending" | "approved-off" | "live" | "rejected";
 
@@ -98,6 +99,9 @@ const INITIAL_OVERRIDES: DateOverride[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function OperationsPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
@@ -270,7 +274,9 @@ export default function OperationsPage() {
           <div
             className="flex items-center justify-between gap-4 glow-sage"
             style={{
-              borderLeft: "3px solid var(--color-sage)",
+              borderLeft: isB ? "none" : "3px solid var(--color-sage)",
+              borderTop: isB ? "3px solid transparent" : "none",
+              borderImage: isB ? "linear-gradient(90deg, #df4746, #f19e37) 1" : "none",
               borderRadius: 8,
               padding: "14px 16px",
             }}
@@ -442,7 +448,7 @@ export default function OperationsPage() {
                   aria-checked={daySchedule.enabled}
                   aria-label={`${day} availability`}
                   onClick={() => toggleDay(day)}
-                  style={{ flexShrink: 0, marginTop: 2 }}
+                  style={{ flexShrink: 0, marginTop: 2, ...(isB && daySchedule.enabled ? { background: "linear-gradient(135deg, #df4746, #f19e37)" } : {}) }}
                 >
                   <span className="toggle-thumb" />
                 </button>
@@ -564,20 +570,21 @@ export default function OperationsPage() {
       {/* ═══ SECTION C: Time Off & Date Overrides ═══ */}
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         {/* Sub-tabs */}
-        <div className="flex gap-0" style={{ borderBottom: "1px solid rgba(51,31,46,0.06)" }}>
+        <div className="flex gap-0" style={{ borderBottom: isB ? "none" : "1px solid rgba(51,31,46,0.06)", gap: isB ? 6 : 0, padding: isB ? "8px 16px" : 0 }}>
           <button
             onClick={() => setActiveSubTab("timeoff")}
             style={{
-              padding: "12px 20px",
-              background: "none",
+              padding: isB ? "8px 16px" : "12px 20px",
+              background: isB ? (activeSubTab === "timeoff" ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "timeoff" ? 600 : 400,
-              color: activeSubTab === "timeoff" ? "var(--color-red)" : "var(--color-brown-soft)",
-              borderBottom: activeSubTab === "timeoff" ? "2px solid var(--color-red)" : "2px solid transparent",
-              marginBottom: -1,
+              color: isB ? (activeSubTab === "timeoff" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "timeoff" ? "var(--color-red)" : "var(--color-brown-soft)"),
+              borderBottom: isB ? "none" : (activeSubTab === "timeoff" ? "2px solid var(--color-red)" : "2px solid transparent"),
+              borderRadius: isB ? 9999 : 0,
+              marginBottom: isB ? 0 : -1,
               cursor: "pointer",
-              transition: "color var(--t-fast) var(--ease-spring)",
+              transition: "all var(--t-fast) var(--ease-spring)",
             }}
           >
             Time off
@@ -585,16 +592,17 @@ export default function OperationsPage() {
           <button
             onClick={() => setActiveSubTab("overrides")}
             style={{
-              padding: "12px 20px",
-              background: "none",
+              padding: isB ? "8px 16px" : "12px 20px",
+              background: isB ? (activeSubTab === "overrides" ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "overrides" ? 600 : 400,
-              color: activeSubTab === "overrides" ? "var(--color-red)" : "var(--color-brown-soft)",
-              borderBottom: activeSubTab === "overrides" ? "2px solid var(--color-red)" : "2px solid transparent",
-              marginBottom: -1,
+              color: isB ? (activeSubTab === "overrides" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "overrides" ? "var(--color-red)" : "var(--color-brown-soft)"),
+              borderBottom: isB ? "none" : (activeSubTab === "overrides" ? "2px solid var(--color-red)" : "2px solid transparent"),
+              borderRadius: isB ? 9999 : 0,
+              marginBottom: isB ? 0 : -1,
               cursor: "pointer",
-              transition: "color var(--t-fast) var(--ease-spring)",
+              transition: "all var(--t-fast) var(--ease-spring)",
             }}
           >
             Date overrides
@@ -608,7 +616,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Block dates when you won&apos;t be cooking</div>
               </div>
-              <button className="btn btn-dark btn-sm" onClick={() => { setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: "Jan 10, 2026", endDate: "Jan 12, 2026", days: 3, note: "Personal day", autoPause: true }]); toast("Time off added"); }}>
+              <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setTimeOff((prev) => [...prev, { id: String(Date.now()), startDate: "Jan 10, 2026", endDate: "Jan 12, 2026", days: 3, note: "Personal day", autoPause: true }]); toast("Time off added"); }}>
                 <Plus size={14} /> Add time off
               </button>
             </div>
@@ -679,7 +687,7 @@ export default function OperationsPage() {
               <div>
                 <div className="heading-sm" style={{ fontSize: 14 }}>Different hours for a specific date</div>
               </div>
-              <button className="btn btn-dark btn-sm" onClick={() => { setOverrides((prev) => [...prev, { id: String(Date.now()), date: "January 15, 2026", monthAbbr: "JAN", dayNum: "15", windows: ["10:00 AM \u2013 2:00 PM"], note: "Special hours" }]); toast("Override added"); }}>
+              <button className="btn btn-dark btn-sm" style={isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}} onClick={() => { setOverrides((prev) => [...prev, { id: String(Date.now()), date: "January 15, 2026", monthAbbr: "JAN", dayNum: "15", windows: ["10:00 AM \u2013 2:00 PM"], note: "Special hours" }]); toast("Override added"); }}>
                 <Plus size={14} /> Add override
               </button>
             </div>
