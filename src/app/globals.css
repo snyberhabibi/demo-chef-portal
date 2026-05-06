@@ -120,6 +120,7 @@
 html, body {
   height: 100vh; /* fallback for older browsers */
   height: 100dvh;
+  background: #fafaf8;
 }
 
 @supports (padding: env(safe-area-inset-top)) {
