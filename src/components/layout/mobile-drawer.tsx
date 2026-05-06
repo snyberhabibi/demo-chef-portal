@@ -18,6 +18,16 @@ export function MobileDrawer({ open, onClose, activePath, triggerRef }: MobileDr
   const [animating, setAnimating] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+  /* Manage body overflow to prevent scroll behind drawer */
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   useEffect(() => {
     if (open) {
       setVisible(true);
