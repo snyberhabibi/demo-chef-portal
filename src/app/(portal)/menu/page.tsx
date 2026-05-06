@@ -83,15 +83,7 @@ export default function MenuPage() {
   const nextSectionIdRef = useRef(5);
   const nextBundleIdRef = useRef(BUNDLES.length + 1);
 
-  /* ── Body overflow management for modals ── */
-  useEffect(() => {
-    if (showCreateModal || showBundleModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [showCreateModal, showBundleModal]);
+  /* Body overflow removed — causes PWA standalone mode lock */
 
   /* Click-outside to close dish card and section row dropdown menus */
   useEffect(() => {
@@ -338,8 +330,7 @@ export default function MenuPage() {
                   onClick={() => {
                     toast("Template library \u2014 coming soon", "info");
                     setShowCreateModal(false);
-                    document.body.style.overflow = "";
-                  }}
+                                     }}
                   style={{
                     display: "flex",
                     flexDirection: "column",

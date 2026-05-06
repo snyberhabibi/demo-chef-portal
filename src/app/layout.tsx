@@ -62,8 +62,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-design-mode="b" className={`${inter.variable} ${jakarta.variable} ${lora.variable}`} style={{ height: "100dvh", background: "#fafaf8" }}>
-      <body className="flex flex-col" style={{ minHeight: "100dvh", background: "#fafaf8" }}><I18nProvider><DesignModeProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></DesignModeProvider></I18nProvider></body>
+    <html lang="en" data-design-mode="b" className={`${inter.variable} ${jakarta.variable} ${lora.variable}`} style={{ background: "#fafaf8" }}>
+      <body className="flex flex-col" style={{ minHeight: "100%", background: "#fafaf8" }}><I18nProvider><DesignModeProvider><ToastProvider>{children}<ServiceWorkerRegister /><InstallPrompt /></ToastProvider></DesignModeProvider></I18nProvider></body>
     </html>
   );
 }

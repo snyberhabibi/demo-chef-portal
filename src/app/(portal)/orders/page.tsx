@@ -73,14 +73,6 @@ const PIPELINE_COLORS: Record<string, string> = {
 /*  Bottom Sheet Component                                             */
 /* ------------------------------------------------------------------ */
 function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
   if (!isOpen) return null;
   return (
     <div
