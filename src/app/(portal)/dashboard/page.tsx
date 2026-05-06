@@ -42,6 +42,19 @@ type Step = {
   href: string;
 };
 
+/* New-applicant version: all steps un-done, step 1 is current */
+function getNewApplicantPhases(phases: Phase[]): Phase[] {
+  let foundFirst = false;
+  return phases.map((phase) => ({
+    ...phase,
+    steps: phase.steps.map((step) => {
+      const isCurrent = !foundFirst;
+      if (isCurrent) foundFirst = true;
+      return { ...step, done: false, current: isCurrent };
+    }),
+  }));
+}
+
 const onboardingPhases: Phase[] = [
   {
     label: "Get Approved",
@@ -177,9 +190,13 @@ function getGreeting(): string {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 export default function DashboardPage() {
+  const { isNewApplicant } = useDesignMode();
   const [mode, setMode] = useState<"A" | "B">("B");
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
+
+  // Force Setup view when in new-applicant demo mode
+  const effectiveMode = isNewApplicant ? "A" : mode;
 
   if (!loaded) {
     return (
@@ -200,53 +217,55 @@ export default function DashboardPage() {
 
   return (
     <div className="section-stack">
-      {/* Mode toggle — subtle segmented control */}
-      <div
-        style={{
-          display: "inline-flex",
-          background: "var(--color-cream-sunken)",
-          borderRadius: 8,
-          padding: 3,
-          gap: 2,
-        }}
-      >
-        <button
-          onClick={() => setMode("A")}
+      {/* Mode toggle — subtle segmented control (hidden in new-applicant mode) */}
+      {!isNewApplicant && (
+        <div
           style={{
-            padding: "6px 16px",
-            fontSize: 13,
-            fontWeight: 600,
-            borderRadius: 6,
-            border: "none",
-            background: mode === "A" ? "#fff" : "transparent",
-            color: mode === "A" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-            cursor: "pointer",
-            boxShadow: mode === "A" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
-            transition: "all var(--t-fast) var(--ease-spring)",
+            display: "inline-flex",
+            background: "var(--color-cream-sunken)",
+            borderRadius: 8,
+            padding: 3,
+            gap: 2,
           }}
         >
-          Setup
-        </button>
-        <button
-          onClick={() => setMode("B")}
-          style={{
-            padding: "6px 16px",
-            fontSize: 13,
-            fontWeight: 600,
-            borderRadius: 6,
-            border: "none",
-            background: mode === "B" ? "#fff" : "transparent",
-            color: mode === "B" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
-            cursor: "pointer",
-            boxShadow: mode === "B" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
-            transition: "all var(--t-fast) var(--ease-spring)",
-          }}
-        >
-          Dashboard
-        </button>
-      </div>
+          <button
+            onClick={() => setMode("A")}
+            style={{
+              padding: "6px 16px",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 6,
+              border: "none",
+              background: mode === "A" ? "#fff" : "transparent",
+              color: mode === "A" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+              cursor: "pointer",
+              boxShadow: mode === "A" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+              transition: "all var(--t-fast) var(--ease-spring)",
+            }}
+          >
+            Setup
+          </button>
+          <button
+            onClick={() => setMode("B")}
+            style={{
+              padding: "6px 16px",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 6,
+              border: "none",
+              background: mode === "B" ? "#fff" : "transparent",
+              color: mode === "B" ? "var(--color-brown)" : "var(--color-brown-soft-2)",
+              cursor: "pointer",
+              boxShadow: mode === "B" ? "0 1px 3px rgba(51,31,46,0.08)" : "none",
+              transition: "all var(--t-fast) var(--ease-spring)",
+            }}
+          >
+            Dashboard
+          </button>
+        </div>
+      )}
 
-      {mode === "A" ? <ModeA /> : <ModeB />}
+      {effectiveMode === "A" ? <ModeA /> : <ModeB />}
     </div>
   );
 }
@@ -256,6 +275,7 @@ export default function DashboardPage() {
 /* ------------------------------------------------------------------ */
 function ModeA() {
   const { toast } = useToast();
+  const { isNewApplicant } = useDesignMode();
   const [step5Expanded, setStep5Expanded] = useState(false);
   const [step5Done, setStep5Done] = useState(false);
   const [quickDishName, setQuickDishName] = useState("");
@@ -263,7 +283,9 @@ function ModeA() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [goLiveDone, setGoLiveDone] = useState(false);
 
-  const allSteps = onboardingPhases.flatMap((p) => p.steps);
+  // Use reset phases when in new-applicant mode
+  const phases = isNewApplicant ? getNewApplicantPhases(onboardingPhases) : onboardingPhases;
+  const allSteps = phases.flatMap((p) => p.steps);
   const doneCount =
     allSteps.filter((s) => s.done).length + (step5Done ? 1 : 0) + (goLiveDone ? 1 : 0);
   const totalSteps = allSteps.length;
@@ -342,7 +364,7 @@ function ModeA() {
       {/* Header with progress bar */}
       <div>
         <h1 className="heading-lg" style={{ marginBottom: 6 }}>
-          Welcome back, {chefProfile.name}
+          {isNewApplicant ? `Welcome, ${chefProfile.name}` : `Welcome back, ${chefProfile.name}`}
         </h1>
         <p className="body-sm" style={{ marginBottom: 12 }}>
           {remaining} {remaining === 1 ? "step" : "steps"} remaining to go
@@ -364,7 +386,7 @@ function ModeA() {
       </div>
 
       {/* Phased checklist — each phase in its own card */}
-      {onboardingPhases.map((phase) => {
+      {phases.map((phase) => {
         const phaseAllDone = phase.steps.every((s) =>
           s.id === 5 ? step5Done || s.done : s.done
         );
