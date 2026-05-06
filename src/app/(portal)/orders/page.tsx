@@ -88,7 +88,7 @@ const TAB_EMOJI: Record<string, string> = {
 };
 
 const PIPELINE_GRADIENTS: Record<string, string> = {
-  new: "linear-gradient(135deg, #8b5cf6, #a78bfa)",
+  new: "linear-gradient(135deg, #df4746, #f19e37)",
   preparing: "linear-gradient(135deg, #f59e0b, #fbbf24)",
   ready: "linear-gradient(135deg, #22c55e, #86efac)",
   done: "linear-gradient(135deg, #6b7280, #a3a3a3)",
@@ -224,24 +224,24 @@ export default function OrdersPage() {
                 const isActive = tab.label === activeTab && !showPrepList;
                 const count = tabCounts[tab.label];
                 const pillActiveStyle = isB
-                  ? { background: "linear-gradient(135deg, #8b5cf6, #ec4899)", color: "#fff", borderRadius: 9999 }
+                  ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", borderRadius: 9999 }
                   : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 };
                 const pillInactiveStyle = isB
-                  ? { background: "rgba(139,92,246,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 }
+                  ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 }
                   : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 };
                 return (
                   <button key={tab.label} onClick={() => { setActiveTab(tab.label); setShowPrepList(false); setPage(1); }} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(isActive ? pillActiveStyle : pillInactiveStyle) }}
-                    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(139,92,246,0.14)" : "rgba(51,31,46,0.04)"; }}
-                    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(139,92,246,0.08)" : "transparent"; }}>
+                    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
+                    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
                     {isB && TAB_EMOJI[tab.label] && <span style={{ fontSize: 13 }}>{TAB_EMOJI[tab.label]}</span>}
                     {tab.label}
                     {count > 0 && tab.label !== "All" && (<span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 16, height: 16, padding: "0 4px", borderRadius: 9999, fontSize: 10, fontWeight: 700, fontVariantNumeric: "tabular-nums", background: isActive ? "rgba(255,255,255,0.2)" : "var(--color-cream-sunken)", color: isActive ? (isB ? "#fff" : "var(--color-cream)") : "var(--color-brown-soft-2)" }}>{count}</span>)}
                   </button>
                 );
               })}
-              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "linear-gradient(135deg, #8b5cf6, #ec4899)", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(139,92,246,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
-                onMouseEnter={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(139,92,246,0.14)" : "rgba(51,31,46,0.04)"; }}
-                onMouseLeave={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(139,92,246,0.08)" : "transparent"; }}>
+              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
+                onMouseEnter={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
+                onMouseLeave={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
                 <ClipboardList size={13} strokeWidth={2} /> Prep List
               </button>
             </div>
@@ -295,7 +295,7 @@ export default function OrdersPage() {
               <div key={order.hash} className="card card-interactive" style={{ display: "block", padding: 0, opacity: isTerminal ? 0.5 : 1, background: bg || "#fff", position: "relative" }}>
                 {/* XP Float animation for Mode B */}
                 {isB && xpFloats[order.hash] && (
-                  <span style={{ position: "absolute", top: 8, right: 16, fontSize: 14, fontWeight: 800, color: "#8b5cf6", pointerEvents: "none", animation: "xpFloat 1.2s ease-out forwards", zIndex: 10 }}>+25 XP</span>
+                  <span style={{ position: "absolute", top: 8, right: 16, fontSize: 14, fontWeight: 800, color: "#df4746", pointerEvents: "none", animation: "xpFloat 1.2s ease-out forwards", zIndex: 10 }}>+25 XP</span>
                 )}
                 <button type="button" onClick={() => setExpandedOrder(isExpanded ? null : order.hash)} style={{ display: "block", width: "100%", padding: "14px 16px", border: "none", background: "transparent", cursor: "pointer", textAlign: "left" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

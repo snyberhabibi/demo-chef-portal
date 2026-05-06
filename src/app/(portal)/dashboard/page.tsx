@@ -974,7 +974,7 @@ const gamifiedTasks = [
 ];
 
 const quickActions = [
-  { emoji: "\uD83C\uDF7D\uFE0F", label: "Add Dish", href: "/menu/new", gradient: "linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%)" },
+  { emoji: "\uD83C\uDF7D\uFE0F", label: "Add Dish", href: "/menu/new", gradient: "linear-gradient(135deg, #fce4e4 0%, #fde4c0 100%)" },
   { emoji: "\u26A1", label: "Flash Sale", href: "/flash-sales", gradient: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)" },
   { emoji: "\uD83D\uDCE6", label: "View Orders", href: "/orders", gradient: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)" },
   { emoji: "\u2B50", label: "Reviews", href: "/reviews", gradient: "linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)" },
@@ -1056,7 +1056,7 @@ function ModeBGamified() {
       <div
         className="gamified-card"
         style={{
-          background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+          background: "linear-gradient(135deg, #df4746 0%, #f19e37 100%)",
           padding: "32px 28px 24px",
           color: "#fff",
         }}
@@ -1238,7 +1238,7 @@ function ModeBGamified() {
                   borderRadius: 8,
                   border: task.done ? "none" : "2px solid #d1d5db",
                   background: task.done
-                    ? "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)"
+                    ? "linear-gradient(135deg, #7daf62 0%, #a4d48a 100%)"
                     : "transparent",
                   display: "flex",
                   alignItems: "center",
@@ -1266,8 +1266,8 @@ function ModeBGamified() {
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: task.done ? "#10b981" : "#8b5cf6",
-                  background: task.done ? "#ecfdf5" : "#f3e8ff",
+                  color: task.done ? "#7daf62" : "#df4746",
+                  background: task.done ? "#d5e8ca" : "#fce4e4",
                   borderRadius: 8,
                   padding: "3px 8px",
                   flexShrink: 0,

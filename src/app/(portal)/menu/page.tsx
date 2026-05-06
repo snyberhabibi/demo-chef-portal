@@ -339,8 +339,8 @@ export default function MenuPage() {
             <button
               onClick={() => setShowCreateModal(true)}
               className="btn btn-dark"
-              style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "linear-gradient(135deg, #8b5cf6, #ec4899)", border: "none" } : {}) }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(139,92,246,0.4)" : "0 0 20px rgba(51,31,46,0.25)"; }}
+              style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none" } : {}) }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(223,71,70,0.4)" : "0 0 20px rgba(51,31,46,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
               <Plus size={18} strokeWidth={2.5} />
@@ -350,7 +350,7 @@ export default function MenuPage() {
 
           {/* Mode B — Dish count badge */}
           {isB && (
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(236,72,153,0.06))", border: "1px solid rgba(139,92,246,0.12)" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 12, background: "linear-gradient(135deg, rgba(223,71,70,0.08), rgba(241,158,55,0.06))", border: "1px solid rgba(223,71,70,0.12)" }}>
               <span style={{ fontSize: 18 }}>{"\u{1F37D}\u{FE0F}"}</span>
               <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-brown)" }}>{localDishes.length} dishes on your menu</span>
             </div>
@@ -422,7 +422,7 @@ export default function MenuPage() {
                       cursor: "pointer",
                       border: isB ? "none" : `1px solid ${isCatActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
                       background: isB
-                        ? (isCatActive ? "linear-gradient(135deg, #8b5cf6, #ec4899)" : "rgba(139,92,246,0.08)")
+                        ? (isCatActive ? "linear-gradient(135deg, #df4746, #f19e37)" : "rgba(223,71,70,0.08)")
                         : (isCatActive ? "var(--color-terracotta-soft)" : "transparent"),
                       color: isB
                         ? (isCatActive ? "#fff" : "var(--color-brown-soft)")
@@ -512,7 +512,7 @@ export default function MenuPage() {
                       transition: "box-shadow 0.3s ease",
                       ...(isB ? { borderLeft: "none" } : {}),
                     }}
-                    onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(139,92,246,0.25)"; }}
+                    onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.15)"; }}
                     onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
                   >
                     <Link
@@ -558,7 +558,7 @@ export default function MenuPage() {
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100"
                           style={{
-                            background: isB ? "rgba(139,92,246,0.06)" : "rgba(51,31,46,0.05)",
+                            background: isB ? "rgba(223,71,70,0.06)" : "rgba(51,31,46,0.05)",
                             transition: "opacity var(--t-fast)",
                             borderRadius: isB ? "20px 20px 0 0" : "16px 16px 0 0",
                             pointerEvents: "none",
