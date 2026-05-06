@@ -30,16 +30,17 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
   const { mode } = useDesignMode();
   const isB = mode === "b";
 
-  const activeColor = "#df4746";
+  const activeColor = "#352431";
   const inactiveColor = "var(--color-brown-soft-2)";
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 lg:hidden z-50 flex items-center justify-around glass"
       style={{
-        minHeight: 56,
+        minHeight: 60,
         borderTop: "none",
         boxShadow: "0 -1px 8px rgba(53,36,49,0.04), 0 -1px 0 rgba(51,31,46,0.06)",
+        paddingTop: 8,
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
@@ -72,7 +73,7 @@ export function BottomTabBar({ activePath }: BottomTabBarProps) {
                 <span
                   className="absolute flex items-center justify-center"
                   style={{
-                    top: -6,
+                    top: -4,
                     right: -10,
                     background: "#df4746",
                     color: "#fff",

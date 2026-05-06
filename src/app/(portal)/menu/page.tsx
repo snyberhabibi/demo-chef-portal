@@ -240,14 +240,19 @@ export default function MenuPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            padding: 20,
             pointerEvents: "none",
-          }}>
+          }}
+          className="create-dish-modal-container"
+          >
             <div
               className="card create-dish-modal"
               style={{
                 width: "100%",
                 maxWidth: 400,
-                margin: "0 16px",
+                maxHeight: "80dvh",
+                overflowY: "auto",
+                margin: "0",
                 position: "relative",
                 animation: "scaleIn 0.2s var(--ease-spring) both",
                 pointerEvents: "auto",
@@ -393,20 +398,24 @@ export default function MenuPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            padding: 20,
             pointerEvents: "none",
-          }}>
+          }}
+          className="create-dish-modal-container"
+          >
             <div
               className="card"
               style={{
                 width: "100%",
                 maxWidth: 480,
-                margin: "0 16px",
+                margin: "0",
                 position: "relative",
                 animation: "scaleIn 0.2s var(--ease-spring) both",
                 pointerEvents: "auto",
-                maxHeight: "85dvh",
+                maxHeight: "80dvh",
                 display: "flex",
                 flexDirection: "column",
+                overflowY: "auto",
               }}
               onClick={(e) => e.stopPropagation()}
             >

@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { TopBar } from "@/components/layout/top-bar";
 import { BottomTabBar } from "@/components/layout/bottom-tab-bar";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
+import { PullToRefresh } from "@/components/ui/pull-to-refresh";
 import { useDesignMode } from "@/lib/design-mode";
 
 interface RouteConfig {
@@ -162,7 +163,9 @@ export default function PortalLayout({
           className="flex-1 page-fade portal-main"
           style={{ padding: "16px", overflowX: "hidden" }}
         >
-          <div className="pb-16 lg:pb-0">{children}</div>
+          <PullToRefresh>
+            <div className="pb-20 lg:pb-0">{children}</div>
+          </PullToRefresh>
         </main>
       </div>
       <BottomTabBar activePath={activePath} />

@@ -797,6 +797,10 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
 /* Create Dish modal — bottom-sheet on mobile (<768px) */
 @media (max-width: 767px) {
+  .create-dish-modal-container {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
   .create-dish-modal {
     position: fixed !important;
     bottom: 0 !important;
@@ -808,6 +812,8 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
     border-radius: 20px 20px 0 0 !important;
     padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
     animation: slideUpSheet 0.28s var(--ease-spring) both !important;
+    max-height: 80dvh !important;
+    overflow-y: auto !important;
   }
 }
 
@@ -852,7 +858,7 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--c
 
 /* Prevent horizontal overflow globally */
 html, body { overflow-x: hidden; max-width: 100vw; }
-main { overflow-x: hidden; }
+main { overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
 /* ========================================================================
    PAGE-SPECIFIC OVERRIDES (moved from inline <style> tags)
@@ -974,18 +980,28 @@ main { overflow-x: hidden; }
   border-radius: 12px;
 }
 
-[data-design-mode="b"] .btn-red,
-[data-design-mode="b"] .btn-dark {
+[data-design-mode="b"] .btn-red {
   background: #df4746;
   border: none;
   box-shadow: 0 2px 8px rgba(223,71,70,0.2);
   border-radius: 12px;
 }
 
-[data-design-mode="b"] .btn-red:hover,
-[data-design-mode="b"] .btn-dark:hover {
+[data-design-mode="b"] .btn-red:hover {
   background: #c93232;
   box-shadow: 0 4px 12px rgba(223,71,70,0.25);
+}
+
+[data-design-mode="b"] .btn-dark {
+  background: #352431;
+  border: none;
+  box-shadow: 0 2px 8px rgba(53,36,49,0.2);
+  border-radius: 12px;
+}
+
+[data-design-mode="b"] .btn-dark:hover {
+  background: #42303d;
+  box-shadow: 0 4px 12px rgba(53,36,49,0.25);
 }
 
 /* Remove gradient text on headings — use solid color */
@@ -997,21 +1013,21 @@ main { overflow-x: hidden; }
   color: var(--color-brown);
 }
 
-/* Mode B — solid buttons instead of gradient */
+/* Mode B — solid buttons instead of gradient (CTA stays red) */
 [data-design-mode="b"] .btn-gradient {
   background: #df4746;
-  box-shadow: 0 2px 8px rgba(161,120,97,0.12);
+  box-shadow: 0 2px 8px rgba(223,71,70,0.2);
   border-radius: 12px;
   text-shadow: none;
 }
 [data-design-mode="b"] .btn-gradient:hover {
-  box-shadow: 0 4px 12px rgba(161,120,97,0.18);
+  box-shadow: 0 4px 12px rgba(223,71,70,0.25);
   filter: brightness(1.03);
 }
 
-/* Mode B — toggles use solid red */
+/* Mode B — toggles use aubergine (not action items) */
 [data-design-mode="b"] .toggle.is-on {
-  background: #df4746;
+  background: #352431;
 }
 
 /* Mode B — card gradient border becomes warm shadow */
@@ -1030,15 +1046,15 @@ main { overflow-x: hidden; }
   border-radius: 12px;
 }
 
-/* Mode B pill/badge — brand red */
+/* Mode B pill/badge — aubergine for general badges */
 [data-design-mode="b"] .pill-red {
-  background: rgba(223,71,70,0.12);
-  color: #df4746;
+  background: rgba(53,36,49,0.12);
+  color: #352431;
 }
 
-/* Mode B toggle — solid sage, not gradient */
+/* Mode B toggle — aubergine, not red or sage */
 [data-design-mode="b"] .toggle.is-on {
-  background: var(--color-sage);
+  background: #352431;
 }
 
 /* Serif accent headings — editorial/Notion feel */
