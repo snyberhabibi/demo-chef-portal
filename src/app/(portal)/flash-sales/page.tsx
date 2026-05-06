@@ -157,6 +157,22 @@ export default function FlashSalesPage() {
         })}
       </div>
 
+      {/* Mode B — Flash Sale Pro badge */}
+      {isB && activeTab === "live" && (
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 14, background: "linear-gradient(135deg, rgba(241,158,55,0.1), rgba(223,71,70,0.08))", border: "1px solid rgba(223,71,70,0.12)" }}>
+          <span style={{ fontSize: 20 }}>{"\u26A1"}</span>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--color-brown)" }}>Flash Sale Pro</div>
+            <div style={{ fontSize: 12, color: "var(--color-brown-soft)" }}>{counts.past} sales completed</div>
+          </div>
+          <div style={{ display: "flex", gap: 3, marginLeft: 4 }}>
+            {[1, 2, 3].map((s) => (
+              <span key={s} style={{ fontSize: 12, color: s <= counts.past ? "#f19e37" : "rgba(53,36,49,0.15)" }}>{"\u2605"}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* -------- Sale cards -------- */}
       {filtered.length === 0 ? (
         <div

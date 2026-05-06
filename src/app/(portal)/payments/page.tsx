@@ -240,6 +240,23 @@ export default function PaymentsPage() {
             <div className="body-sm">Total earnings</div>
           </div>
 
+          {/* Mode B — Earnings Milestone */}
+          {isB && (
+            <div className="card" style={{ padding: "16px 20px", border: "1px solid rgba(53,36,49,0.08)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 18 }}>{"\uD83C\uDFAF"}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--color-brown)" }}>Next milestone: $2,500</div>
+                  <div style={{ fontSize: 12, color: "var(--color-brown-soft)" }}>$315.50 to go!</div>
+                </div>
+              </div>
+              <div style={{ height: 8, borderRadius: 4, background: "var(--color-cream-deep)", overflow: "hidden" }}>
+                <div style={{ height: "100%", borderRadius: 4, background: "linear-gradient(90deg, #df4746, #f19e37)", width: `${Math.round((2184.50 / 2500) * 100)}%`, transition: "width 0.6s ease" }} />
+              </div>
+              <div className="caption tnum" style={{ marginTop: 4 }}>$2,184.50 / $2,500</div>
+            </div>
+          )}
+
           <div className="card flex items-center justify-between">
             <div>
               <div className="eyebrow" style={{ marginBottom: 4 }}>Next Payout</div>

@@ -1133,7 +1133,7 @@ function ModeBGamified() {
       >
         <span style={{ fontSize: 28 }}>\uD83D\uDD25</span>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#1f2937" }}>7-week drop streak!</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#352431" }}>7-week drop streak!</div>
           <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
             {Array.from({ length: 7 }).map((_, i) => (
               <span

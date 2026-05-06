@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
 import { getOrderDetail, type OrderDetailData } from "@/lib/mock-data";
+import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
 /*  Order data — now from centralized @/lib/mock-data                  */
@@ -363,6 +364,8 @@ function statusLabel(s: string): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function OrderDetailPage() {
+  const { mode } = useDesignMode();
+  const isB = mode === "b";
   const { toast } = useToast();
   const params = useParams();
   const orderId = typeof params.id === "string" ? params.id : "";
@@ -482,7 +485,7 @@ export default function OrderDetailPage() {
                       background: isDone
                         ? "var(--color-sage)"
                         : isCurrent
-                          ? "var(--color-red)"
+                          ? (isB ? "linear-gradient(135deg, #df4746, #f19e37)" : "var(--color-red)")
                           : "var(--color-cream-sunken)",
                       color:
                         isDone || isCurrent ? "#fff" : "var(--color-brown-soft-2)",
@@ -543,7 +546,7 @@ export default function OrderDetailPage() {
         {/* ======== ETA card ======== */}
         <div
           className="card-gradient-border"
-          style={{ textAlign: "center", padding: "16px 24px" }}
+          style={{ textAlign: "center", padding: "16px 24px", ...(isB ? { boxShadow: "0 0 24px rgba(241,158,55,0.15), 0 0 48px rgba(223,71,70,0.08)" } : {}) }}
         >
           <div className="eyebrow">READY BY</div>
           <div
@@ -1039,7 +1042,7 @@ export default function OrderDetailPage() {
       >
         <button
           className={`btn btn-block ${actionBtnClass(orderStatus)}`}
-          style={{ minHeight: 48, borderRadius: 12, fontSize: 15 }}
+          style={{ minHeight: 48, borderRadius: 12, fontSize: 15, ...(isB ? { background: "linear-gradient(135deg, #df4746, #f19e37)", border: "none", color: "#fff" } : {}) }}
           onClick={advanceStatus}
         >
           {actionButtonLabel(orderStatus)} &rarr;

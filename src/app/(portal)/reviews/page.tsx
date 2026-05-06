@@ -247,6 +247,28 @@ export default function ReviewsPage() {
 
       <div className="accent-line" />
 
+      {/* Mode B — Reply Streak */}
+      {isB && activeTab === "Chef Profile" && (() => {
+        const repliedCount = reviews.filter(r => r.reply).length;
+        const totalReviews = reviews.length;
+        const responsePct = totalReviews > 0 ? Math.round((repliedCount / totalReviews) * 100) : 0;
+        return (
+          <div className="card" style={{ padding: "16px 20px", border: "1px solid rgba(53,36,49,0.08)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <span style={{ fontSize: 20 }}>{"\uD83D\uDCAC"}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "var(--color-brown)" }}>Reply streak: {repliedCount} reviews replied!</div>
+                <div style={{ fontSize: 12, color: "#7daf62", fontWeight: 700, marginTop: 2 }}>+5 XP per reply</div>
+              </div>
+            </div>
+            <div style={{ height: 6, borderRadius: 3, background: "var(--color-cream-deep)", overflow: "hidden" }}>
+              <div style={{ height: "100%", borderRadius: 3, background: "linear-gradient(90deg, #7daf62, #a4d48a)", width: `${responsePct}%`, transition: "width 0.6s ease" }} />
+            </div>
+            <div className="caption tnum" style={{ marginTop: 4 }}>{responsePct}% response rate</div>
+          </div>
+        );
+      })()}
+
       {/* Chef Profile tab */}
       {activeTab === "Chef Profile" && (
         <>
