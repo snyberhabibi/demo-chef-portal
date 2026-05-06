@@ -190,7 +190,7 @@ function getGreeting(): string {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 export default function DashboardPage() {
-  const { isNewApplicant } = useDesignMode();
+  const { isNewApplicant, setDemoMode } = useDesignMode();
   const [mode, setMode] = useState<"A" | "B">("B");
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 300); return () => clearTimeout(t); }, []);
@@ -217,8 +217,9 @@ export default function DashboardPage() {
 
   return (
     <div className="section-stack">
-      {/* Mode toggle — subtle segmented control (hidden in new-applicant mode) */}
-      {!isNewApplicant && (
+      {/* Top row: mode toggle + demo toggle */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+      {!isNewApplicant ? (
         <div
           style={{
             display: "inline-flex",
@@ -263,7 +264,32 @@ export default function DashboardPage() {
             Dashboard
           </button>
         </div>
+      ) : (
+        <div />
       )}
+
+      {/* Demo mode toggle — top right */}
+      <button
+        onClick={() => setDemoMode(isNewApplicant ? "active" : "new-applicant")}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "6px 14px",
+          fontSize: 12,
+          fontWeight: 600,
+          borderRadius: 8,
+          border: `1px solid ${isNewApplicant ? "var(--color-sage)" : "rgba(53,36,49,0.12)"}`,
+          background: isNewApplicant ? "var(--color-sage-soft)" : "transparent",
+          color: isNewApplicant ? "var(--color-sage-deep)" : "var(--color-brown-soft-2)",
+          cursor: "pointer",
+          transition: "all var(--t-fast)",
+        }}
+      >
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: isNewApplicant ? "var(--color-sage)" : "var(--color-brown-soft-2)" }} />
+        {isNewApplicant ? "Demo: New Applicant" : "Demo Mode"}
+      </button>
+      </div>
 
       {effectiveMode === "A" ? <ModeA /> : <ModeB />}
     </div>
