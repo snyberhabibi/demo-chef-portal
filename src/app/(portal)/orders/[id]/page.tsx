@@ -31,7 +31,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "confirmed",
     orderMethod: "delivery",
     items: [
-      { name: "Falafel Wrap", qty: 1, portion: "Regular", customizations: [{ label: "SPICE", value: "Mild" }], price: "$14.00", image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop" },
+      { name: "Falafel Wrap", qty: 1, portion: "Regular", customizations: [{ label: "SPICE", value: "Mild" }], price: "$14.00", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop" },
       { name: "Smoky Hummus", qty: 1, portion: "Regular", customizations: [], price: "$10.00", image: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&h=450&fit=crop" },
     ],
     customer: { name: "Marcus Thompson", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", phone: "+14695550199", email: "marcus.t@email.com", address: "1200 Main St, Dallas", mapsQuery: "1200+Main+St+Dallas" },
@@ -183,7 +183,7 @@ const _LEGACY_HASH_DATA: Record<string, OrderDetailData> = {
     orderStatus: "ready",
     orderMethod: "pickup",
     items: [
-      { name: "Crispy Falafel", qty: 4, portion: "Regular", customizations: [], price: "$36.00", image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop" },
+      { name: "Crispy Falafel", qty: 4, portion: "Regular", customizations: [], price: "$36.00", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop" },
     ],
     customer: { name: "Nadia Khalil", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop", phone: "+14695550122", email: "nadia.k@email.com", address: "222 Birch St, Garland", mapsQuery: "222+Birch+St+Garland" },
     timeline: [

@@ -251,7 +251,7 @@ export function QuantityBundleDemo() {
     { id: "3", name: "Beef & Rice", image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop", basePrice: 14, priceAdjustment: 2, maxQty: 4 },
     { id: "4", name: "Veggie & Rice", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&h=450&fit=crop", basePrice: 10, priceAdjustment: -2, maxQty: 4 },
     { id: "5", name: "Chicken Mandi", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&h=450&fit=crop", basePrice: 13, priceAdjustment: 1, maxQty: 3 },
-    { id: "6", name: "Falafel Bowl", image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop", basePrice: 11, priceAdjustment: -1, maxQty: 4 },
+    { id: "6", name: "Falafel Bowl", image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop", basePrice: 11, priceAdjustment: -1, maxQty: 4 },
   ];
 
   return (

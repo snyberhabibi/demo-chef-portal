@@ -9,6 +9,7 @@ import {
   MapPin,
   Settings,
   User,
+  HelpCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -48,6 +49,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { href: "/profile", label: "Profile", icon: User },
       { href: "/settings", label: "Settings", icon: Settings },
+      { href: "/help", label: "Help", icon: HelpCircle },
     ],
   },
 ];

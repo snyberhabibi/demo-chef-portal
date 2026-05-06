@@ -203,7 +203,7 @@ export const dishes: Dish[] = [
     name: "Crispy Falafel",
     price: 12,
     description: "Herb-packed chickpea fritters fried until golden and served with tahini sauce.",
-    image: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=600&h=450&fit=crop",
+    image: "https://images.unsplash.com/photo-1549395156-e0c1fe6fc7a5?w=600&h=450&fit=crop",
     category: "Appetizers",
     cuisine: "Egyptian",
     status: "published",
