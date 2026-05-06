@@ -238,156 +238,160 @@ export default function MenuPage() {
       {/* ── Create Dish Modal ── */}
       {showCreateModal && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 70 }}
-          onClick={(e) => { if (e.target === e.currentTarget) setShowCreateModal(false); }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 70,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
         >
           {/* Backdrop */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(51,31,46,0.45)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-          }} onClick={() => setShowCreateModal(false)} />
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(53,36,49,0.4)",
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+            }}
+            onClick={() => setShowCreateModal(false)}
+          />
 
-          {/* Desktop: centered card / Mobile: bottom-sheet style */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-            pointerEvents: "none",
-          }}
-          className="create-dish-modal-container"
+          {/* Content */}
+          <div
+            className="card create-dish-modal"
+            style={{
+              position: "relative",
+              zIndex: 1,
+              background: "#fff",
+              borderRadius: "20px 20px 0 0",
+              padding: "20px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+              width: "100%",
+              maxWidth: 440,
+              maxHeight: "85dvh",
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+              animation: "scaleIn 0.2s var(--ease-spring) both",
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="card create-dish-modal"
+            {/* Drag handle */}
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
+
+            <button
+              onClick={() => setShowCreateModal(false)}
               style={{
-                width: "100%",
-                maxWidth: 400,
-                maxHeight: "80dvh",
-                overflowY: "auto",
-                margin: "0",
-                position: "relative",
-                animation: "scaleIn 0.2s var(--ease-spring) both",
-                pointerEvents: "auto",
+                position: "absolute",
+                top: 12,
+                right: 12,
+                background: "rgba(51,31,46,0.06)",
+                border: "none",
+                color: "var(--color-brown-soft)",
+                width: 32,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 10,
+                cursor: "pointer",
+                transition: "background var(--t-fast), color var(--t-fast)",
               }}
-              onClick={(e) => e.stopPropagation()}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.1)"; e.currentTarget.style.color = "var(--color-brown)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.06)"; e.currentTarget.style.color = "var(--color-brown-soft)"; }}
             >
-              <button
-                onClick={() => setShowCreateModal(false)}
+              <X size={16} />
+            </button>
+
+            <h2 className="heading-md" style={{ marginBottom: 4 }}>
+              Create New Dish
+            </h2>
+            <p className="body-sm" style={{ margin: "0 0 24px 0" }}>
+              Choose how you want to create your dish
+            </p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Link
+                href="/menu/new"
+                className="card card-hover"
                 style={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  background: "rgba(51,31,46,0.06)",
-                  border: "none",
-                  color: "var(--color-brown-soft)",
-                  width: 32,
-                  height: 32,
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: 10,
-                  cursor: "pointer",
-                  transition: "background var(--t-fast), color var(--t-fast)",
+                  padding: "28px 16px",
+                  textDecoration: "none",
+                  color: "inherit",
+                  textAlign: "center",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.1)"; e.currentTarget.style.color = "var(--color-brown)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(51,31,46,0.06)"; e.currentTarget.style.color = "var(--color-brown-soft)"; }}
               >
-                <X size={16} />
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 10,
+                    background: "var(--color-cream-deep)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 12,
+                    color: "var(--color-brown)",
+                  }}
+                >
+                  <ClipboardList size={22} strokeWidth={1.8} />
+                </div>
+                <div className="heading-sm" style={{ marginBottom: 4 }}>
+                  From Scratch
+                </div>
+                <div className="body-sm">
+                  Start with a blank canvas
+                </div>
+              </Link>
+
+              <button
+                onClick={() => {
+                  toast("Template library \u2014 coming soon", "info");
+                  setShowCreateModal(false);
+                }}
+                className="card card-hover"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "28px 16px",
+                  textDecoration: "none",
+                  color: "inherit",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  border: "none",
+                  width: "100%",
+                }}
+              >
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 10,
+                    background: "var(--color-cream-deep)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 12,
+                    color: "var(--color-brown)",
+                  }}
+                >
+                  <Copy size={22} strokeWidth={1.8} />
+                </div>
+                <div className="heading-sm" style={{ marginBottom: 4 }}>
+                  From Template
+                </div>
+                <div className="body-sm">
+                  Use a pre-made template
+                </div>
               </button>
-
-              <h2 className="heading-md" style={{ marginBottom: 4 }}>
-                Create New Dish
-              </h2>
-              <p className="body-sm" style={{ margin: "0 0 24px 0" }}>
-                Choose how you want to create your dish
-              </p>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <Link
-                  href="/menu/new"
-                  className="card card-hover"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "28px 16px",
-                    textDecoration: "none",
-                    color: "inherit",
-                    textAlign: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 10,
-                      background: "var(--color-cream-deep)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 12,
-                      color: "var(--color-brown)",
-                    }}
-                  >
-                    <ClipboardList size={22} strokeWidth={1.8} />
-                  </div>
-                  <div className="heading-sm" style={{ marginBottom: 4 }}>
-                    From Scratch
-                  </div>
-                  <div className="body-sm">
-                    Start with a blank canvas
-                  </div>
-                </Link>
-
-                <button
-                  onClick={() => {
-                    toast("Template library \u2014 coming soon", "info");
-                    setShowCreateModal(false);
-                  }}
-                  className="card card-hover"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "28px 16px",
-                    textDecoration: "none",
-                    color: "inherit",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    border: "none",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 10,
-                      background: "var(--color-cream-deep)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 12,
-                      color: "var(--color-brown)",
-                    }}
-                  >
-                    <Copy size={22} strokeWidth={1.8} />
-                  </div>
-                  <div className="heading-sm" style={{ marginBottom: 4 }}>
-                    From Template
-                  </div>
-                  <div className="body-sm">
-                    Use a pre-made template
-                  </div>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -396,195 +400,198 @@ export default function MenuPage() {
       {/* ── Create Bundle Modal ── */}
       {showBundleModal && (
         <div
-          style={{ position: "fixed", inset: 0, zIndex: 70 }}
-          onClick={(e) => { if (e.target === e.currentTarget) setShowBundleModal(false); }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 70,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
         >
           {/* Backdrop */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(51,31,46,0.45)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-          }} onClick={() => setShowBundleModal(false)} />
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(53,36,49,0.4)",
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+            }}
+            onClick={() => setShowBundleModal(false)}
+          />
 
-          {/* Modal content */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-            pointerEvents: "none",
-          }}
-          className="create-dish-modal-container"
+          {/* Content */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              background: "#fff",
+              borderRadius: "20px 20px 0 0",
+              padding: "20px",
+              paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+              width: "100%",
+              maxWidth: 440,
+              maxHeight: "85dvh",
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+              display: "flex",
+              flexDirection: "column",
+              animation: "scaleIn 0.2s var(--ease-spring) both",
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="card"
+            {/* Drag handle */}
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
+
+            <button
+              onClick={() => setShowBundleModal(false)}
               style={{
-                width: "100%",
-                maxWidth: 480,
-                margin: "0",
-                position: "relative",
-                animation: "scaleIn 0.2s var(--ease-spring) both",
-                pointerEvents: "auto",
-                maxHeight: "80dvh",
+                position: "absolute",
+                top: 12,
+                right: 12,
+                background: "rgba(51,31,46,0.06)",
+                border: "none",
+                color: "var(--color-brown-soft)",
+                width: 32,
+                height: 32,
                 display: "flex",
-                flexDirection: "column",
-                overflowY: "auto",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 10,
+                cursor: "pointer",
+                zIndex: 2,
               }}
-              onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setShowBundleModal(false)}
+              <X size={16} />
+            </button>
+
+            <h2 className="heading-md" style={{ marginBottom: 4 }}>
+              Create New Bundle
+            </h2>
+            <p className="body-sm" style={{ margin: "0 0 20px 0" }}>
+              Combine dishes into a curated meal bundle
+            </p>
+
+            {/* Bundle Name */}
+            <div style={{ marginBottom: 14 }}>
+              <label className="caption" style={{ display: "block", marginBottom: 6, fontWeight: 600 }}>Bundle Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Family Feast, Date Night Box"
+                value={bundleName}
+                onChange={(e) => setBundleName(e.target.value)}
                 style={{
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  background: "rgba(51,31,46,0.06)",
-                  border: "none",
-                  color: "var(--color-brown-soft)",
-                  width: 32,
-                  height: 32,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  width: "100%",
+                  height: 42,
+                  padding: "0 14px",
                   borderRadius: 10,
-                  cursor: "pointer",
-                  zIndex: 2,
+                  border: "1px solid rgba(51,31,46,0.12)",
+                  background: "#fff",
+                  color: "var(--color-brown)",
+                  fontSize: 14,
                 }}
-              >
-                <X size={16} />
-              </button>
+              />
+            </div>
 
-              <h2 className="heading-md" style={{ marginBottom: 4 }}>
-                Create New Bundle
-              </h2>
-              <p className="body-sm" style={{ margin: "0 0 20px 0" }}>
-                Combine dishes into a curated meal bundle
-              </p>
+            {/* Bundle Price */}
+            <div style={{ marginBottom: 16 }}>
+              <label className="caption" style={{ display: "block", marginBottom: 6, fontWeight: 600 }}>Price ($)</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="29.99"
+                value={bundlePrice}
+                onChange={(e) => setBundlePrice(e.target.value)}
+                style={{
+                  width: "100%",
+                  height: 42,
+                  padding: "0 14px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(51,31,46,0.12)",
+                  background: "#fff",
+                  color: "var(--color-brown)",
+                  fontSize: 14,
+                }}
+              />
+            </div>
 
-              {/* Bundle Name */}
-              <div style={{ marginBottom: 14 }}>
-                <label className="caption" style={{ display: "block", marginBottom: 6, fontWeight: 600 }}>Bundle Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Family Feast, Date Night Box"
-                  value={bundleName}
-                  onChange={(e) => setBundleName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    height: 42,
-                    padding: "0 14px",
-                    borderRadius: 10,
-                    border: "1px solid rgba(51,31,46,0.12)",
-                    background: "#fff",
-                    color: "var(--color-brown)",
-                    fontSize: 14,
-                  }}
-                />
-              </div>
-
-              {/* Bundle Price */}
-              <div style={{ marginBottom: 16 }}>
-                <label className="caption" style={{ display: "block", marginBottom: 6, fontWeight: 600 }}>Price ($)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="29.99"
-                  value={bundlePrice}
-                  onChange={(e) => setBundlePrice(e.target.value)}
-                  style={{
-                    width: "100%",
-                    height: 42,
-                    padding: "0 14px",
-                    borderRadius: 10,
-                    border: "1px solid rgba(51,31,46,0.12)",
-                    background: "#fff",
-                    color: "var(--color-brown)",
-                    fontSize: 14,
-                  }}
-                />
-              </div>
-
-              {/* Dish Selection */}
-              <div style={{ marginBottom: 16 }}>
-                <label className="caption" style={{ display: "block", marginBottom: 8, fontWeight: 600 }}>
-                  Select Dishes ({selectedDishIds.size} selected)
-                </label>
-                <div style={{
-                  maxHeight: 220,
-                  overflowY: "auto",
-                  border: "1px solid rgba(51,31,46,0.08)",
-                  borderRadius: 12,
-                }}>
-                  {dishes.filter((d) => d.status === "published").map((dish) => {
-                    const isSelected = selectedDishIds.has(dish.id);
-                    return (
-                      <label
-                        key={dish.id}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 12,
-                          padding: "10px 14px",
-                          cursor: "pointer",
-                          borderBottom: "1px solid rgba(51,31,46,0.04)",
-                          background: isSelected ? "rgba(53,36,49,0.04)" : "transparent",
-                          transition: "background var(--t-fast)",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleDishInBundle(dish.id)}
-                          style={{ width: 18, height: 18, accentColor: "#352431", flexShrink: 0 }}
-                        />
-                        <img
-                          src={dish.image}
-                          alt={dish.name}
-                          style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
-                        />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)", lineHeight: 1.3 }}>
-                            {dish.name}
-                          </div>
-                          <div className="caption">{dish.category}</div>
+            {/* Dish Selection */}
+            <div style={{ marginBottom: 16 }}>
+              <label className="caption" style={{ display: "block", marginBottom: 8, fontWeight: 600 }}>
+                Select Dishes ({selectedDishIds.size} selected)
+              </label>
+              <div style={{
+                maxHeight: 220,
+                overflowY: "auto",
+                border: "1px solid rgba(51,31,46,0.08)",
+                borderRadius: 12,
+              }}>
+                {dishes.filter((d) => d.status === "published").map((dish) => {
+                  const isSelected = selectedDishIds.has(dish.id);
+                  return (
+                    <label
+                      key={dish.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "10px 14px",
+                        cursor: "pointer",
+                        borderBottom: "1px solid rgba(51,31,46,0.04)",
+                        background: isSelected ? "rgba(53,36,49,0.04)" : "transparent",
+                        transition: "background var(--t-fast)",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleDishInBundle(dish.id)}
+                        style={{ width: 18, height: 18, accentColor: "#352431", flexShrink: 0 }}
+                      />
+                      <img
+                        src={dish.image}
+                        alt={dish.name}
+                        style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown)", lineHeight: 1.3 }}>
+                          {dish.name}
                         </div>
-                        <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown-soft)", flexShrink: 0 }}>
-                          ${dish.price.toFixed(2)}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
+                        <div className="caption">{dish.category}</div>
+                      </div>
+                      <span className="tnum" style={{ fontSize: 13, fontWeight: 600, color: "var(--color-brown-soft)", flexShrink: 0 }}>
+                        ${dish.price.toFixed(2)}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Actions */}
-              <div style={{ display: "flex", gap: 10, marginTop: "auto" }}>
-                <button
-                  className="btn btn-ghost"
-                  style={{ flex: 1 }}
-                  onClick={() => setShowBundleModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-dark"
-                  style={{
-                    flex: 1,
-                    background: "#df4746",
-                    border: "none",
-                    borderRadius: 12,
-                    opacity: bundleName.trim() && bundlePrice && selectedDishIds.size > 0 ? 1 : 0.5,
-                  }}
-                  onClick={saveBundle}
-                >
-                  Save Bundle
-                </button>
-              </div>
+            {/* Actions */}
+            <div style={{ display: "flex", gap: 10, marginTop: "auto" }}>
+              <button
+                className="btn btn-ghost"
+                style={{ flex: 1 }}
+                onClick={() => setShowBundleModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-dark"
+                style={{
+                  flex: 1,
+                  background: "#df4746",
+                  border: "none",
+                  borderRadius: 12,
+                  opacity: bundleName.trim() && bundlePrice && selectedDishIds.size > 0 ? 1 : 0.5,
+                }}
+                onClick={saveBundle}
+              >
+                Save Bundle
+              </button>
             </div>
           </div>
         </div>

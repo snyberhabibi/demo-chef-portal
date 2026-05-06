@@ -84,22 +84,45 @@ function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
   if (!isOpen) return null;
   return (
     <div
-      style={{ position: "fixed", inset: 0, zIndex: 70 }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 70,
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+      }}
     >
-      <div style={{ position: "absolute", inset: 0, background: "rgba(53,36,49,0.3)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }} />
-      <div style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        background: "#fff",
-        borderRadius: "20px 20px 0 0",
-        padding: "12px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
-        maxHeight: "70dvh",
-        overflowY: "auto",
-        animation: "slideUpSheet 0.3s cubic-bezier(0.22,1,0.36,1) both",
-      }}>
+      {/* Backdrop */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(53,36,49,0.4)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
+        }}
+        onClick={onClose}
+      />
+      {/* Content */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          background: "#fff",
+          borderRadius: "20px 20px 0 0",
+          padding: "20px",
+          paddingBottom: "calc(20px + env(safe-area-inset-bottom, 0px))",
+          width: "100%",
+          maxWidth: 440,
+          maxHeight: "85dvh",
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          animation: "slideUpSheet 0.3s cubic-bezier(0.22,1,0.36,1) both",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Drag handle */}
         <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
         {children}
       </div>
