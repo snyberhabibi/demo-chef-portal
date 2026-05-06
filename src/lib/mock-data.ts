@@ -9,6 +9,17 @@
 
 export type DishStatus = "published" | "draft" | "archived";
 
+export interface RecipeIngredient {
+  name: string;
+  quantity: string;
+}
+
+export interface Recipe {
+  portionSize: string;
+  ingredients: RecipeIngredient[];
+  steps: string[];
+}
+
 export interface Dish {
   id: string;
   name: string;
@@ -19,6 +30,7 @@ export interface Dish {
   cuisine: string;
   status: DishStatus;
   rating: number;
+  recipes?: Recipe[];
 }
 
 export type OrderStatus =
@@ -153,6 +165,50 @@ export const dishes: Dish[] = [
     cuisine: "Jordanian",
     status: "published",
     rating: 5.0,
+    recipes: [
+      {
+        portionSize: "Individual",
+        ingredients: [
+          { name: "Lamb shoulder", quantity: "0.5 lb" },
+          { name: "Basmati rice", quantity: "1 cup" },
+          { name: "Jameed yogurt", quantity: "0.5 cup" },
+          { name: "Pine nuts", quantity: "2 tbsp" },
+          { name: "Turmeric", quantity: "1 tsp" },
+          { name: "Butter", quantity: "2 tbsp" },
+        ],
+        steps: [
+          "Soak basmati rice in cold water for 30 minutes, then drain",
+          "Rehydrate jameed in warm water and blend until smooth",
+          "Season lamb shoulder with salt, pepper, and turmeric",
+          "Simmer lamb in jameed sauce on low heat for 90 minutes until tender",
+          "Cook rice with butter and a pinch of turmeric until fluffy",
+          "Assemble plate: rice base, lamb on top, pour jameed sauce over",
+          "Toast pine nuts in butter and garnish generously",
+        ],
+      },
+      {
+        portionSize: "Family Tray",
+        ingredients: [
+          { name: "Lamb shoulder", quantity: "2 lb" },
+          { name: "Basmati rice", quantity: "4 cups" },
+          { name: "Jameed yogurt", quantity: "2 cups" },
+          { name: "Pine nuts", quantity: "0.5 cup" },
+          { name: "Turmeric", quantity: "1 tbsp" },
+          { name: "Butter", quantity: "0.5 cup" },
+          { name: "Flatbread (markook)", quantity: "2 sheets" },
+        ],
+        steps: [
+          "Soak basmati rice in cold water for 30 minutes, then drain",
+          "Rehydrate jameed in warm water and blend until smooth",
+          "Season lamb shoulder with salt, pepper, and turmeric",
+          "Simmer lamb in jameed sauce on low heat for 2 hours until falling off the bone",
+          "Cook rice in batches with butter and turmeric until fluffy",
+          "Line large tray with flatbread, layer rice, arrange lamb pieces on top",
+          "Pour hot jameed sauce over the entire tray",
+          "Toast pine nuts in butter and garnish generously over the top",
+        ],
+      },
+    ],
   },
   {
     id: "knafeh",
@@ -164,6 +220,31 @@ export const dishes: Dish[] = [
     cuisine: "Palestinian",
     status: "published",
     rating: 4.8,
+    recipes: [
+      {
+        portionSize: "Whole",
+        ingredients: [
+          { name: "Shredded phyllo (kataifi)", quantity: "1 lb" },
+          { name: "Mozzarella (shredded)", quantity: "1.5 cups" },
+          { name: "Ricotta cheese", quantity: "0.5 cup" },
+          { name: "Sugar syrup (qater)", quantity: "1 cup" },
+          { name: "Pistachios (crushed)", quantity: "0.25 cup" },
+          { name: "Butter (melted)", quantity: "0.5 cup" },
+          { name: "Orange blossom water", quantity: "1 tbsp" },
+        ],
+        steps: [
+          "Melt butter and mix thoroughly with shredded phyllo until every strand is coated",
+          "Press half the phyllo into a buttered round pan in an even layer",
+          "Mix mozzarella and ricotta, spread evenly over the phyllo base",
+          "Top with remaining phyllo and press down firmly",
+          "Bake at 375F for 30 minutes until golden and crispy on top",
+          "Prepare sugar syrup by boiling sugar and water, add orange blossom water, cool slightly",
+          "Flip knafeh onto serving plate so the crispy side faces up",
+          "Pour warm syrup evenly over the hot knafeh",
+          "Garnish with crushed pistachios and serve immediately",
+        ],
+      },
+    ],
   },
   {
     id: "baklava",
@@ -186,6 +267,28 @@ export const dishes: Dish[] = [
     cuisine: "Lebanese",
     status: "published",
     rating: 4.9,
+    recipes: [
+      {
+        portionSize: "Individual",
+        ingredients: [
+          { name: "Chicken thigh (boneless)", quantity: "6 oz" },
+          { name: "Shawarma spice blend", quantity: "1 tbsp" },
+          { name: "Garlic sauce (toum)", quantity: "2 tbsp" },
+          { name: "Pickled turnips", quantity: "3-4 slices" },
+          { name: "Pita bread", quantity: "1 piece" },
+          { name: "Lemon juice", quantity: "1 tbsp" },
+          { name: "Olive oil", quantity: "1 tbsp" },
+        ],
+        steps: [
+          "Marinate chicken thigh in shawarma spice, lemon juice, and olive oil for at least 2 hours",
+          "Heat a cast iron pan or grill to high heat",
+          "Sear chicken for 4-5 minutes per side until charred and cooked through",
+          "Rest chicken for 2 minutes, then slice thinly against the grain",
+          "Warm pita bread on the grill for 30 seconds each side",
+          "Assemble: spread toum on pita, add sliced chicken, top with pickled turnips",
+        ],
+      },
+    ],
   },
   {
     id: "hummus",
@@ -208,6 +311,30 @@ export const dishes: Dish[] = [
     cuisine: "Egyptian",
     status: "published",
     rating: 4.7,
+    recipes: [
+      {
+        portionSize: "Individual",
+        ingredients: [
+          { name: "Dried chickpeas (soaked overnight)", quantity: "1 cup" },
+          { name: "Fresh parsley", quantity: "0.5 cup" },
+          { name: "Yellow onion (quartered)", quantity: "0.25" },
+          { name: "Garlic cloves", quantity: "3" },
+          { name: "Ground cumin", quantity: "1 tsp" },
+          { name: "Ground coriander", quantity: "1 tsp" },
+          { name: "Baking powder", quantity: "0.5 tsp" },
+          { name: "Salt", quantity: "0.75 tsp" },
+        ],
+        steps: [
+          "Drain soaked chickpeas thoroughly and pat dry",
+          "Pulse chickpeas, parsley, onion, and garlic in a food processor until coarsely ground (not a paste)",
+          "Mix in cumin, coriander, baking powder, and salt",
+          "Refrigerate mixture for 30 minutes to firm up",
+          "Shape into small balls (about 1.5 inches) using wet hands",
+          "Deep fry at 350F for 3-4 minutes until deep golden brown and crispy",
+          "Drain on paper towels and serve immediately with tahini",
+        ],
+      },
+    ],
   },
   {
     id: "tabouleh",
@@ -252,6 +379,28 @@ export const dishes: Dish[] = [
     cuisine: "Syrian",
     status: "published",
     rating: 4.8,
+    recipes: [
+      {
+        portionSize: "Individual",
+        ingredients: [
+          { name: "Fine bulgur wheat", quantity: "1 cup" },
+          { name: "Ground lamb (lean)", quantity: "0.5 lb" },
+          { name: "Onion (grated)", quantity: "0.5" },
+          { name: "Allspice", quantity: "1 tsp" },
+          { name: "Pine nuts", quantity: "2 tbsp" },
+          { name: "Caramelized onions", quantity: "0.25 cup" },
+          { name: "Salt", quantity: "0.5 tsp" },
+        ],
+        steps: [
+          "Soak fine bulgur in cold water for 20 minutes, drain and squeeze dry",
+          "For the shell: combine bulgur, half the lamb, grated onion, allspice, and salt in a food processor until smooth and dough-like",
+          "For the filling: saute remaining lamb with caramelized onions and pine nuts until browned",
+          "Shape shell mixture into oval balls, hollow out the center, fill with lamb mixture, and seal",
+          "Deep fry at 350F for 4-5 minutes until the shell is crispy and deep golden",
+          "Drain on paper towels and serve hot with yogurt or tahini",
+        ],
+      },
+    ],
   },
   {
     id: "manaqish",
@@ -269,6 +418,12 @@ export const dishes: Dish[] = [
 /* Helper to look up a dish by ID */
 export function getDish(id: string): Dish | undefined {
   return dishes.find((d) => d.id === id);
+}
+
+/* Helper to get recipes for a dish */
+export function getRecipesForDish(dishId: string): Recipe[] {
+  const dish = dishes.find((d) => d.id === dishId);
+  return dish?.recipes || [];
 }
 
 /* ------------------------------------------------------------------ */

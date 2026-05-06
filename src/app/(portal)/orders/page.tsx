@@ -3,9 +3,9 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, Truck, ShoppingBag, Package, ChevronRight, MessageSquare, ExternalLink, ClipboardList, LayoutGrid, List, Volume2, VolumeX, X } from "lucide-react";
+import { Search, Truck, ShoppingBag, Package, ChevronRight, MessageSquare, ExternalLink, ClipboardList, LayoutGrid, List, Volume2, VolumeX, X, BookOpen } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
-import { orders, type Order, type OrderStatus, type Urgency } from "@/lib/mock-data";
+import { orders, dishes, type Order, type OrderStatus, type Urgency } from "@/lib/mock-data";
 import { statusDotColor } from "@/lib/utils/status-helpers";
 import { useDesignMode } from "@/lib/design-mode";
 
@@ -397,6 +397,16 @@ function PrepListView({ orders: allOrders }: { orders: Order[] }) {
 
   if (prepGroups.length === 0) return (<div className="card" style={{ textAlign: "center", padding: "60px 20px" }}><ClipboardList size={40} strokeWidth={1.2} style={{ color: "var(--color-brown-soft-2)", margin: "0 auto 12px" }} /><div className="heading-md" style={{ marginBottom: 6 }}>Nothing to prep</div><div className="body-sm">No active orders for today.</div></div>);
 
+  /* Check if a prep item name matches any dish with recipes */
+  const dishHasRecipe = (itemName: string): boolean => {
+    return dishes.some(
+      (d) =>
+        (d.recipes && d.recipes.length > 0) &&
+        (d.name.toLowerCase() === itemName.toLowerCase() ||
+         itemName.toLowerCase().includes(d.name.toLowerCase().split(" ").slice(-1)[0]))
+    );
+  };
+
   return (
     <div>
       <div className="flex items-center gap-2" style={{ marginBottom: 12 }}><ClipboardList size={16} strokeWidth={2} style={{ color: "var(--color-brown-soft-2)" }} /><span className="eyebrow">PREP LIST &mdash; Today&apos;s Orders</span></div>
@@ -406,6 +416,12 @@ function PrepListView({ orders: allOrders }: { orders: Order[] }) {
             <div className="flex items-center gap-2" style={{ marginBottom: 8 }}>
               <span style={{ fontSize: 15, fontWeight: 700, color: "var(--color-brown)" }}>{group.name}</span>
               <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 24, height: 22, padding: "0 7px", borderRadius: 9999, fontSize: 12, fontWeight: 700, fontVariantNumeric: "tabular-nums", background: "var(--color-cream-sunken)", color: "var(--color-brown-soft)" }}>{group.totalQty} total</span>
+              {dishHasRecipe(group.name) && (
+                <Link href="/cookbook" style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 11, fontWeight: 600, color: "var(--color-sage-deep)", textDecoration: "none", marginLeft: "auto" }}>
+                  <BookOpen size={11} strokeWidth={2} />
+                  View recipe
+                </Link>
+              )}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               {group.customers.map((c, ci) => (

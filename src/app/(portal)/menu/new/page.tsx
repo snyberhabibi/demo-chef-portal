@@ -17,6 +17,7 @@ import {
 import { useToast } from "@/components/ui/toast-provider";
 import { SectionCard } from "@/components/ui/section-card";
 import { useDesignMode } from "@/lib/design-mode";
+import { getRecipesForDish, type RecipeIngredient } from "@/lib/mock-data";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -141,6 +142,7 @@ function CreateDishPageInner() {
     leadTime: true,
     dietary: false,
     customizations: false,
+    recipe: false,
   });
 
   const toggleSection = (key: string) => {
@@ -224,6 +226,102 @@ function CreateDishPageInner() {
   ]);
   const [nextGroupId, setNextGroupId] = useState(3);
   const [nextModifierId, setNextModifierId] = useState(10);
+
+  /* ── Recipe (Private Notes) ── */
+  const [recipePortionIdx, setRecipePortionIdx] = useState(0);
+  const [recipeData, setRecipeData] = useState<
+    Record<number, { ingredients: RecipeIngredient[]; steps: string[] }>
+  >(() => {
+    if (!editId) return {};
+    // Initialize from mock data for edit mode
+    const recipes = getRecipesForDish(editId);
+    const data: Record<number, { ingredients: RecipeIngredient[]; steps: string[] }> = {};
+    recipes.forEach((r, idx) => {
+      data[idx] = {
+        ingredients: r.ingredients.map((ing) => ({ ...ing })),
+        steps: [...r.steps],
+      };
+    });
+    return data;
+  });
+
+  const currentPortionRecipe = recipeData[recipePortionIdx] || { ingredients: [], steps: [] };
+
+  const updateRecipeIngredient = (idx: number, field: "name" | "quantity", value: string) => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      const newIngredients = [...current.ingredients];
+      newIngredients[idx] = { ...newIngredients[idx], [field]: value };
+      return { ...prev, [recipePortionIdx]: { ...current, ingredients: newIngredients } };
+    });
+    markDirty();
+  };
+
+  const addRecipeIngredient = () => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      return {
+        ...prev,
+        [recipePortionIdx]: {
+          ...current,
+          ingredients: [...current.ingredients, { name: "", quantity: "" }],
+        },
+      };
+    });
+    markDirty();
+  };
+
+  const removeRecipeIngredient = (idx: number) => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      return {
+        ...prev,
+        [recipePortionIdx]: {
+          ...current,
+          ingredients: current.ingredients.filter((_, i) => i !== idx),
+        },
+      };
+    });
+    markDirty();
+  };
+
+  const updateRecipeStep = (idx: number, value: string) => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      const newSteps = [...current.steps];
+      newSteps[idx] = value;
+      return { ...prev, [recipePortionIdx]: { ...current, steps: newSteps } };
+    });
+    markDirty();
+  };
+
+  const addRecipeStep = () => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      return {
+        ...prev,
+        [recipePortionIdx]: {
+          ...current,
+          steps: [...current.steps, ""],
+        },
+      };
+    });
+    markDirty();
+  };
+
+  const removeRecipeStep = (idx: number) => {
+    setRecipeData((prev) => {
+      const current = prev[recipePortionIdx] || { ingredients: [], steps: [] };
+      return {
+        ...prev,
+        [recipePortionIdx]: {
+          ...current,
+          steps: current.steps.filter((_, i) => i !== idx),
+        },
+      };
+    });
+    markDirty();
+  };
 
   /* ── Handlers ── */
 
@@ -1899,6 +1997,220 @@ function CreateDishPageInner() {
                 </button>
               </div>
             ))}
+          </SectionCard>
+
+          {/* ════════════ Section 7: Recipe (Private Notes) ════════════ */}
+          <SectionCard
+            title="Recipe (Private Notes)"
+            subtitle="Your private kitchen notes per portion size"
+            open={openSections.recipe}
+            onToggle={() => toggleSection("recipe")}
+          >
+            {/* Portion size tabs — pulled from pricing sizeRows */}
+            {sizeRows.length > 1 && (
+              <div className="flex gap-2 flex-wrap" style={{ marginBottom: 20 }}>
+                {sizeRows.map((row, idx) => {
+                  const label = row.size || row.portionLabel || `Size ${idx + 1}`;
+                  const isActive = idx === recipePortionIdx;
+                  return (
+                    <button
+                      key={row.id}
+                      onClick={() => setRecipePortionIdx(idx)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "0 16px",
+                        height: 34,
+                        borderRadius: 9999,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        border: `1.5px solid ${isActive ? (isB ? "#df4746" : "var(--color-brown)") : "rgba(51,31,46,0.12)"}`,
+                        background: isActive ? (isB ? "#df4746" : "var(--color-brown)") : "transparent",
+                        color: isActive ? (isB ? "#fff" : "var(--color-cream)") : "var(--color-brown-soft)",
+                        transition: "all var(--t-fast) var(--ease-spring)",
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {sizeRows.length <= 1 && sizeRows[0] && (
+              <div className="eyebrow" style={{ marginBottom: 14 }}>
+                {sizeRows[0].size || sizeRows[0].portionLabel || "Default Portion"}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Ingredients */}
+              <div>
+                <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+                  <label className="field-label" style={{ marginBottom: 0 }}>Ingredients</label>
+                  <button onClick={addRecipeIngredient} className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>
+                    <Plus size={14} strokeWidth={2.5} />
+                    Add ingredient
+                  </button>
+                </div>
+
+                {currentPortionRecipe.ingredients.length === 0 ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "32px 20px",
+                      color: "var(--color-brown-soft-2)",
+                      fontSize: 13,
+                      background: "var(--color-cream-deep)",
+                      borderRadius: 10,
+                    }}
+                  >
+                    No ingredients yet — add your first ingredient above
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {/* Header */}
+                    <div className="hidden sm:flex items-center gap-2 eyebrow" style={{ padding: "4px 8px", fontSize: 10, letterSpacing: "0.08em" }}>
+                      <div style={{ flex: "2 1 200px" }}>Ingredient</div>
+                      <div style={{ flex: "1 1 120px" }}>Quantity</div>
+                      <div style={{ width: 32 }} />
+                    </div>
+                    {currentPortionRecipe.ingredients.map((ing, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 flex-wrap sm:flex-nowrap"
+                        style={{
+                          padding: "6px 8px",
+                          borderRadius: 10,
+                          background: "var(--color-cream-deep)",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder="e.g., Lamb shoulder"
+                          value={ing.name}
+                          onChange={(e) => updateRecipeIngredient(idx, "name", e.target.value)}
+                          style={{ flex: "2 1 200px", fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                        />
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder="e.g., 0.5 lb"
+                          value={ing.quantity}
+                          onChange={(e) => updateRecipeIngredient(idx, "quantity", e.target.value)}
+                          style={{ flex: "1 1 120px", fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                        />
+                        <button
+                          onClick={() => removeRecipeIngredient(idx)}
+                          style={{
+                            width: 32,
+                            height: 32,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 8,
+                            color: "var(--color-brown-soft-2)",
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Steps */}
+              <div>
+                <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>
+                  <label className="field-label" style={{ marginBottom: 0 }}>Steps</label>
+                  <button onClick={addRecipeStep} className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>
+                    <Plus size={14} strokeWidth={2.5} />
+                    Add step
+                  </button>
+                </div>
+
+                {currentPortionRecipe.steps.length === 0 ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "32px 20px",
+                      color: "var(--color-brown-soft-2)",
+                      fontSize: 13,
+                      background: "var(--color-cream-deep)",
+                      borderRadius: 10,
+                    }}
+                  >
+                    No steps yet — add your first step above
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {currentPortionRecipe.steps.map((step, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2"
+                        style={{
+                          padding: "6px 8px",
+                          borderRadius: 10,
+                          background: "var(--color-cream-deep)",
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: 24,
+                            height: 24,
+                            minWidth: 24,
+                            borderRadius: "50%",
+                            background: isB ? "rgba(223,71,70,0.08)" : "rgba(51,31,46,0.06)",
+                            color: isB ? "#df4746" : "var(--color-brown-soft)",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {idx + 1}
+                        </span>
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder={`Step ${idx + 1}...`}
+                          value={step}
+                          onChange={(e) => updateRecipeStep(idx, e.target.value)}
+                          style={{ flex: 1, fontSize: 13, padding: "8px 10px", borderRadius: 8, minHeight: 36 }}
+                        />
+                        <button
+                          onClick={() => removeRecipeStep(idx)}
+                          style={{
+                            width: 32,
+                            height: 32,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 8,
+                            color: "var(--color-brown-soft-2)",
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </SectionCard>
 
           {/* ── Bottom bar (mobile: sticky glass, desktop: inline) ── */}

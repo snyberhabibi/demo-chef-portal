@@ -15,9 +15,11 @@ import {
   ExternalLink,
   Clock,
   Quote,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast-provider";
-import { getOrderDetail, type OrderDetailData } from "@/lib/mock-data";
+import { getOrderDetail, dishes, type OrderDetailData, type Recipe } from "@/lib/mock-data";
 import { useDesignMode } from "@/lib/design-mode";
 
 /* ------------------------------------------------------------------ */
@@ -409,6 +411,7 @@ export default function OrderDetailPage() {
   };
 
   const [cancelConfirm, setCancelConfirm] = useState(false);
+  const [recipeNotesOpen, setRecipeNotesOpen] = useState(false);
   const orderStatus = effectiveStatus;
   const curStep = currentStepIndex(orderStatus);
 
@@ -668,6 +671,9 @@ export default function OrderDetailPage() {
                 ))}
               </div>
             </div>
+
+            {/* -- Recipe Notes -- */}
+            <RecipeNotesSection items={items} isOpen={recipeNotesOpen} onToggle={() => setRecipeNotesOpen(!recipeNotesOpen)} isB={isB} />
 
             {/* -- Customer note (only for order #a8f2c1) -- */}
             {orderHash === "#a8f2c1" && (
@@ -1046,6 +1052,239 @@ export default function OrderDetailPage() {
         >
           {actionButtonLabel(orderStatus)} &rarr;
         </button>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Recipe Notes Section                                               */
+/* ------------------------------------------------------------------ */
+function RecipeNotesSection({
+  items,
+  isOpen,
+  onToggle,
+  isB,
+}: {
+  items: OrderDetailData["items"];
+  isOpen: boolean;
+  onToggle: () => void;
+  isB: boolean;
+}) {
+  // Look up recipes for each item by matching dish name
+  const itemRecipes = items.map((item) => {
+    const dish = dishes.find(
+      (d) =>
+        d.name.toLowerCase() === item.name.toLowerCase() ||
+        item.name.toLowerCase().includes(d.name.toLowerCase().split(" ").slice(-1)[0])
+    );
+    const recipes = dish?.recipes || [];
+    // Try to match portion size
+    const matched = recipes.find(
+      (r) => r.portionSize.toLowerCase() === item.portion.toLowerCase()
+    );
+    return {
+      itemName: item.name,
+      portion: item.portion,
+      recipe: matched || recipes[0] || null,
+      hasRecipe: recipes.length > 0,
+    };
+  });
+
+  const hasAnyRecipe = itemRecipes.some((ir) => ir.hasRecipe);
+
+  if (!hasAnyRecipe) return null;
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex items-center gap-2"
+        style={{
+          marginBottom: isOpen ? 12 : 0,
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: 0,
+        }}
+      >
+        <span className="eyebrow">Recipe Notes</span>
+        {isOpen ? (
+          <ChevronUp size={14} style={{ color: "var(--color-brown-soft-2)" }} />
+        ) : (
+          <ChevronDown size={14} style={{ color: "var(--color-brown-soft-2)" }} />
+        )}
+      </button>
+
+      <div
+        style={{
+          overflow: "hidden",
+          transition: "max-height 0.3s ease, opacity 0.2s ease",
+          maxHeight: isOpen ? 3000 : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {itemRecipes.map((ir, i) => (
+            <div
+              key={i}
+              style={{
+                borderRadius: 12,
+                background: "rgba(252,243,230,0.5)",
+                border: "1px solid rgba(51,31,46,0.06)",
+                padding: "14px 16px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: ir.recipe ? 12 : 0,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "var(--color-brown)",
+                  }}
+                >
+                  {ir.itemName}
+                </span>
+                <span className="caption">{ir.portion}</span>
+              </div>
+
+              {ir.recipe ? (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 16,
+                  }}
+                  className="recipe-note-grid"
+                >
+                  {/* Ingredients (compact) */}
+                  <div>
+                    <div
+                      className="caption"
+                      style={{
+                        fontWeight: 600,
+                        marginBottom: 6,
+                        fontSize: 10,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      Ingredients
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      {ir.recipe.ingredients.map((ing, j) => (
+                        <div
+                          key={j}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontSize: 12,
+                            lineHeight: 1.6,
+                          }}
+                        >
+                          <span style={{ color: "var(--color-brown)" }}>
+                            {ing.name}
+                          </span>
+                          <span
+                            className="tnum"
+                            style={{
+                              color: "var(--color-brown-soft)",
+                              fontWeight: 600,
+                              marginLeft: 8,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {ing.quantity}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Steps (compact) */}
+                  <div>
+                    <div
+                      className="caption"
+                      style={{
+                        fontWeight: 600,
+                        marginBottom: 6,
+                        fontSize: 10,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      Steps
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      {ir.recipe.steps.map((step, j) => (
+                        <div
+                          key={j}
+                          style={{
+                            display: "flex",
+                            gap: 6,
+                            alignItems: "flex-start",
+                            fontSize: 12,
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          <span
+                            className="tnum"
+                            style={{
+                              color: isB ? "#df4746" : "var(--color-brown-soft-2)",
+                              fontWeight: 700,
+                              fontSize: 10,
+                              minWidth: 14,
+                              flexShrink: 0,
+                              marginTop: 2,
+                            }}
+                          >
+                            {j + 1}.
+                          </span>
+                          <span style={{ color: "var(--color-brown)" }}>
+                            {step}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  href="/cookbook"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--color-brown-soft-2)",
+                    textDecoration: "none",
+                    fontStyle: "italic",
+                  }}
+                >
+                  No recipe saved &mdash; add one in the Cookbook
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Responsive: stack on mobile */}
+        <style>{`
+          @media (max-width: 639px) {
+            .recipe-note-grid {
+              grid-template-columns: 1fr !important;
+            }
+          }
+        `}</style>
       </div>
     </div>
   );
