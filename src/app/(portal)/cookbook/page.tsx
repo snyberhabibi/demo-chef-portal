@@ -105,7 +105,7 @@ export default function CookbookPage() {
             style={{
               width: "100%",
               height: 44,
-              paddingLeft: 38,
+              paddingLeft: 40,
               paddingRight: 14,
               borderRadius: 14,
               border: "1px solid rgba(51,31,46,0.08)",

@@ -73,18 +73,36 @@ const PIPELINE_COLORS: Record<string, string> = {
 /* ------------------------------------------------------------------ */
 function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
   if (!isOpen) return null;
   return (
-    <>
-      <div className="bottom-sheet-backdrop" onClick={onClose} />
-      <div className="bottom-sheet">
-        <div className="bottom-sheet-handle" />
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 70 }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div style={{ position: "absolute", inset: 0, background: "rgba(53,36,49,0.3)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }} />
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: "#fff",
+        borderRadius: "20px 20px 0 0",
+        padding: "12px 20px calc(20px + env(safe-area-inset-bottom, 0px))",
+        maxHeight: "70dvh",
+        overflowY: "auto",
+        animation: "slideUpSheet 0.3s cubic-bezier(0.22,1,0.36,1) both",
+      }}>
+        <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(53,36,49,0.15)", margin: "0 auto 16px" }} />
         {children}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -229,13 +247,13 @@ export default function OrdersPage() {
 
         <form role="search" onSubmit={(e) => e.preventDefault()} className="hidden lg:block" style={{ position: "relative", width: 280, flexShrink: 0 }}>
           <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-          <input type="text" placeholder="Search orders..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+          <input type="text" placeholder="Search orders..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 40, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
         </form>
       </div>
 
       <form role="search" onSubmit={(e) => e.preventDefault()} className="lg:hidden" style={{ position: "relative", marginTop: -8 }}>
         <Search size={15} strokeWidth={2} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "var(--color-brown-soft-2)", pointerEvents: "none" }} />
-        <input type="text" placeholder="Search by order ID, customer, or dish..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 36, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
+        <input type="text" placeholder="Search by order ID, customer, or dish..." aria-label="Search orders" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="" style={{ width: "100%", height: 44, paddingLeft: 40, paddingRight: 14, borderRadius: 10, border: "1px solid rgba(51,31,46,0.1)", background: "#fff", color: "var(--color-brown)", outline: "none" }} />
       </form>
 
       {showPrepList && <PrepListView orders={orders} />}
