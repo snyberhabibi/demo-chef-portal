@@ -76,7 +76,7 @@ const GUIDE_TABS = ["Video Tutorials", "Chef Playbook"] as const;
 type GuideTab = (typeof GUIDE_TABS)[number];
 
 export default function SettingsPage() {
-  const { mode } = useDesignMode();
+  const { mode, demoMode, setDemoMode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -144,10 +144,10 @@ export default function SettingsPage() {
               key={t.key}
               onClick={() => setActiveTab(t.key)}
               style={{
-                padding: isB ? "8px 20px" : "10px 20px", background: isB ? (tabActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14,
+                padding: isB ? "8px 20px" : "10px 20px", background: isB ? (tabActive ? "#352431" : "rgba(53,36,49,0.08)") : "none", border: "none", fontSize: 14,
                 fontWeight: tabActive ? 600 : 400,
-                color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-red)" : "var(--color-brown-soft)"),
-                borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-red)" : "2px solid transparent"),
+                color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-brown)" : "var(--color-brown-soft)"),
+                borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-brown)" : "2px solid transparent"),
                 borderRadius: isB ? 9999 : 0,
                 marginBottom: isB ? 0 : -1, cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)",
               }}
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                   </div>
                   {CHANNELS.map((ch) => (
                     <div key={ch} style={{ width: 64, display: "flex", justifyContent: "center" }}>
-                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} role="switch" aria-checked={notifs[cat.label][ch]} aria-label={`${cat.label} ${ch} notifications`} onClick={() => toggleNotif(cat.label, ch)} style={isB && notifs[cat.label][ch] ? { background: "#df4746" } : {}}>
+                      <button className={`toggle ${notifs[cat.label][ch] ? "is-on" : ""}`} role="switch" aria-checked={notifs[cat.label][ch]} aria-label={`${cat.label} ${ch} notifications`} onClick={() => toggleNotif(cat.label, ch)} style={isB && notifs[cat.label][ch] ? { background: "#352431" } : {}}>
                         <span className="toggle-thumb" />
                       </button>
                     </div>
@@ -286,6 +286,59 @@ export default function SettingsPage() {
                 </div>
               )}
             </div>
+          </div>
+          <div className="divider" />
+          {/* Demo Mode Toggle */}
+          <div>
+            <div className="heading-sm" style={{ marginBottom: 4 }}>Demo Mode</div>
+            <p className="body-sm" style={{ margin: "0 0 14px" }}>Preview how the portal looks for new chefs</p>
+            <div
+              style={{
+                display: "inline-flex",
+                background: "var(--color-cream-sunken)",
+                borderRadius: 9999,
+                padding: 3,
+                gap: 2,
+              }}
+            >
+              <button
+                onClick={() => setDemoMode("active")}
+                style={{
+                  padding: "8px 18px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  borderRadius: 9999,
+                  border: "none",
+                  background: demoMode === "active" ? "#352431" : "transparent",
+                  color: demoMode === "active" ? "#fff" : "var(--color-brown-soft-2)",
+                  cursor: "pointer",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                Active Kitchen
+              </button>
+              <button
+                onClick={() => setDemoMode("new-applicant")}
+                style={{
+                  padding: "8px 18px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  borderRadius: 9999,
+                  border: "none",
+                  background: demoMode === "new-applicant" ? "#352431" : "transparent",
+                  color: demoMode === "new-applicant" ? "#fff" : "var(--color-brown-soft-2)",
+                  cursor: "pointer",
+                  transition: "all var(--t-fast) var(--ease-spring)",
+                }}
+              >
+                New Applicant
+              </button>
+            </div>
+            {isNewApplicant && (
+              <p className="caption" style={{ marginTop: 10, color: "var(--color-sage-deep)", fontWeight: 500 }}>
+                New Applicant mode is active. Navigate to other pages to see empty states.
+              </p>
+            )}
           </div>
         </>
       )}
@@ -370,7 +423,7 @@ export default function SettingsPage() {
                     <p className="body-sm" style={{ margin: 0, flex: 1 }}>{t.desc}</p>
                     <div className="flex items-center justify-between" style={{ marginTop: 4 }}>
                       {t.completed ? (<span className="pill pill-sage flex items-center gap-1" style={{ fontSize: 11 }}><CheckCircle size={12} />Completed</span>) : (<span className="pill pill-sage tnum" style={{ fontSize: 11 }}>{t.steps} steps</span>)}
-                      <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "var(--color-red)" }}>{t.completed ? "Run again" : "Start"}<ArrowRight size={12} /></span>
+                      <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "#352431" }}>{t.completed ? "Run again" : "Start"}<ArrowRight size={12} /></span>
                     </div>
                   </button>
                 );
@@ -385,7 +438,7 @@ export default function SettingsPage() {
                 const Icon = t === "Video Tutorials" ? Video : BookOpen;
                 const guideActive = activeGuideTab === t;
                 return (
-                  <button key={t} onClick={() => setActiveGuideTab(t)} className="flex items-center gap-1.5" style={{ padding: isB ? "8px 16px" : "10px 20px", background: isB ? (guideActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none", border: "none", fontSize: 14, fontWeight: guideActive ? 600 : 400, color: isB ? (guideActive ? "#fff" : "var(--color-brown-soft)") : (guideActive ? "var(--color-red)" : "var(--color-brown-soft)"), borderBottom: isB ? "none" : (guideActive ? "2px solid var(--color-red)" : "2px solid transparent"), borderRadius: isB ? 9999 : 0, marginBottom: isB ? 0 : -1, cursor: "pointer", transition: `all var(--t-fast) var(--ease-spring)` }}>
+                  <button key={t} onClick={() => setActiveGuideTab(t)} className="flex items-center gap-1.5" style={{ padding: isB ? "8px 16px" : "10px 20px", background: isB ? (guideActive ? "#352431" : "rgba(53,36,49,0.08)") : "none", border: "none", fontSize: 14, fontWeight: guideActive ? 600 : 400, color: isB ? (guideActive ? "#fff" : "var(--color-brown-soft)") : (guideActive ? "var(--color-brown)" : "var(--color-brown-soft)"), borderBottom: isB ? "none" : (guideActive ? "2px solid var(--color-brown)" : "2px solid transparent"), borderRadius: isB ? 9999 : 0, marginBottom: isB ? 0 : -1, cursor: "pointer", transition: `all var(--t-fast) var(--ease-spring)` }}>
                     <Icon size={16} />{t}
                   </button>
                 );

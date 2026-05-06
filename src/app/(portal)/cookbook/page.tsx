@@ -5,13 +5,14 @@ import { useState, useMemo, useEffect } from "react";
 import { Search, ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 import { dishes, type Dish, type Recipe } from "@/lib/mock-data";
 import { useDesignMode } from "@/lib/design-mode";
+import { EmptyState } from "@/components/ui/empty-state";
 
 /* ------------------------------------------------------------------ */
 /*  Cookbook Page — "My Cookbook" — grandma's kitchen notebook feel       */
 /* ------------------------------------------------------------------ */
 
 export default function CookbookPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -32,8 +33,8 @@ export default function CookbookPage() {
     return list;
   }, [search]);
 
-  /* Accent color — terracotta in Mode A, red in Mode B */
-  const accent = isB ? "#df4746" : "var(--color-terracotta)";
+  /* Accent color — terracotta in both modes */
+  const accent = isB ? "#a17861" : "var(--color-terracotta)";
 
   if (!loaded) {
     return (
@@ -43,6 +44,19 @@ export default function CookbookPage() {
         {[0, 1, 2].map((i) => (
           <div key={i} className="skeleton" style={{ height: 80, borderRadius: 16 }} />
         ))}
+      </div>
+    );
+  }
+
+  // New Applicant: show empty state
+  if (isNewApplicant) {
+    return (
+      <div className="content-default section-stack page-enter">
+        <EmptyState
+          icon={BookOpen}
+          heading="Your cookbook is empty"
+          subtitle="Add recipes to your dishes and they will appear here for quick reference while cooking."
+        />
       </div>
     );
   }

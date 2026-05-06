@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/toast-provider";
 import { orders, dishes, type Order, type OrderStatus, type Urgency } from "@/lib/mock-data";
 import { statusDotColor } from "@/lib/utils/status-helpers";
 import { useDesignMode } from "@/lib/design-mode";
+import { EmptyState } from "@/components/ui/empty-state";
 
 /* ------------------------------------------------------------------ */
 /*  Filter tabs                                                        */
@@ -62,10 +63,10 @@ function urgencyBackground(u: Urgency): string | undefined {
 function itemCount(items: { qty: number; name: string }[]): number { return items.reduce((sum, i) => sum + i.qty, 0); }
 
 const PIPELINE_COLORS: Record<string, string> = {
-  new: "#df4746",
+  new: "#a17861",
   preparing: "#f19e37",
   ready: "#7daf62",
-  done: "#a17861",
+  done: "#6e5f6a",
 };
 
 /* ------------------------------------------------------------------ */
@@ -110,7 +111,7 @@ function BottomSheet({ isOpen, onClose, children }: { isOpen: boolean; onClose: 
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 export default function OrdersPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -200,6 +201,24 @@ export default function OrdersPage() {
     return (<div className="content-default section-stack">{[0,1,2,3,4,5].map((i) => (<div key={i} className="skeleton" style={{ height: 80, borderRadius: 16 }} />))}</div>);
   }
 
+  // New Applicant: show empty state
+  if (isNewApplicant) {
+    return (
+      <div className="content-default section-stack page-enter">
+        <EmptyState
+          icon={ShoppingBag}
+          heading="No orders yet"
+          subtitle="Share your menu link to start receiving orders from hungry customers."
+          ctaLabel="Copy Store Link"
+          onCta={() => {
+            navigator.clipboard?.writeText("https://yallabites.com/your-store");
+            toast("Store link copied to clipboard");
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="content-default section-stack page-enter">
       {/* Filter bar + controls */}
@@ -211,21 +230,21 @@ export default function OrdersPage() {
                 const isActive = tab.label === activeTab && !showPrepList;
                 const count = tabCounts[tab.label];
                 const pillActiveStyle = isB
-                  ? { background: "#df4746", color: "#fff", borderRadius: 9999 }
+                  ? { background: "#352431", color: "#fff", borderRadius: 9999 }
                   : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 };
                 const pillInactiveStyle = isB
-                  ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 }
+                  ? { background: "rgba(53,36,49,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 }
                   : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 };
                 return (
                   <button key={tab.label} onClick={() => { setActiveTab(tab.label); setShowPrepList(false); setPage(1); }} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(isActive ? pillActiveStyle : pillInactiveStyle) }}
-                    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
-                    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
+                    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(53,36,49,0.14)" : "rgba(51,31,46,0.04)"; }}
+                    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = isB ? "rgba(53,36,49,0.08)" : "transparent"; }}>
                     {tab.label}
                     {count > 0 && tab.label !== "All" && (<span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 16, height: 16, padding: "0 4px", borderRadius: 9999, fontSize: 10, fontWeight: 700, fontVariantNumeric: "tabular-nums", background: isActive ? "rgba(255,255,255,0.2)" : "var(--color-cream-sunken)", color: isActive ? (isB ? "#fff" : "var(--color-cream)") : "var(--color-brown-soft-2)" }}>{count}</span>)}
                   </button>
                 );
               })}
-              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "#df4746", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(223,71,70,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
+              <button onClick={() => setShowPrepList(true)} className="h-7 sm:h-8 text-[11px] sm:text-[12px]" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "0 10px", fontWeight: 600, whiteSpace: "nowrap", border: "none", cursor: "pointer", transition: "all var(--t-fast) var(--ease-spring)", ...(showPrepList ? (isB ? { background: "#352431", color: "#fff", borderRadius: 9999 } : { background: "var(--color-brown)", color: "var(--color-cream)", borderRadius: 8 }) : (isB ? { background: "rgba(53,36,49,0.08)", color: "var(--color-brown-soft-2)", borderRadius: 9999 } : { background: "transparent", color: "var(--color-brown-soft-2)", borderRadius: 8 })) }}
                 onMouseEnter={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.14)" : "rgba(51,31,46,0.04)"; }}
                 onMouseLeave={(e) => { if (!showPrepList) e.currentTarget.style.background = isB ? "rgba(223,71,70,0.08)" : "transparent"; }}>
                 <ClipboardList size={13} strokeWidth={2} /> Prep List

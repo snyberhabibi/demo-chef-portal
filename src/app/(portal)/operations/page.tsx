@@ -450,7 +450,7 @@ export default function OperationsPage() {
                   aria-checked={daySchedule.enabled}
                   aria-label={`${day} availability`}
                   onClick={() => toggleDay(day)}
-                  style={{ flexShrink: 0, marginTop: 2, ...(isB && daySchedule.enabled ? { background: "#df4746" } : {}) }}
+                  style={{ flexShrink: 0, marginTop: 2, ...(isB && daySchedule.enabled ? { background: "#352431" } : {}) }}
                 >
                   <span className="toggle-thumb" />
                 </button>
@@ -581,12 +581,12 @@ export default function OperationsPage() {
             onClick={() => setActiveSubTab("timeoff")}
             style={{
               padding: isB ? "8px 16px" : "12px 20px",
-              background: isB ? (activeSubTab === "timeoff" ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
+              background: isB ? (activeSubTab === "timeoff" ? "#352431" : "rgba(53,36,49,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "timeoff" ? 600 : 400,
-              color: isB ? (activeSubTab === "timeoff" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "timeoff" ? "var(--color-red)" : "var(--color-brown-soft)"),
-              borderBottom: isB ? "none" : (activeSubTab === "timeoff" ? "2px solid var(--color-red)" : "2px solid transparent"),
+              color: isB ? (activeSubTab === "timeoff" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "timeoff" ? "var(--color-brown)" : "var(--color-brown-soft)"),
+              borderBottom: isB ? "none" : (activeSubTab === "timeoff" ? "2px solid var(--color-brown)" : "2px solid transparent"),
               borderRadius: isB ? 9999 : 0,
               marginBottom: isB ? 0 : -1,
               cursor: "pointer",
@@ -599,12 +599,12 @@ export default function OperationsPage() {
             onClick={() => setActiveSubTab("overrides")}
             style={{
               padding: isB ? "8px 16px" : "12px 20px",
-              background: isB ? (activeSubTab === "overrides" ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
+              background: isB ? (activeSubTab === "overrides" ? "#352431" : "rgba(53,36,49,0.08)") : "none",
               border: "none",
               fontSize: 14,
               fontWeight: activeSubTab === "overrides" ? 600 : 400,
-              color: isB ? (activeSubTab === "overrides" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "overrides" ? "var(--color-red)" : "var(--color-brown-soft)"),
-              borderBottom: isB ? "none" : (activeSubTab === "overrides" ? "2px solid var(--color-red)" : "2px solid transparent"),
+              color: isB ? (activeSubTab === "overrides" ? "#fff" : "var(--color-brown-soft)") : (activeSubTab === "overrides" ? "var(--color-brown)" : "var(--color-brown-soft)"),
+              borderBottom: isB ? "none" : (activeSubTab === "overrides" ? "2px solid var(--color-brown)" : "2px solid transparent"),
               borderRadius: isB ? 9999 : 0,
               marginBottom: isB ? 0 : -1,
               cursor: "pointer",

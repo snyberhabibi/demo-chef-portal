@@ -16,6 +16,7 @@ import {
   Pencil,
   Ban,
   BarChart3,
+  Zap,
 } from "lucide-react";
 import {
   flashSales,
@@ -26,6 +27,7 @@ import {
 import { useToast } from "@/components/ui/toast-provider";
 import { saleStatusDotColor } from "@/lib/utils/status-helpers";
 import { useDesignMode } from "@/lib/design-mode";
+import { EmptyState } from "@/components/ui/empty-state";
 
 /* ------------------------------------------------------------------ */
 /*  Tab config                                                         */
@@ -41,7 +43,7 @@ const tabs: { key: SaleStatus; label: string }[] = [
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function FlashSalesPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -69,6 +71,22 @@ export default function FlashSalesPage() {
         {[0, 1, 2].map((i) => (
           <div key={i} className="skeleton" style={{ height: 140, borderRadius: 16 }} />
         ))}
+      </div>
+    );
+  }
+
+  // New Applicant: show empty state
+  if (isNewApplicant) {
+    return (
+      <div className="content-default section-stack page-enter">
+        <EmptyState
+          icon={Zap}
+          heading="No flash sales yet"
+          subtitle="Create your first flash sale to start selling. Flash sales create urgency and drive orders."
+          ctaLabel="Create Flash Sale"
+          onCta={() => setShowCreate(true)}
+        />
+        {showCreate && <CreateFlashSalePanel onClose={() => setShowCreate(false)} />}
       </div>
     );
   }
@@ -120,7 +138,7 @@ export default function FlashSalesPage() {
                   : "2px solid transparent"),
                 borderRadius: isB ? 9999 : 0,
                 background: isB
-                  ? (isActive ? "#df4746" : "rgba(223,71,70,0.08)")
+                  ? (isActive ? "#352431" : "rgba(53,36,49,0.08)")
                   : "transparent",
                 color: isB
                   ? (isActive ? "#fff" : "var(--color-brown-soft-2)")
@@ -143,7 +161,7 @@ export default function FlashSalesPage() {
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
                   background: isB
-                    ? (isActive ? "rgba(255,255,255,0.25)" : "rgba(223,71,70,0.1)")
+                    ? (isActive ? "rgba(255,255,255,0.25)" : "rgba(53,36,49,0.1)")
                     : (isActive ? "var(--color-red)" : "var(--color-cream-sunken)"),
                   color: isB
                     ? (isActive ? "#fff" : "var(--color-brown-soft-2)")
@@ -230,7 +248,7 @@ function FlashSaleCard({ sale, isB }: { sale: FlashSale; isB: boolean }) {
         opacity: isPast ? 0.85 : 1,
         ...(isB ? { borderRadius: 16, borderLeft: "none", boxShadow: "0 2px 8px rgba(161,120,97,0.08)" } : {}),
       }}
-      onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.18)"; }}
+      onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(53,36,49,0.15)"; }}
       onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
     >
       {/* Row 1: status dot + name + time info */}

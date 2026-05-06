@@ -17,6 +17,8 @@ import {
 } from "@/lib/mock-data";
 import { dishStatusBadge } from "@/lib/utils/status-helpers";
 import { useDesignMode } from "@/lib/design-mode";
+import { EmptyState } from "@/components/ui/empty-state";
+import { UtensilsCrossed } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Types & Data                                                       */
@@ -43,7 +45,7 @@ const TABS: { key: MenuTab; label: string }[] = [
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function MenuPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -212,6 +214,21 @@ export default function MenuPage() {
             <div key={i} className="skeleton" style={{ height: 180, borderRadius: 16 }} />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  // New Applicant: show empty state
+  if (isNewApplicant) {
+    return (
+      <div className="content-wide section-stack page-fade page-enter">
+        <EmptyState
+          icon={UtensilsCrossed}
+          heading="Your menu is empty"
+          subtitle="Add your first dish to get started and let customers know what you cook."
+          ctaLabel="Create Your First Dish"
+          onCta={() => setShowCreateModal(true)}
+        />
       </div>
     );
   }
@@ -515,7 +532,7 @@ export default function MenuPage() {
                           padding: "10px 14px",
                           cursor: "pointer",
                           borderBottom: "1px solid rgba(51,31,46,0.04)",
-                          background: isSelected ? "rgba(223,71,70,0.04)" : "transparent",
+                          background: isSelected ? "rgba(53,36,49,0.04)" : "transparent",
                           transition: "background var(--t-fast)",
                         }}
                       >
@@ -523,7 +540,7 @@ export default function MenuPage() {
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleDishInBundle(dish.id)}
-                          style={{ width: 18, height: 18, accentColor: "#df4746", flexShrink: 0 }}
+                          style={{ width: 18, height: 18, accentColor: "#352431", flexShrink: 0 }}
                         />
                         <img
                           src={dish.image}
@@ -585,8 +602,8 @@ export default function MenuPage() {
               border: "none",
               fontSize: 14,
               fontWeight: activeTab === t.key ? 600 : 400,
-              color: activeTab === t.key ? "var(--color-red)" : "var(--color-brown-soft)",
-              borderBottom: activeTab === t.key ? "2px solid var(--color-red)" : "2px solid transparent",
+              color: activeTab === t.key ? "var(--color-brown)" : "var(--color-brown-soft)",
+              borderBottom: activeTab === t.key ? "2px solid var(--color-brown)" : "2px solid transparent",
               marginBottom: -1,
               cursor: "pointer",
               transition: "color var(--t-fast) var(--ease-spring)",
@@ -609,7 +626,7 @@ export default function MenuPage() {
               onClick={() => setShowCreateModal(true)}
               className="btn btn-dark"
               style={{ gap: 6, transition: "box-shadow var(--t-fast)", ...(isB ? { background: "#df4746", border: "none", borderRadius: 12 } : {}) }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(223,71,70,0.4)" : "0 0 20px rgba(51,31,46,0.25)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = isB ? "0 0 20px rgba(223,71,70,0.3)" : "0 0 20px rgba(51,31,46,0.25)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
               <Plus size={18} strokeWidth={2.5} />
@@ -683,7 +700,7 @@ export default function MenuPage() {
                       cursor: "pointer",
                       border: isB ? "none" : `1px solid ${isCatActive ? "var(--color-terracotta)" : "rgba(51,31,46,0.1)"}`,
                       background: isB
-                        ? (isCatActive ? "#df4746" : "rgba(223,71,70,0.08)")
+                        ? (isCatActive ? "#352431" : "rgba(53,36,49,0.08)")
                         : (isCatActive ? "var(--color-terracotta-soft)" : "transparent"),
                       color: isB
                         ? (isCatActive ? "#fff" : "var(--color-brown-soft)")
@@ -773,7 +790,7 @@ export default function MenuPage() {
                       transition: "box-shadow 0.3s ease",
                       ...(isB ? { borderLeft: "none" } : {}),
                     }}
-                    onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(223,71,70,0.15)"; }}
+                    onMouseEnter={(e) => { if (isB) e.currentTarget.style.boxShadow = "0 0 24px rgba(53,36,49,0.12)"; }}
                     onMouseLeave={(e) => { if (isB) e.currentTarget.style.boxShadow = "none"; }}
                   >
                     <Link
@@ -819,7 +836,7 @@ export default function MenuPage() {
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100"
                           style={{
-                            background: isB ? "rgba(223,71,70,0.06)" : "rgba(51,31,46,0.05)",
+                            background: isB ? "rgba(53,36,49,0.04)" : "rgba(51,31,46,0.05)",
                             transition: "opacity var(--t-fast)",
                             borderRadius: "16px 16px 0 0",
                             pointerEvents: "none",

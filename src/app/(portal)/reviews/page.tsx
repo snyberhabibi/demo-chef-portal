@@ -2,7 +2,8 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
-import { Star, MessageSquare } from "lucide-react";
+import { Star, MessageSquare, Heart } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   reviews as rawReviews,
   averageRating,
@@ -64,7 +65,7 @@ function StarRow({ rating, size = 14, isB = false }: { rating: number; size?: nu
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function ReviewsPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -160,6 +161,19 @@ export default function ReviewsPage() {
     );
   }
 
+  // New Applicant: show empty state
+  if (isNewApplicant) {
+    return (
+      <div className="content-default section-stack page-enter">
+        <EmptyState
+          icon={Heart}
+          heading="No reviews yet"
+          subtitle="Complete your first order and your customers will be able to leave reviews here."
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="content-default section-stack">
       {/* Header row: tabs + sort */}
@@ -174,11 +188,11 @@ export default function ReviewsPage() {
                 className="body text-[12px] sm:text-[13px]"
                 style={{
                   padding: isB ? "8px 16px" : "10px 14px",
-                  background: isB ? (tabActive ? "#df4746" : "rgba(223,71,70,0.08)") : "none",
+                  background: isB ? (tabActive ? "#352431" : "rgba(53,36,49,0.08)") : "none",
                   border: "none",
                   fontWeight: tabActive ? 600 : 400,
-                  color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-red)" : "var(--color-brown-soft)"),
-                  borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-red)" : "2px solid transparent"),
+                  color: isB ? (tabActive ? "#fff" : "var(--color-brown-soft)") : (tabActive ? "var(--color-brown)" : "var(--color-brown-soft)"),
+                  borderBottom: isB ? "none" : (tabActive ? "2px solid var(--color-brown)" : "2px solid transparent"),
                   borderRadius: isB ? 9999 : 0,
                   marginBottom: isB ? 0 : -1,
                   cursor: "pointer",
@@ -255,7 +269,7 @@ export default function ReviewsPage() {
           {/* Rating summary card */}
           <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="text-center" style={{ minWidth: 100 }}>
-              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1, ...(isB ? { color: "#df4746" } : {}) }}>
+              <div className="fraunces" style={{ fontSize: "clamp(32px, 8vw, 48px)", lineHeight: 1, ...(isB ? { color: "#352431" } : {}) }}>
                 {averageRating.toFixed(1)}
               </div>
               <div style={{ marginTop: 8 }}>
@@ -278,7 +292,7 @@ export default function ReviewsPage() {
                         width: `${row.pct}%`,
                         height: "100%",
                         borderRadius: 3,
-                        background: isB ? "#df4746" : "var(--color-sage)",
+                        background: isB ? "#a17861" : "var(--color-sage)",
                         transition: `width 0.3s var(--ease-spring)`,
                       }}
                     />
@@ -386,7 +400,7 @@ export default function ReviewsPage() {
                   {!review.reply && !review.composerOpen && (
                     <button
                       className={isB ? "btn btn-sm" : "btn btn-ghost btn-sm"}
-                      style={{ marginTop: 12, gap: 6, ...(isB ? { background: "#df4746", color: "#fff", border: "none", borderRadius: 12 } : {}) }}
+                      style={{ marginTop: 12, gap: 6, ...(isB ? { background: "#352431", color: "#fff", border: "none", borderRadius: 12 } : {}) }}
                       onClick={() => toggleComposer(review.id)}
                     >
                       <MessageSquare size={14} />

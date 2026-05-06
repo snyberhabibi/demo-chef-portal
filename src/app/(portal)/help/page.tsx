@@ -121,7 +121,7 @@ export default function HelpPage() {
           <span className="tnum caption">{Math.round(progressPct)}%</span>
         </div>
         <div style={{ height: 4, borderRadius: 2, background: "var(--color-cream-sunken)", overflow: "hidden", marginBottom: 20 }}>
-          <div style={{ height: "100%", borderRadius: 2, background: isB ? "#df4746" : "var(--color-sage)", width: `${progressPct}%`, transition: "width 0.3s var(--ease-spring)" }} />
+          <div style={{ height: "100%", borderRadius: 2, background: isB ? "#352431" : "var(--color-sage)", width: `${progressPct}%`, transition: "width 0.3s var(--ease-spring)" }} />
         </div>
 
         {/* Tutorial grid */}
@@ -160,7 +160,7 @@ export default function HelpPage() {
                       {t.steps} steps
                     </span>
                   )}
-                  <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "var(--color-red)" }}>
+                  <span className="caption flex items-center gap-1" style={{ fontWeight: 600, color: "#352431" }}>
                     {t.completed ? "Run again" : "Start"}<ArrowRight size={12} />
                   </span>
                 </div>
@@ -203,7 +203,7 @@ export default function HelpPage() {
                 <ChevronDown
                   size={16}
                   style={{
-                    color: isB && openFaq === i ? "#df4746" : "var(--color-brown-soft-2)",
+                    color: isB && openFaq === i ? "#352431" : "var(--color-brown-soft-2)",
                     transform: openFaq === i ? "rotate(180deg)" : "none",
                     transition: "transform var(--t-fast) var(--ease-spring), color var(--t-fast)",
                     flexShrink: 0,

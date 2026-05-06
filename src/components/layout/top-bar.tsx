@@ -137,7 +137,7 @@ export function TopBar({ title, breadcrumbs, onMobileMenuToggle, hamburgerRef }:
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.background =
-              isB ? "rgba(223,71,70,0.06)" : "rgba(51,31,46,0.08)";
+              isB ? "rgba(53,36,49,0.06)" : "rgba(51,31,46,0.08)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background =

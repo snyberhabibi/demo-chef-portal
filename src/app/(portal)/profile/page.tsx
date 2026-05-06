@@ -106,7 +106,7 @@ export default function ProfilePage() {
           <img
             src={chefProfile.avatar}
             alt="Chef"
-            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", ...(isB ? { border: "3px solid #df4746" } : {}) }}
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", ...(isB ? { border: "3px solid #352431" } : {}) }}
           />
           <label
             style={{

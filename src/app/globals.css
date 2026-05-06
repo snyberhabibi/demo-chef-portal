@@ -1134,12 +1134,12 @@ main { overflow-x: hidden; -webkit-overflow-scrolling: touch; }
   letter-spacing: -0.01em;
 }
 
-/* Mode B overrides — terracotta becomes red */
+/* Mode B overrides — terracotta stays terracotta (not red) */
 [data-design-mode="b"] .cookbook-subtitle,
 [data-design-mode="b"] .cookbook-section-header,
 [data-design-mode="b"] .cookbook-step-number {
-  color: #df4746;
+  color: #a17861;
 }
 [data-design-mode="b"] .cookbook-ingredient-dot {
-  background: #df4746;
+  background: #a17861;
 }

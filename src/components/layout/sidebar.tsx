@@ -94,10 +94,10 @@ export function Sidebar({ activePath }: SidebarProps) {
                       justifyContent: collapsed ? "center" : "flex-start",
                       gap: collapsed ? 0 : 10,
                       color: isActive
-                        ? (isB ? "#df4746" : "var(--color-brown)")
+                        ? (isB ? "#352431" : "var(--color-brown)")
                         : "rgba(51,31,46,0.55)",
                       background: isActive
-                        ? (isB ? "rgba(223,71,70,0.08)" : "var(--color-cream)")
+                        ? (isB ? "rgba(53,36,49,0.06)" : "var(--color-cream)")
                         : "transparent",
                       borderLeft: isB
                         ? "none"

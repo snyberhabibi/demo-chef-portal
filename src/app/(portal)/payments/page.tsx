@@ -20,7 +20,7 @@ const INFO_BLOCKS = [
 ];
 
 export default function PaymentsPage() {
-  const { mode } = useDesignMode();
+  const { mode, isNewApplicant } = useDesignMode();
   const isB = mode === "b";
 
   const [loaded, setLoaded] = useState(false);
@@ -28,6 +28,9 @@ export default function PaymentsPage() {
 
   const [state, setState] = useState<StripeState>("A");
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+  // Force "Not Connected" state for new applicants
+  const effectiveState = isNewApplicant ? "A" : state;
 
   if (!loaded) {
     return (
@@ -45,23 +48,25 @@ export default function PaymentsPage() {
 
   return (
     <div className="content-narrow section-stack">
-      {/* State toggle */}
-      <div style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
-        <span className="caption" style={{ fontWeight: 600, marginRight: 4 }}>Demo:</span>
-        {(["A", "B", "C"] as StripeState[]).map((s) => (
-          <button
-            key={s}
-            className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
-            style={{ fontSize: 12 }}
-            onClick={() => setState(s)}
-          >
-            {s === "A" ? "Not connected" : s === "B" ? "Needs info" : "Connected"}
-          </button>
-        ))}
-      </div>
+      {/* State toggle — hidden in new-applicant mode */}
+      {!isNewApplicant && (
+        <div style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
+          <span className="caption" style={{ fontWeight: 600, marginRight: 4 }}>Demo:</span>
+          {(["A", "B", "C"] as StripeState[]).map((s) => (
+            <button
+              key={s}
+              className={`btn btn-sm ${state === s ? "btn-dark" : "btn-ghost"}`}
+              style={{ fontSize: 12 }}
+              onClick={() => setState(s)}
+            >
+              {s === "A" ? "Not connected" : s === "B" ? "Needs info" : "Connected"}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* State A: Not connected */}
-      {state === "A" && (
+      {effectiveState === "A" && (
         <>
           <div className="card-cream" style={{ textAlign: "center", padding: 32 }}>
             <div className="heading-lg" style={{ fontSize: 24, marginBottom: 8 }}>
@@ -184,7 +189,7 @@ export default function PaymentsPage() {
       )}
 
       {/* State B: Needs more info */}
-      {state === "B" && (
+      {effectiveState === "B" && (
         <div style={{ borderLeft: "3px solid var(--color-orange)", borderRadius: 8, padding: "14px 16px" }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 10 }}>
             <AlertTriangle size={18} style={{ color: "var(--color-orange)" }} />
@@ -227,14 +232,14 @@ export default function PaymentsPage() {
       )}
 
       {/* State C: Connected */}
-      {state === "C" && (
+      {effectiveState === "C" && (
         <>
           <div className="card-gradient-border glow-sage" style={{ textAlign: "center", padding: 24 }}>
             <div className="flex items-center justify-center gap-2" style={{ marginBottom: 12 }}>
               <CheckCircle size={18} style={{ color: "var(--color-sage)" }} />
               <span className="pill pill-sage">Stripe Connected</span>
             </div>
-            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px", ...(isB ? { color: "#df4746" } : {}) }}>
+            <div className="fraunces" style={{ fontSize: "clamp(28px, 7vw, 40px)", lineHeight: 1, margin: "12px 0 4px", ...(isB ? { color: "#352431" } : {}) }}>
               $2,184.50
             </div>
             <div className="body-sm">Total earnings</div>
@@ -245,7 +250,7 @@ export default function PaymentsPage() {
           <div className="card flex items-center justify-between">
             <div>
               <div className="eyebrow" style={{ marginBottom: 4 }}>Next Payout</div>
-              <div className="fraunces tnum" style={{ fontSize: 22, ...(isB ? { color: "#df4746" } : {}) }}>$342.00</div>
+              <div className="fraunces tnum" style={{ fontSize: 22, ...(isB ? { color: "#352431" } : {}) }}>$342.00</div>
               <div className="body-sm" style={{ marginTop: 2 }}>Arriving Friday, May 9</div>
             </div>
             <div
