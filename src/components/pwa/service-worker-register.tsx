@@ -8,7 +8,7 @@ export function ServiceWorkerRegister() {
   );
   const [showUpdate, setShowUpdate] = useState(false);
 
-  const handleUpdate = useCallback(() => {
+  const applyUpdate = useCallback(() => {
     if (waitingWorker) {
       waitingWorker.postMessage({ type: "SKIP_WAITING" });
     }
@@ -30,28 +30,30 @@ export function ServiceWorkerRegister() {
       onControllerChange
     );
 
+    let registration: ServiceWorkerRegistration | null = null;
+
     navigator.serviceWorker
       .register("/sw.js")
-      .then((registration) => {
-        console.log("[SW] Registered:", registration.scope);
+      .then((reg) => {
+        registration = reg;
+        console.log("[SW] Registered:", reg.scope);
 
-        // If a waiting worker already exists on load
-        if (registration.waiting && !sessionStorage.getItem("sw-update-dismissed")) {
-          setWaitingWorker(registration.waiting);
-          setShowUpdate(true);
+        // If a waiting worker already exists on load — auto-apply it
+        // (user already "refreshed" by reopening the app)
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          reg.waiting.postMessage({ type: "SKIP_WAITING" });
+          return;
         }
 
         // Listen for new service workers installing
-        registration.addEventListener("updatefound", () => {
-          const newWorker = registration.installing;
+        reg.addEventListener("updatefound", () => {
+          const newWorker = reg.installing;
           if (!newWorker) return;
 
           newWorker.addEventListener("statechange", () => {
-            // New SW installed and waiting to activate
             if (
               newWorker.state === "installed" &&
-              navigator.serviceWorker.controller &&
-              !sessionStorage.getItem("sw-update-dismissed")
+              navigator.serviceWorker.controller
             ) {
               setWaitingWorker(newWorker);
               setShowUpdate(true);
@@ -60,33 +62,38 @@ export function ServiceWorkerRegister() {
         });
 
         // Check for updates every 60 seconds
-        setInterval(() => registration.update(), 60 * 1000);
+        setInterval(() => reg.update(), 60 * 1000);
       })
       .catch((err) => {
         console.log("[SW] Registration failed:", err);
       });
+
+    // Auto-check for updates when app comes back from background
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible" && registration) {
+        registration.update();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       navigator.serviceWorker.removeEventListener(
         "controllerchange",
         onControllerChange
       );
+      document.addEventListener("visibilitychange", onVisibilityChange);
     };
-  }, []);
-
-  const dismiss = useCallback(() => {
-    setShowUpdate(false);
-    sessionStorage.setItem("sw-update-dismissed", "1");
   }, []);
 
   if (!showUpdate) return null;
 
+  // Simple, non-dismissable update banner — just tap to refresh
   return (
     <div
       role="alert"
       style={{
         position: "fixed",
-        bottom: "calc(80px + env(safe-area-inset-bottom, 0px))",
+        bottom: "calc(72px + env(safe-area-inset-bottom, 0px))",
         left: "16px",
         right: "16px",
         zIndex: 9999,
@@ -96,53 +103,33 @@ export function ServiceWorkerRegister() {
         gap: "12px",
         padding: "12px 16px",
         borderRadius: "14px",
-        background: "#331f2e",
+        background: "#352431",
         color: "#faf9f6",
         fontSize: "14px",
         fontWeight: 500,
         boxShadow:
-          "0 8px 24px rgba(51,31,46,0.2), 0 2px 8px rgba(51,31,46,0.1)",
+          "0 8px 24px rgba(53,36,49,0.25), 0 2px 8px rgba(53,36,49,0.1)",
         animation: "fadeUp 0.3s cubic-bezier(0.22,1,0.36,1) both",
       }}
     >
-      <span>Update available</span>
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        <button
-          onClick={dismiss}
-          aria-label="Dismiss update"
-          style={{
-            background: "transparent",
-            color: "rgba(250,249,246,0.6)",
-            border: "none",
-            borderRadius: "8px",
-            padding: "8px 12px",
-            fontSize: "13px",
-            fontWeight: 500,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            minHeight: "36px",
-          }}
-        >
-          Later
-        </button>
-        <button
-          onClick={handleUpdate}
-          style={{
-            background: "#e54141",
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            padding: "8px 16px",
-            fontSize: "13px",
-            fontWeight: 600,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            minHeight: "36px",
-          }}
-        >
-          Refresh
-        </button>
-      </div>
+      <span>New version available</span>
+      <button
+        onClick={applyUpdate}
+        style={{
+          background: "#df4746",
+          color: "#fff",
+          border: "none",
+          borderRadius: "10px",
+          padding: "8px 16px",
+          fontSize: "13px",
+          fontWeight: 600,
+          cursor: "pointer",
+          whiteSpace: "nowrap",
+          minHeight: "36px",
+        }}
+      >
+        Update
+      </button>
     </div>
   );
 }
